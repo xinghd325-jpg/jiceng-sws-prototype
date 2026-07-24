@@ -89,6 +89,29 @@
       font-size: 12px;
       color: var(--color-text-secondary);
     }
+    .pc-sidebar .menu-group {
+      user-select: none;
+    }
+    .pc-sidebar .menu-group-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px 10px 16px;
+      color: var(--color-text);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .pc-sidebar .menu-group-head:hover { background: #f5f5f5; }
+    .pc-sidebar .menu-group-head .arrow {
+      margin-left: auto;
+      font-size: 14px;
+      color: var(--color-text-secondary);
+      transition: transform 0.15s ease;
+    }
+    .pc-sidebar .menu-group.collapsed > .menu-group-body { display: none; }
+    .pc-sidebar .menu-group.collapsed > .menu-group-head .arrow { transform: rotate(-90deg); }
+    .pc-sidebar .menu-group-body { /* nested */ }
     .pc-sidebar .menu-item {
       display: flex;
       align-items: center;
@@ -99,6 +122,8 @@
       font-size: 13px;
       border-right: 2px solid transparent;
     }
+    .pc-sidebar .menu-item.depth-1 { padding-left: 28px; }
+    .pc-sidebar .menu-item.depth-2 { padding-left: 40px; font-weight: 400; }
     .pc-sidebar .menu-item:hover { background: #f5f5f5; }
     .pc-sidebar .menu-item.active {
       color: var(--color-primary);
@@ -106,18 +131,57 @@
       border-right-color: var(--color-primary);
       font-weight: 500;
     }
-    .pc-sidebar .menu-item i { font-size: 16px; }
+    .pc-sidebar .menu-item i { font-size: 16px; flex-shrink: 0; }
+    .pc-sidebar .menu-subhead {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px 8px 28px;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .pc-sidebar .menu-subhead:hover { background: #f5f5f5; color: var(--color-text); }
+    .pc-sidebar .menu-subhead .arrow {
+      margin-left: auto;
+      font-size: 14px;
+      transition: transform 0.15s ease;
+    }
+    .pc-sidebar .menu-subgroup.collapsed > .menu-sub-body { display: none; }
+    .pc-sidebar .menu-subgroup.collapsed > .menu-subhead .arrow { transform: rotate(-90deg); }
+    .pc-header .header-right .form-control {
+      height: 28px;
+      min-width: 140px;
+      max-width: 220px;
+      background: rgba(255,255,255,0.15);
+      border-color: rgba(255,255,255,0.35);
+      color: #fff;
+      font-size: 12px;
+    }
+    .pc-header .header-right .form-control option { color: var(--color-text); background: #fff; }
+    .pc-header .header-right i { font-size: 18px; cursor: default; opacity: 0.9; }
     .pc-main {
       flex: 1;
       min-width: 0;
       padding: 12px 16px;
       overflow: auto;
     }
+    #pc-content { min-height: 100%; }
     .page-title {
       font-size: 16px;
       font-weight: 600;
       margin-bottom: 12px;
       color: var(--color-text);
+    }
+    .page-card {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      color: var(--color-text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
     }
 
     /* ---- Filter card ---- */
@@ -1320,207 +1384,446 @@
       }
     }
 
-    /* ========== Boot: temporary UI Kit demo page ========== */
-    function renderUiKitDemo() {
+    /* ========== PC Shell: top menu + sidebar routes ========== */
+    const TOP_MENUS = [
+      { id: "home", label: "首页", enabled: false },
+      { id: "sws", label: "社会工作服务", enabled: true },
+      { id: "emergency", label: "应急管理指挥", enabled: false },
+      { id: "event", label: "事件管理", enabled: false },
+      { id: "warning", label: "预警管理", enabled: false },
+      { id: "task", label: "任务管理", enabled: false },
+      { id: "dispute", label: "矛调调处", enabled: false },
+      { id: "data", label: "数据管理", enabled: false },
+      { id: "connect", label: "业务贯通", enabled: false },
+      { id: "perf", label: "绩效考核", enabled: false },
+      { id: "office", label: "办公管理", enabled: false },
+    ];
+
+    /** 侧栏树与 spec §4.2 一致；叶子含 routeId */
+    const PC_MENU = [
+      {
+        id: "g-emerging",
+        label: "新兴领域党的建设",
+        icon: "ri-building-2-line",
+        children: [
+          { routeId: "emerging-objects", label: "对象管理", icon: "ri-user-search-line" },
+          { routeId: "emerging-party", label: "党建工作", icon: "ri-flag-line" },
+          { routeId: "emerging-governance", label: "服务治理", icon: "ri-government-line" },
+        ],
+      },
+      {
+        id: "g-base",
+        label: "基层治理与基层政权建设",
+        icon: "ri-community-line",
+        children: [
+          { routeId: "base-village", label: "村社建设", icon: "ri-home-gear-line" },
+          { routeId: "base-consult", label: "协商议事", icon: "ri-chat-smile-2-line" },
+          { routeId: "base-lists", label: "清单管理", icon: "ri-list-check-2" },
+          { routeId: "base-teams", label: "队伍建设", icon: "ri-team-line" },
+        ],
+      },
+      {
+        id: "g-cohesion",
+        label: "凝聚群众服务",
+        icon: "ri-hearts-line",
+        children: [
+          {
+            id: "g-info",
+            label: "信息公开管理",
+            icon: "ri-megaphone-line",
+            children: [
+              { routeId: "notice-list", label: "通知公告管理", icon: "ri-notification-3-line" },
+              { routeId: "activity-list", label: "活动发布管理", icon: "ri-calendar-event-line" },
+              { routeId: "affair-list", label: "三务公开管理", icon: "ri-file-list-3-line" },
+              { routeId: "service-item-list", label: "服务项目管理", icon: "ri-service-line" },
+            ],
+          },
+          {
+            id: "g-suggest",
+            label: "人民建议管理",
+            icon: "ri-lightbulb-line",
+            children: [
+              { routeId: "suggestion-inbox", label: "建议线索归集", icon: "ri-inbox-line" },
+              { routeId: "collect-campaign", label: "线索建议征集活动", icon: "ri-survey-line" },
+              { routeId: "suggestion-handle", label: "线索建议受理", icon: "ri-todo-line" },
+              { routeId: "survey-manage", label: "民主评议与满意度测评", icon: "ri-star-smile-line" },
+            ],
+          },
+          {
+            id: "g-topic",
+            label: "议事协商管理",
+            icon: "ri-discuss-line",
+            children: [
+              { routeId: "topic-list", label: "议题发布管理", icon: "ri-file-text-line" },
+              { routeId: "topic-discuss", label: "讨论协商管理", icon: "ri-chat-3-line" },
+              { routeId: "topic-vote", label: "表决结果管理", icon: "ri-checkbox-multiple-line" },
+              { routeId: "resident-list", label: "村社居民人员管理", icon: "ri-group-line" },
+            ],
+          },
+          {
+            id: "g-resource",
+            label: "服务资源管理",
+            icon: "ri-map-pin-line",
+            children: [
+              { routeId: "facility-list", label: "设施资源管理", icon: "ri-building-line" },
+              { routeId: "force-list", label: "力量资源管理", icon: "ri-user-star-line" },
+            ],
+          },
+          {
+            id: "g-assist",
+            label: "特定群体服务（弱势群体帮扶）",
+            icon: "ri-hand-heart-line",
+            children: [
+              { routeId: "vulnerable-warehouse", label: "弱势群体帮扶专题数据仓", icon: "ri-database-2-line" },
+              { routeId: "aid-policy", label: "救助政策与社会救助资源", icon: "ri-article-line" },
+              { routeId: "foundation", label: "基金会救助信息", icon: "ri-funds-line" },
+              { routeId: "assist-record", label: "帮扶记录", icon: "ri-file-history-line" },
+              { routeId: "assist-track", label: "帮扶申请全流程跟踪", icon: "ri-route-line" },
+              { routeId: "assist-stats", label: "帮扶数据统计", icon: "ri-bar-chart-2-line" },
+            ],
+          },
+        ],
+      },
+    ];
+
+    const Pages = {};
+    const DEFAULT_ROUTE = "notice-list";
+    let _currentRouteId = null;
+    const _menuCollapsed = {};
+
+    function collectRouteIds(nodes, out) {
+      out = out || [];
+      (nodes || []).forEach(function (n) {
+        if (n.routeId) out.push(n.routeId);
+        if (n.children) collectRouteIds(n.children, out);
+      });
+      return out;
+    }
+
+    function findMenuPath(nodes, routeId, trail) {
+      trail = trail || [];
+      for (let i = 0; i < (nodes || []).length; i++) {
+        const n = nodes[i];
+        const next = trail.concat([n]);
+        if (n.routeId === routeId) return next;
+        if (n.children) {
+          const found = findMenuPath(n.children, routeId, next);
+          if (found) return found;
+        }
+      }
+      return null;
+    }
+
+    function routeLabel(routeId) {
+      const path = findMenuPath(PC_MENU, routeId);
+      if (path && path.length) return path[path.length - 1].label || routeId;
+      return routeId;
+    }
+
+    function getPcIdentityOptions() {
+      const orgs = getAll(KEYS.orgs);
+      const depts = getAll(KEYS.depts);
+      const options = [];
+      const levelOrder = { city: 0, district: 1, town: 2, village: 3 };
+      const sorted = orgs.slice().sort(function (a, b) {
+        const la = levelOrder[a.level] != null ? levelOrder[a.level] : 9;
+        const lb = levelOrder[b.level] != null ? levelOrder[b.level] : 9;
+        if (la !== lb) return la - lb;
+        return String(a.name).localeCompare(String(b.name), "zh");
+      });
+      sorted.forEach(function (org) {
+        if (org.level === "town") {
+          depts
+            .filter(function (d) {
+              return d.orgId === org.id;
+            })
+            .forEach(function (d) {
+              options.push({
+                key: org.id + "|" + d.id,
+                label: org.name + " · " + d.name,
+                session: {
+                  orgId: org.id,
+                  userName: d.role === "center" ? "中心管理员" : d.name + "管理员",
+                  role: d.role || "department",
+                  deptId: d.id,
+                },
+              });
+            });
+        } else {
+          let userName = "管理员";
+          let role = "admin";
+          if (org.level === "city") {
+            userName = "市级管理员";
+            role = "city";
+          } else if (org.level === "district") {
+            userName = "区管理员";
+            role = "district";
+          } else if (org.level === "village") {
+            userName = "社区管理员";
+            role = "village";
+          }
+          options.push({
+            key: org.id,
+            label: org.name,
+            session: { orgId: org.id, userName: userName, role: role, deptId: null },
+          });
+        }
+      });
+      return options;
+    }
+
+    function sessionOptionKey(session) {
+      if (!session) return "";
+      if (session.deptId) return session.orgId + "|" + session.deptId;
+      return session.orgId || "";
+    }
+
+    function navigate(routeId) {
+      if (!routeId) routeId = DEFAULT_ROUTE;
+      const known = collectRouteIds(PC_MENU);
+      if (known.indexOf(routeId) < 0) routeId = DEFAULT_ROUTE;
+      _currentRouteId = routeId;
+      try {
+        sessionStorage.setItem("sws_pc_route", routeId);
+      } catch (e) { /* ignore */ }
+
+      // expand ancestor groups for current route
+      const path = findMenuPath(PC_MENU, routeId) || [];
+      path.forEach(function (n) {
+        if (n.id && n.children) _menuCollapsed[n.id] = false;
+      });
+
+      document.querySelectorAll(".pc-sidebar .menu-item[data-route]").forEach(function (el) {
+        if (el.getAttribute("data-route") === routeId) el.classList.add("active");
+        else el.classList.remove("active");
+      });
+      // re-render sidebar collapse state if shell already mounted
+      const side = document.getElementById("pc-sidebar");
+      if (side) renderSidebar(side);
+
+      const mount = document.getElementById("pc-content");
+      if (!mount) return;
+      mount.innerHTML = "";
+      const page = Pages[routeId];
+      if (typeof page === "function") {
+        page(mount);
+      } else {
+        mount.innerHTML =
+          '<div class="page-title">' +
+          escapeHtml(routeLabel(routeId)) +
+          "</div>" +
+          '<div class="page-card">页面开发中：' +
+          escapeHtml(routeId) +
+          "</div>";
+      }
+    }
+
+    function renderSidebarMenuNodes(nodes, depth) {
+      depth = depth || 0;
+      let html = "";
+      (nodes || []).forEach(function (node) {
+        if (node.routeId) {
+          html +=
+            '<div class="menu-item depth-' +
+            depth +
+            '" data-route="' +
+            escapeHtml(node.routeId) +
+            '">' +
+            (node.icon ? '<i class="' + escapeHtml(node.icon) + '"></i>' : "") +
+            '<span>' +
+            escapeHtml(node.label) +
+            "</span></div>";
+          return;
+        }
+        if (node.children) {
+          const collapsed = !!_menuCollapsed[node.id];
+          if (depth === 0) {
+            html +=
+              '<div class="menu-group' +
+              (collapsed ? " collapsed" : "") +
+              '" data-group="' +
+              escapeHtml(node.id) +
+              '">' +
+              '<div class="menu-group-head" data-toggle-group="' +
+              escapeHtml(node.id) +
+              '">' +
+              (node.icon ? '<i class="' + escapeHtml(node.icon) + '"></i>' : "") +
+              "<span>" +
+              escapeHtml(node.label) +
+              '</span><i class="ri-arrow-down-s-line arrow"></i></div>' +
+              '<div class="menu-group-body">' +
+              renderSidebarMenuNodes(node.children, depth + 1) +
+              "</div></div>";
+          } else {
+            html +=
+              '<div class="menu-subgroup' +
+              (collapsed ? " collapsed" : "") +
+              '" data-group="' +
+              escapeHtml(node.id) +
+              '">' +
+              '<div class="menu-subhead" data-toggle-group="' +
+              escapeHtml(node.id) +
+              '">' +
+              (node.icon ? '<i class="' + escapeHtml(node.icon) + '"></i>' : "") +
+              "<span>" +
+              escapeHtml(node.label) +
+              '</span><i class="ri-arrow-down-s-line arrow"></i></div>' +
+              '<div class="menu-sub-body">' +
+              renderSidebarMenuNodes(node.children, depth + 1) +
+              "</div></div>";
+          }
+        }
+      });
+      return html;
+    }
+
+    function renderSidebar(container) {
+      if (!container) return;
+      container.innerHTML =
+        '<div class="menu-group-title">社会工作服务</div>' + renderSidebarMenuNodes(PC_MENU, 0);
+
+      // restore active
+      if (_currentRouteId) {
+        container.querySelectorAll(".menu-item[data-route]").forEach(function (el) {
+          if (el.getAttribute("data-route") === _currentRouteId) el.classList.add("active");
+        });
+      }
+
+      container.querySelectorAll("[data-toggle-group]").forEach(function (el) {
+        el.addEventListener("click", function (e) {
+          e.stopPropagation();
+          const gid = el.getAttribute("data-toggle-group");
+          _menuCollapsed[gid] = !_menuCollapsed[gid];
+          renderSidebar(container);
+        });
+      });
+      container.querySelectorAll(".menu-item[data-route]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          navigate(el.getAttribute("data-route"));
+        });
+      });
+    }
+
+    function renderShell() {
+      ensureSeed(false);
+      if (!getPcSession()) {
+        setPcSession({
+          orgId: "org_cx",
+          userName: "中心管理员",
+          role: "center",
+          deptId: "dept_center",
+        });
+      }
+
+      const identities = getPcIdentityOptions();
+      const session = getPcSession() || {};
+      let selKey = sessionOptionKey(session);
+      const hasKey = identities.some(function (o) {
+        return o.key === selKey;
+      });
+      if (!hasKey && identities.length) {
+        selKey = identities[0].key;
+        setPcSession(identities[0].session);
+      }
+      const liveSession = getPcSession() || session;
+
+      let topHtml = "";
+      TOP_MENUS.forEach(function (m) {
+        topHtml +=
+          '<div class="nav-item' +
+          (m.id === "sws" ? " active" : "") +
+          '" data-top="' +
+          escapeHtml(m.id) +
+          '">' +
+          escapeHtml(m.label) +
+          "</div>";
+      });
+
+      let orgOpts = "";
+      identities.forEach(function (o) {
+        orgOpts +=
+          '<option value="' +
+          escapeHtml(o.key) +
+          '"' +
+          (o.key === selKey ? " selected" : "") +
+          ">" +
+          escapeHtml(o.label) +
+          "</option>";
+      });
+
       const app = document.getElementById("app");
       app.innerHTML =
         '<header class="pc-header">' +
         '<div class="logo">金华市基层智治综合应用 -智治系统</div>' +
-        '<div class="nav-item">首页</div>' +
-        '<div class="nav-item active">社会工作服务</div>' +
-        '<div class="nav-item" data-demo-nav="other">应急管理指挥</div>' +
-        '<div class="header-right"><span>XHD（测试账号）</span><span>城西街道</span></div>' +
-        "</header>" +
+        topHtml +
+        '<div class="header-right">' +
+        '<i class="ri-notification-3-line" title="消息"></i>' +
+        "<span id=\"pc-user-name\">" +
+        escapeHtml(liveSession.userName || "XHD（测试账号）") +
+        "</span>" +
+        '<select class="form-control" id="pc-org-switcher" title="当前组织">' +
+        orgOpts +
+        "</select>" +
+        "</div></header>" +
         '<div class="pc-body">' +
-        '<aside class="pc-sidebar">' +
-        '<div class="menu-group-title">社会工作服务</div>' +
-        '<div class="menu-item active"><i class="ri-megaphone-line"></i>通知公告</div>' +
-        '<div class="menu-item"><i class="ri-calendar-event-line"></i>活动管理</div>' +
-        '<div class="menu-item"><i class="ri-service-line"></i>服务事项</div>' +
-        "</aside>" +
-        '<main class="pc-main" id="pc-main">' +
-        '<div class="page-title">通知公告（UI Kit 演示）</div>' +
-        '<div class="filter-card">' +
-        '<div class="filter-row">' +
-        '<div class="filter-item"><label>标题</label><input class="form-control" id="demo-title" placeholder="请输入标题" /></div>' +
-        '<div class="filter-item"><label>状态</label>' +
-        '<select class="form-control" id="demo-status">' +
-        '<option value="">全部</option>' +
-        '<option value="published">已发布</option>' +
-        '<option value="draft">草稿</option>' +
-        "</select></div>" +
-        '<div class="filter-actions">' +
-        '<button type="button" class="btn btn-primary" id="demo-query">查询</button>' +
-        '<button type="button" class="btn btn-default" id="demo-reset">重置</button>' +
-        "</div></div></div>" +
-        '<div class="toolbar">' +
-        '<button type="button" class="btn btn-success" id="demo-add"><i class="ri-add-line"></i> 新增</button>' +
-        "</div>" +
-        '<div id="demo-table"></div>' +
-        '<div class="table-footer"><span>共 5 条</span></div>' +
-        "</main></div>";
+        '<aside class="pc-sidebar" id="pc-sidebar"></aside>' +
+        '<main class="pc-main"><div id="pc-content"></div></main>' +
+        "</div>";
 
-      const demoRows = [
-        { id: "1", title: "关于开展夏季防汛安全检查的通知", orgName: "金华市", status: "已发布", createdAt: "2026-07-20" },
-        { id: "2", title: "婺城区文明创建工作推进会纪要", orgName: "婺城区", status: "已发布", createdAt: "2026-07-21" },
-        { id: "3", title: "城西街道燃气安全排查公告", orgName: "城西街道", status: "已发布", createdAt: "2026-07-22" },
-        { id: "4", title: "幸福社区垃圾分类宣讲会通知", orgName: "幸福社区", status: "已发布", createdAt: "2026-07-22" },
-        { id: "5", title: "社会工作服务平台试运行公告（草稿）", orgName: "城西街道", status: "草稿", createdAt: "2026-07-23" },
-      ];
-
-      function statusTag(s) {
-        if (s === "已发布") return '<span class="tag tag-green">已发布</span>';
-        if (s === "草稿") return '<span class="tag tag-orange">草稿</span>';
-        return '<span class="tag">' + escapeHtml(s) + "</span>";
-      }
-
-      function formBody(row, readonly) {
-        const r = row || {};
-        const dis = readonly ? " disabled" : "";
-        return (
-          '<div class="form-section-title">基本信息</div>' +
-          '<div class="form-grid">' +
-          '<div class="form-field full"><label><span class="req">*</span>标题</label>' +
-          '<input class="form-control" name="title" value="' +
-          escapeHtml(r.title || "") +
-          '"' +
-          dis +
-          ' placeholder="请输入标题" /></div>' +
-          '<div class="form-field"><label>发布层级</label>' +
-          '<input class="form-control" name="orgName" value="' +
-          escapeHtml(r.orgName || "城西街道") +
-          '"' +
-          dis +
-          " /></div>" +
-          '<div class="form-field"><label>状态</label>' +
-          '<select class="form-control" name="status"' +
-          dis +
-          ">" +
-          '<option value="草稿"' +
-          (r.status === "草稿" ? " selected" : "") +
-          ">草稿</option>" +
-          '<option value="已发布"' +
-          (r.status === "已发布" || !r.status ? " selected" : "") +
-          ">已发布</option>" +
-          "</select></div>" +
-          '<div class="form-field full"><label>内容</label>' +
-          '<textarea class="form-control" name="content" rows="4"' +
-          dis +
-          ' placeholder="请输入内容">' +
-          escapeHtml(r.content || "") +
-          "</textarea></div>" +
-          "</div>"
-        );
-      }
-
-      function refreshTable(list) {
-        renderTable(document.getElementById("demo-table"), {
-          columns: [
-            { key: "title", title: "标题", width: "36%" },
-            { key: "orgName", title: "发布层级", width: "14%" },
-            {
-              key: "status",
-              title: "状态",
-              width: "12%",
-              render: function (row) {
-                return statusTag(row.status);
-              },
-            },
-            { key: "createdAt", title: "创建时间", width: "14%" },
-          ],
-          rows: list,
-          rowActions: function (row) {
-            return [
-              {
-                label: "查看",
-                onClick: function () {
-                  openDrawer({
-                    title: "查看通知公告",
-                    mode: "view",
-                    bodyHtml: formBody(row, true),
-                  });
-                },
-              },
-              {
-                label: "编辑",
-                onClick: function () {
-                  openDrawer({
-                    title: "编辑通知公告",
-                    mode: "edit",
-                    bodyHtml: formBody(row, false),
-                    onSubmit: function () {
-                      toast("已提交（演示）", "success");
-                    },
-                  });
-                },
-              },
-              {
-                label: "删除",
-                onClick: function () {
-                  confirmDialog({
-                    title: "删除确认",
-                    content: "确定删除「" + row.title + "」吗？删除后不可恢复。",
-                    onOk: function () {
-                      toast("已删除（演示）");
-                    },
-                  });
-                },
-              },
-            ];
-          },
-        });
-      }
-
-      refreshTable(demoRows);
-
-      document.getElementById("demo-query").addEventListener("click", function () {
-        const kw = (document.getElementById("demo-title").value || "").trim();
-        const st = document.getElementById("demo-status").value;
-        const filtered = demoRows.filter(function (r) {
-          if (kw && r.title.indexOf(kw) < 0) return false;
-          if (st === "published" && r.status !== "已发布") return false;
-          if (st === "draft" && r.status !== "草稿") return false;
-          return true;
-        });
-        refreshTable(filtered);
-        toast("查询完成，共 " + filtered.length + " 条");
-      });
-      document.getElementById("demo-reset").addEventListener("click", function () {
-        document.getElementById("demo-title").value = "";
-        document.getElementById("demo-status").value = "";
-        refreshTable(demoRows);
-        toast("已重置");
-      });
-      document.getElementById("demo-add").addEventListener("click", function () {
-        openDrawer({
-          title: "新增通知公告",
-          mode: "create",
-          bodyHtml: formBody(null, false),
-          onSubmit: function () {
-            const input = document.querySelector("#sws-drawer input[name=title]");
-            if (input && !String(input.value || "").trim()) {
-              toast("请填写标题", "warning");
-              return false;
-            }
-            toast("提交成功（演示）", "success");
-          },
+      // top menus
+      app.querySelectorAll(".nav-item[data-top]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          const id = el.getAttribute("data-top");
+          const item = TOP_MENUS.find(function (m) {
+            return m.id === id;
+          });
+          if (!item || !item.enabled) {
+            toast("本演示仅开放社会工作服务");
+            return;
+          }
+          // already on sws
+          el.classList.add("active");
         });
       });
-      const otherNav = app.querySelector('[data-demo-nav="other"]');
-      if (otherNav) {
-        otherNav.addEventListener("click", function () {
-          toast("本演示仅开放社会工作服务");
+
+      // org switcher
+      const sel = document.getElementById("pc-org-switcher");
+      if (sel) {
+        sel.addEventListener("change", function () {
+          const key = sel.value;
+          const opt = identities.find(function (o) {
+            return o.key === key;
+          });
+          if (!opt) return;
+          setPcSession(opt.session);
+          const nameEl = document.getElementById("pc-user-name");
+          if (nameEl) nameEl.textContent = opt.session.userName || "";
+          toast("已切换至 " + opt.label, "success");
+          navigate(_currentRouteId || DEFAULT_ROUTE);
         });
       }
+
+      // default collapse: expand all top groups initially
+      PC_MENU.forEach(function (g) {
+        if (g.id && _menuCollapsed[g.id] === undefined) _menuCollapsed[g.id] = false;
+        (g.children || []).forEach(function (c) {
+          if (c.id && c.children && _menuCollapsed[c.id] === undefined) {
+            _menuCollapsed[c.id] = false;
+          }
+        });
+      });
+
+      renderSidebar(document.getElementById("pc-sidebar"));
+
+      let route = DEFAULT_ROUTE;
+      try {
+        route = sessionStorage.getItem("sws_pc_route") || DEFAULT_ROUTE;
+      } catch (e) { /* ignore */ }
+      navigate(route);
     }
 
     ensureSeed(false);
-    console.log("notices", (storageGet(KEYS.notices) || []).length);
-    console.log("assistApplications", (storageGet(KEYS.assistApplications) || []).length);
-    console.log("activities", (storageGet(KEYS.activities) || []).length);
-    console.log("orgs", (storageGet(KEYS.orgs) || []).length);
-    console.log("residents", (storageGet(KEYS.residents) || []).length);
-    renderUiKitDemo();
+    renderShell();
   </script>
 </body>
 </html>
