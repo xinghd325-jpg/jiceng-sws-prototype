@@ -36,8 +36,540 @@
 <body>
   <div id="app">PC 骨架加载中</div>
   <script>
-    /* === sections filled in later tasks === */
-    document.getElementById("app").textContent = "社会工作服务 PC 原型骨架 OK";
+    /* ========== Seed + Storage ========== */
+    const STORE_PREFIX = "sws_v1_";
+    const KEYS = {
+      meta: STORE_PREFIX + "meta",
+      orgs: STORE_PREFIX + "orgs",
+      depts: STORE_PREFIX + "depts",
+      pcSession: STORE_PREFIX + "session_pc",
+      h5Session: STORE_PREFIX + "session_h5",
+      residents: STORE_PREFIX + "residents",
+      notices: STORE_PREFIX + "notices",
+      activities: STORE_PREFIX + "activities",
+      activitySignups: STORE_PREFIX + "activity_signups",
+      affairs: STORE_PREFIX + "affairs",
+      serviceItems: STORE_PREFIX + "service_items",
+      suggestionInbox: STORE_PREFIX + "suggestion_inbox",
+      collectCampaigns: STORE_PREFIX + "collect_campaigns",
+      suggestions: STORE_PREFIX + "suggestions",
+      surveys: STORE_PREFIX + "surveys",
+      surveyAnswers: STORE_PREFIX + "survey_answers",
+      topics: STORE_PREFIX + "topics",
+      topicComments: STORE_PREFIX + "topic_comments",
+      topicVotes: STORE_PREFIX + "topic_votes",
+      facilities: STORE_PREFIX + "facilities",
+      forces: STORE_PREFIX + "forces",
+      vulnerablePersons: STORE_PREFIX + "vulnerable_persons",
+      aidPolicies: STORE_PREFIX + "aid_policies",
+      foundations: STORE_PREFIX + "foundations",
+      assistRecords: STORE_PREFIX + "assist_records",
+      assistApplications: STORE_PREFIX + "assist_applications",
+      emergingObjects: STORE_PREFIX + "emerging_objects",
+      emergingParty: STORE_PREFIX + "emerging_party",
+      emergingGovernance: STORE_PREFIX + "emerging_governance",
+      baseVillage: STORE_PREFIX + "base_village",
+      baseConsult: STORE_PREFIX + "base_consult",
+      baseLists: STORE_PREFIX + "base_lists",
+      baseTeams: STORE_PREFIX + "base_teams",
+    };
+
+    function storageGet(key) {
+      const raw = localStorage.getItem(key);
+      if (raw == null) return null;
+      try { return JSON.parse(raw); } catch (e) { return null; }
+    }
+    function storageSet(key, value) {
+      localStorage.setItem(key, JSON.stringify(value));
+    }
+    function uid(prefix) {
+      return prefix + "_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 7);
+    }
+    function nowISO() {
+      return new Date().toISOString();
+    }
+
+    function buildSeed() {
+      const t = "2026-07-20T08:00:00.000Z";
+      const t2 = "2026-07-21T09:30:00.000Z";
+      const t3 = "2026-07-22T10:00:00.000Z";
+      const t4 = "2026-07-23T14:00:00.000Z";
+      const syncedAt = "2026-07-24T02:00:00.000Z";
+      const PROV = "省级统建回流";
+
+      const orgs = [
+        { id: "org_city", name: "金华市", level: "city", parentId: null, path: ["org_city"] },
+        { id: "org_wc", name: "婺城区", level: "district", parentId: "org_city", path: ["org_city", "org_wc"] },
+        { id: "org_cx", name: "城西街道", level: "town", parentId: "org_wc", path: ["org_city", "org_wc", "org_cx"] },
+        { id: "org_xf", name: "幸福社区", level: "village", parentId: "org_cx", path: ["org_city", "org_wc", "org_cx", "org_xf"] },
+        { id: "org_mf", name: "民丰社区", level: "village", parentId: "org_cx", path: ["org_city", "org_wc", "org_cx", "org_mf"] },
+        { id: "org_jd", name: "金东区", level: "district", parentId: "org_city", path: ["org_city", "org_jd"] },
+      ];
+      const depts = [
+        { id: "dept_center", orgId: "org_cx", name: "综合信息指挥室", role: "center" },
+        { id: "dept_mz", orgId: "org_cx", name: "民政办", role: "department" },
+        { id: "dept_sh", orgId: "org_cx", name: "社会事务办", role: "department" },
+      ];
+      const residents = [
+        { id: "res_001", name: "张先生", phone: "138****1001", idCard: "330702********1234", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", address: "幸福社区1幢101", status: "active", createdAt: t, updatedAt: t },
+        { id: "res_002", name: "李女士", phone: "139****2002", idCard: "330702********5678", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", address: "幸福社区2幢205", status: "active", createdAt: t, updatedAt: t },
+        { id: "res_003", name: "王大爷", phone: "137****3003", idCard: "330702********9012", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", address: "民丰社区3幢301", status: "active", createdAt: t2, updatedAt: t2 },
+      ];
+
+      const notices = [
+        { id: "ntc_001", title: "关于开展夏季防汛安全检查的通知", content: "请各社区做好防汛物资与隐患排查。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", scopeType: "all_children", createdAt: t, updatedAt: t, createdBy: "市级管理员", publishAt: t },
+        { id: "ntc_002", title: "婺城区文明创建工作推进会纪要", content: "各街道汇报创建进展并提出整改措施。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", scopeType: "all_children", createdAt: t2, updatedAt: t2, createdBy: "区管理员", publishAt: t2 },
+        { id: "ntc_003", title: "城西街道燃气安全排查公告", content: "即日起开展入户燃气安全检查。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", scopeType: "all_children", createdAt: t3, updatedAt: t3, createdBy: "中心管理员", publishAt: t3 },
+        { id: "ntc_004", title: "幸福社区垃圾分类宣讲会通知", content: "本周六上午9点在党群服务中心开展宣讲。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", scopeType: "all_children", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "ntc_005", title: "民丰社区暑期托管报名通知", content: "面向本社区学龄儿童开放暑期托管报名。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", scopeType: "all_children", createdAt: t4, updatedAt: t4, createdBy: "社区管理员", publishAt: t4 },
+        { id: "ntc_006", title: "社会工作服务平台试运行公告（草稿）", content: "平台试运行说明（未发布）。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "draft", scopeType: "all_children", createdAt: t4, updatedAt: t4, createdBy: "中心管理员" },
+        { id: "ntc_007", title: "城西街道残疾人两项补贴核查通知", content: "请符合条件的居民配合核查。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", scopeType: "all_children", createdAt: t2, updatedAt: t2, createdBy: "民政办", publishAt: t2 },
+        { id: "ntc_008", title: "金东区防溺水安全提示", content: "暑期请家长加强监护。", orgId: "org_jd", orgLevel: "district", orgName: "金东区", status: "offline", scopeType: "all_children", createdAt: t, updatedAt: t4, createdBy: "区管理员", publishAt: t },
+      ];
+
+      const activities = [
+        { id: "act_001", title: "城西街道邻里节趣味运动会", content: "趣味接力、拔河等项目，欢迎报名。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", scopeType: "all_children", scopeOrgIds: ["org_cx", "org_xf", "org_mf"], signupStart: "2026-07-15T00:00:00.000Z", signupEnd: "2026-08-15T23:59:59.000Z", startAt: "2026-08-20T08:00:00.000Z", endAt: "2026-08-20T12:00:00.000Z", place: "城西市民广场", maxSignups: 100, createdAt: t, updatedAt: t, createdBy: "中心管理员", publishAt: t },
+        { id: "act_002", title: "幸福社区志愿清扫日", content: "清理楼道小广告与绿化带。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", scopeType: "org", scopeOrgIds: ["org_xf"], signupStart: "2026-07-10T00:00:00.000Z", signupEnd: "2026-07-25T23:59:59.000Z", startAt: "2026-07-26T08:00:00.000Z", endAt: "2026-07-26T11:00:00.000Z", place: "幸福社区党群服务中心门口", maxSignups: 30, createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "act_003", title: "民丰社区亲子阅读会", content: "亲子共读与绘本分享。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", scopeType: "org", scopeOrgIds: ["org_mf"], signupStart: "2026-07-01T00:00:00.000Z", signupEnd: "2026-07-18T23:59:59.000Z", startAt: "2026-07-19T14:00:00.000Z", endAt: "2026-07-19T16:00:00.000Z", place: "民丰图书室", maxSignups: 20, createdAt: t, updatedAt: t3, createdBy: "社区管理员", publishAt: t },
+        { id: "act_004", title: "婺城区急救知识公益讲座", content: "心肺复苏与止血包扎演示。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", scopeType: "all_children", scopeOrgIds: [], signupStart: "2026-07-20T00:00:00.000Z", signupEnd: "2026-08-01T23:59:59.000Z", startAt: "2026-08-05T09:00:00.000Z", endAt: "2026-08-05T11:00:00.000Z", place: "婺城区文化中心", maxSignups: 80, createdAt: t3, updatedAt: t3, createdBy: "区管理员", publishAt: t3 },
+        { id: "act_005", title: "城西街道反诈宣传进小区", content: "反诈手册发放与案例讲解。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "draft", scopeType: "all_children", scopeOrgIds: [], signupStart: null, signupEnd: null, startAt: "2026-08-10T09:00:00.000Z", endAt: "2026-08-10T11:00:00.000Z", place: "各社区巡回", maxSignups: 50, createdAt: t4, updatedAt: t4, createdBy: "社会事务办" },
+        { id: "act_006", title: "金华市社会工作服务开放日", content: "市级示范活动（已结束）。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "ended", scopeType: "all_children", scopeOrgIds: [], signupStart: "2026-06-01T00:00:00.000Z", signupEnd: "2026-06-20T23:59:59.000Z", startAt: "2026-06-25T09:00:00.000Z", endAt: "2026-06-25T17:00:00.000Z", place: "市市民中心", maxSignups: 200, createdAt: t, updatedAt: t2, createdBy: "市级管理员", publishAt: t },
+        { id: "act_007", title: "幸福社区端午包粽子活动", content: "已下架的历史活动。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "offline", scopeType: "org", scopeOrgIds: ["org_xf"], signupStart: "2026-05-20T00:00:00.000Z", signupEnd: "2026-05-28T23:59:59.000Z", startAt: "2026-05-30T09:00:00.000Z", endAt: "2026-05-30T12:00:00.000Z", place: "幸福社区食堂", maxSignups: 40, createdAt: t, updatedAt: t, createdBy: "社区管理员", publishAt: t },
+      ];
+
+      const activitySignups = [
+        { id: "asg_001", activityId: "act_001", userId: "res_001", userName: "张先生", phone: "138****1001", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t3, updatedAt: t3 },
+        { id: "asg_002", activityId: "act_001", userId: "res_002", userName: "李女士", phone: "139****2002", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t3, updatedAt: t3 },
+        { id: "asg_003", activityId: "act_002", userId: "res_001", userName: "张先生", phone: "138****1001", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t2, updatedAt: t2 },
+        { id: "asg_004", activityId: "act_003", userId: "res_003", userName: "王大爷", phone: "137****3003", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "submitted", createdAt: t, updatedAt: t },
+        { id: "asg_005", activityId: "act_004", userId: "res_002", userName: "李女士", phone: "139****2002", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t4, updatedAt: t4 },
+      ];
+
+      const affairs = [
+        { id: "afr_001", title: "幸福社区党支部七月学习记录", type: "party", content: "学习二十届三中全会精神要点。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t, updatedAt: t, createdBy: "社区管理员", publishAt: t },
+        { id: "afr_002", title: "幸福社区七月份村务公开", type: "village", content: "环境整治、停车管理等事项公开。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "afr_003", title: "幸福社区二季度财务公开", type: "finance", content: "收入支出明细汇总。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "afr_004", title: "民丰社区党员活动日纪要", type: "party", content: "主题党日活动情况。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "afr_005", title: "民丰社区物业服务考核结果", type: "village", content: "上半年物业考核结果公示。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "afr_006", title: "民丰社区一季度财务公开", type: "finance", content: "一季度收支明细。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", createdAt: t, updatedAt: t, createdBy: "社区管理员", publishAt: t },
+        { id: "afr_007", title: "幸福社区党费收缴情况（草稿）", type: "party", content: "待核对后发布。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "draft", createdAt: t4, updatedAt: t4, createdBy: "社区管理员" },
+      ];
+
+      const serviceItems = [
+        { id: "svc_001", title: "高龄津贴申请", category: "民政服务", desc: "80周岁以上老年人高龄津贴办理指引。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", createdAt: t, updatedAt: t, createdBy: "市级管理员", publishAt: t },
+        { id: "svc_002", title: "最低生活保障咨询", category: "民政服务", desc: "低保申请条件与材料清单。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "区管理员", publishAt: t2 },
+        { id: "svc_003", title: "残疾人证换发", category: "残联服务", desc: "残疾人证到期换发流程。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t3, updatedAt: t3, createdBy: "民政办", publishAt: t3 },
+        { id: "svc_004", title: "社区养老助餐", category: "养老服务", desc: "幸福社区助餐点服务时间与价格。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "svc_005", title: "就业援助岗位对接", category: "就业服务", desc: "困难人员就业岗位推荐。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t4, updatedAt: t4, createdBy: "社会事务办", publishAt: t4 },
+        { id: "svc_006", title: "婚姻登记预约指引", category: "民政服务", desc: "线上预约入口与材料说明。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", createdAt: t, updatedAt: t, createdBy: "市级管理员", publishAt: t },
+        { id: "svc_007", title: "临时救助政策解读（草稿）", category: "民政服务", desc: "内部草稿。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "draft", createdAt: t4, updatedAt: t4, createdBy: "民政办" },
+        { id: "svc_008", title: "金东区居家适老化改造", category: "养老服务", desc: "适老化改造申请条件。", orgId: "org_jd", orgLevel: "district", orgName: "金东区", status: "offline", createdAt: t, updatedAt: t2, createdBy: "区管理员", publishAt: t },
+      ];
+
+      const suggestionInbox = [
+        { id: "sin_001", title: "城西菜市场周边交通拥堵", content: "高峰期拥堵严重，建议优化通行。", source: "归集线索", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "pending", createdAt: t, updatedAt: t, createdBy: "系统归集" },
+        { id: "sin_002", title: "幸福路路灯不亮", content: "3-5号灯杆夜间不亮。", source: "归集线索", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "accepted", createdAt: t2, updatedAt: t3, createdBy: "系统归集" },
+        { id: "sin_003", title: "民丰河沟异味", content: "河沟近期有异味。", source: "归集线索", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "pending", createdAt: t3, updatedAt: t3, createdBy: "系统归集" },
+        { id: "sin_004", title: "广场舞音量过大投诉", content: "晚间音量影响休息。", source: "归集线索", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "closed", createdAt: t, updatedAt: t4, createdBy: "系统归集" },
+        { id: "sin_005", title: "共享单车乱停放", content: "地铁口周边乱停。", source: "归集线索", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "rejected", createdAt: t2, updatedAt: t3, createdBy: "系统归集", rejectReason: "非本板块职责" },
+        { id: "sin_006", title: "充电桩排队过长", content: "小区充电桩不足。", source: "归集线索", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "pending", createdAt: t4, updatedAt: t4, createdBy: "系统归集" },
+      ];
+
+      const collectCampaigns = [
+        { id: "cmp_001", title: "城西街道民生实事征集", desc: "面向居民征集2026年民生实事建议。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "open", scopeType: "all_children", scopeOrgIds: ["org_cx", "org_xf", "org_mf"], startAt: "2026-07-01T00:00:00.000Z", endAt: "2026-08-31T23:59:59.000Z", createdAt: t, updatedAt: t, createdBy: "中心管理员", publishAt: t },
+        { id: "cmp_002", title: "幸福社区物业服务满意度征集", desc: "请对本社区物业服务提出意见。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "open", scopeType: "org", scopeOrgIds: ["org_xf"], startAt: "2026-07-10T00:00:00.000Z", endAt: "2026-07-31T23:59:59.000Z", createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "cmp_003", title: "婺城区老旧小区改造意见征集", desc: "改造内容征集。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "closed", scopeType: "all_children", scopeOrgIds: [], startAt: "2026-05-01T00:00:00.000Z", endAt: "2026-06-30T23:59:59.000Z", createdAt: t, updatedAt: t3, createdBy: "区管理员", publishAt: t },
+        { id: "cmp_004", title: "城西街道文明创建金点子（草稿）", desc: "未发布。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "draft", scopeType: "all_children", scopeOrgIds: [], startAt: null, endAt: null, createdAt: t4, updatedAt: t4, createdBy: "社会事务办" },
+        { id: "cmp_005", title: "民丰社区公共空间改造征集", desc: "公共空间用途意见。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "open", scopeType: "org", scopeOrgIds: ["org_mf"], startAt: "2026-07-15T00:00:00.000Z", endAt: "2026-08-15T23:59:59.000Z", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "cmp_006", title: "金华市社会治理创新案例征集", desc: "市级案例征集。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "closed", scopeType: "all_children", scopeOrgIds: [], startAt: "2026-03-01T00:00:00.000Z", endAt: "2026-04-30T23:59:59.000Z", createdAt: t, updatedAt: t2, createdBy: "市级管理员", publishAt: t },
+      ];
+
+      const suggestions = [
+        { id: "sug_001", campaignId: "cmp_001", userId: "res_001", userName: "张先生", title: "增设社区便民充电点", content: "建议在党群服务中心增设公共充电点。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t3, updatedAt: t3 },
+        { id: "sug_002", campaignId: "cmp_001", userId: "res_002", userName: "李女士", title: "优化夜间公交末班时间", content: "末班车偏早，建议延长。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "accepted", createdAt: t3, updatedAt: t4, handleRemark: "已转交通部门研究" },
+        { id: "sug_003", campaignId: "cmp_002", userId: "res_001", userName: "张先生", title: "加强楼道消杀", content: "建议每周消杀。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "processing", createdAt: t2, updatedAt: t4 },
+        { id: "sug_004", campaignId: "cmp_002", userId: "res_002", userName: "李女士", title: "增设快递柜", content: "北区快递柜不够用。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "done", createdAt: t2, updatedAt: t4, handleRemark: "已协调增设1组" },
+        { id: "sug_005", campaignId: null, userId: "res_003", userName: "王大爷", title: "修复健身器材", content: "广场部分器材损坏。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "submitted", createdAt: t4, updatedAt: t4 },
+        { id: "sug_006", campaignId: "cmp_005", userId: "res_003", userName: "王大爷", title: "增加遮阳座椅", content: "公共空间建议增加座椅。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "rejected", createdAt: t3, updatedAt: t4, handleRemark: "与总体规划不符" },
+        { id: "sug_007", campaignId: "cmp_001", userId: "res_001", userName: "张先生", title: "增设母婴室", content: "建议在服务中心增设母婴室。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "processing", createdAt: t4, updatedAt: t4 },
+      ];
+
+      const surveys = [
+        { id: "srv_001", title: "城西街道公共服务满意度测评", desc: "请对本街道公共服务打分。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "open", scopeType: "all_children", scopeOrgIds: ["org_cx", "org_xf", "org_mf"], questions: [{ id: "q1", type: "score", label: "整体满意度(1-5)" }, { id: "q2", type: "text", label: "改进建议" }], startAt: "2026-07-01T00:00:00.000Z", endAt: "2026-08-31T23:59:59.000Z", createdAt: t, updatedAt: t, createdBy: "中心管理员", publishAt: t },
+        { id: "srv_002", title: "幸福社区物业服务评议", desc: "对本社区物业服务评议。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "open", scopeType: "org", scopeOrgIds: ["org_xf"], questions: [{ id: "q1", type: "score", label: "保洁质量" }, { id: "q2", type: "score", label: "安保质量" }], startAt: "2026-07-10T00:00:00.000Z", endAt: "2026-07-31T23:59:59.000Z", createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "srv_003", title: "婺城区政务服务体验调查", desc: "窗口服务体验。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "closed", scopeType: "all_children", scopeOrgIds: [], questions: [{ id: "q1", type: "score", label: "办事效率" }], startAt: "2026-05-01T00:00:00.000Z", endAt: "2026-06-15T23:59:59.000Z", createdAt: t, updatedAt: t3, createdBy: "区管理员", publishAt: t },
+        { id: "srv_004", title: "民丰社区环境整治满意度", desc: "环境整治效果评议。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "open", scopeType: "org", scopeOrgIds: ["org_mf"], questions: [{ id: "q1", type: "score", label: "整洁度" }], startAt: "2026-07-15T00:00:00.000Z", endAt: "2026-08-15T23:59:59.000Z", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "srv_005", title: "城西街道反诈宣传效果测评（草稿）", desc: "未发布。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "draft", scopeType: "all_children", scopeOrgIds: [], questions: [{ id: "q1", type: "text", label: "收获" }], startAt: null, endAt: null, createdAt: t4, updatedAt: t4, createdBy: "社会事务办" },
+        { id: "srv_006", title: "金华市社会工作服务知晓度调查", desc: "市级知晓度。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "closed", scopeType: "all_children", scopeOrgIds: [], questions: [{ id: "q1", type: "score", label: "知晓程度" }], startAt: "2026-04-01T00:00:00.000Z", endAt: "2026-04-30T23:59:59.000Z", createdAt: t, updatedAt: t2, createdBy: "市级管理员", publishAt: t },
+      ];
+
+      const surveyAnswers = [
+        { id: "ans_001", surveyId: "srv_001", userId: "res_001", userName: "张先生", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", answers: { q1: 4, q2: "希望增加夜间服务" }, status: "submitted", createdAt: t3, updatedAt: t3 },
+        { id: "ans_002", surveyId: "srv_001", userId: "res_002", userName: "李女士", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", answers: { q1: 5, q2: "整体不错" }, status: "submitted", createdAt: t3, updatedAt: t3 },
+        { id: "ans_003", surveyId: "srv_002", userId: "res_001", userName: "张先生", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", answers: { q1: 3, q2: 4 }, status: "submitted", createdAt: t4, updatedAt: t4 },
+        { id: "ans_004", surveyId: "srv_004", userId: "res_003", userName: "王大爷", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", answers: { q1: 4 }, status: "submitted", createdAt: t4, updatedAt: t4 },
+        { id: "ans_005", surveyId: "srv_003", userId: "res_002", userName: "李女士", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", answers: { q1: 4 }, status: "submitted", createdAt: t2, updatedAt: t2 },
+      ];
+
+      const topics = [
+        { id: "top_001", title: "幸福社区停车位改造方案表决", content: "拟将北侧空地改建为停车位，请居民讨论并表决。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "voting", options: [{ id: "opt_a", label: "同意改建" }, { id: "opt_b", label: "不同意" }, { id: "opt_c", label: "改扩建其他位置" }], discussStart: "2026-07-10T00:00:00.000Z", voteStart: "2026-07-20T00:00:00.000Z", voteEnd: "2026-07-30T23:59:59.000Z", createdAt: t2, updatedAt: t3, createdBy: "社区管理员", publishAt: t2 },
+        { id: "top_002", title: "民丰社区健身器材更新讨论", content: "是否更新老旧健身器材。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "discussing", options: [{ id: "opt_a", label: "全部更新" }, { id: "opt_b", label: "部分更新" }, { id: "opt_c", label: "暂不更新" }], discussStart: "2026-07-15T00:00:00.000Z", voteStart: null, voteEnd: null, createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "top_003", title: "幸福社区业委会换届选举议题", content: "换届选举相关安排（已关闭）。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "closed", options: [{ id: "opt_a", label: "按期换届" }, { id: "opt_b", label: "延期" }], discussStart: "2026-05-01T00:00:00.000Z", voteStart: "2026-05-15T00:00:00.000Z", voteEnd: "2026-05-25T23:59:59.000Z", createdAt: t, updatedAt: t2, createdBy: "社区管理员", publishAt: t },
+        { id: "top_004", title: "民丰社区绿化提升方案", content: "绿化提升草案（草稿）。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "draft", options: [{ id: "opt_a", label: "方案一" }, { id: "opt_b", label: "方案二" }], discussStart: null, voteStart: null, voteEnd: null, createdAt: t4, updatedAt: t4, createdBy: "社区管理员" },
+        { id: "top_005", title: "幸福社区公共晾晒区设置", content: "是否设置公共晾晒区。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "discussing", options: [{ id: "opt_a", label: "设置" }, { id: "opt_b", label: "不设置" }], discussStart: "2026-07-18T00:00:00.000Z", voteStart: null, voteEnd: null, createdAt: t4, updatedAt: t4, createdBy: "社区管理员", publishAt: t4 },
+        { id: "top_006", title: "民丰社区宠物管理公约", content: "宠物管理公约表决（已关闭）。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "closed", options: [{ id: "opt_a", label: "赞成" }, { id: "opt_b", label: "反对" }], discussStart: "2026-06-01T00:00:00.000Z", voteStart: "2026-06-10T00:00:00.000Z", voteEnd: "2026-06-20T23:59:59.000Z", createdAt: t, updatedAt: t2, createdBy: "社区管理员", publishAt: t },
+      ];
+
+      const topicComments = [
+        { id: "tcm_001", topicId: "top_001", userId: "res_001", userName: "张先生", content: "赞成，停车确实紧张。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", createdAt: t3, updatedAt: t3 },
+        { id: "tcm_002", topicId: "top_001", userId: "res_002", userName: "李女士", content: "注意保留消防通道。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", createdAt: t3, updatedAt: t3 },
+        { id: "tcm_003", topicId: "top_002", userId: "res_003", userName: "王大爷", content: "器材坏了很久了，希望尽快更新。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", createdAt: t4, updatedAt: t4 },
+        { id: "tcm_004", topicId: "top_005", userId: "res_001", userName: "张先生", content: "公共晾晒区可以减少高空抛物风险。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", createdAt: t4, updatedAt: t4 },
+        { id: "tcm_005", topicId: "top_003", userId: "res_002", userName: "李女士", content: "建议按期换届。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", createdAt: t2, updatedAt: t2 },
+      ];
+
+      const topicVotes = [
+        { id: "tvt_001", topicId: "top_001", userId: "res_001", userName: "张先生", optionId: "opt_a", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t4, updatedAt: t4 },
+        { id: "tvt_002", topicId: "top_001", userId: "res_002", userName: "李女士", optionId: "opt_c", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t4, updatedAt: t4 },
+        { id: "tvt_003", topicId: "top_003", userId: "res_001", userName: "张先生", optionId: "opt_a", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t2, updatedAt: t2 },
+        { id: "tvt_004", topicId: "top_003", userId: "res_002", userName: "李女士", optionId: "opt_a", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "submitted", createdAt: t2, updatedAt: t2 },
+        { id: "tvt_005", topicId: "top_006", userId: "res_003", userName: "王大爷", optionId: "opt_a", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "submitted", createdAt: t2, updatedAt: t2 },
+      ];
+
+      const facilities = [
+        { id: "fac_001", name: "幸福社区党群服务中心", type: "党群服务", address: "幸福路1号", openTime: "工作日 8:30-17:30", contact: "0579-8***1001", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t, updatedAt: t, createdBy: "社区管理员", publishAt: t },
+        { id: "fac_002", name: "城西街道社区卫生服务中心", type: "医疗卫生", address: "城西大道88号", openTime: "全天", contact: "0579-8***2002", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t, updatedAt: t, createdBy: "中心管理员", publishAt: t },
+        { id: "fac_003", name: "民丰社区老年食堂", type: "养老服务", address: "民丰路16号", openTime: "11:00-13:00", contact: "0579-8***3003", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "fac_004", name: "婺城区文化馆", type: "文化体育", address: "婺城中路100号", openTime: "9:00-17:00", contact: "0579-8***4004", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "区管理员", publishAt: t2 },
+        { id: "fac_005", name: "幸福社区儿童之家", type: "未成年人服务", address: "幸福路1号二楼", openTime: "周末 9:00-16:00", contact: "0579-8***1001", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "fac_006", name: "城西街道综合养老服务中心", type: "养老服务", address: "城西大道66号", openTime: "8:00-18:00", contact: "0579-8***5005", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t3, updatedAt: t3, createdBy: "民政办", publishAt: t3 },
+        { id: "fac_007", name: "金华市社会工作实训基地", type: "专业服务", address: "市行政中心旁", openTime: "预约开放", contact: "0579-8***6006", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "offline", createdAt: t, updatedAt: t4, createdBy: "市级管理员", publishAt: t },
+      ];
+
+      const forces = [
+        { id: "frc_001", name: "幸福社区党员志愿者队", type: "志愿服务", leader: "陈队长", phone: "138****8001", memberCount: 28, orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t, updatedAt: t, createdBy: "社区管理员", publishAt: t },
+        { id: "frc_002", name: "城西街道社会工作服务站", type: "专业社工", leader: "赵站长", phone: "138****8002", memberCount: 12, orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t, updatedAt: t, createdBy: "中心管理员", publishAt: t },
+        { id: "frc_003", name: "民丰社区红袖章巡逻队", type: "群防群治", leader: "刘队长", phone: "138****8003", memberCount: 15, orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "社区管理员", publishAt: t2 },
+        { id: "frc_004", name: "婺城区心理咨询志愿者联盟", type: "心理服务", leader: "孙老师", phone: "138****8004", memberCount: 20, orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "区管理员", publishAt: t2 },
+        { id: "frc_005", name: "城西街道应急救援志愿者", type: "应急救援", leader: "周队长", phone: "138****8005", memberCount: 18, orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社会事务办", publishAt: t3 },
+        { id: "frc_006", name: "幸福社区银龄互助队", type: "养老互助", leader: "吴阿姨", phone: "138****8006", memberCount: 10, orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "frc_007", name: "金华市社会工作协会（展示）", type: "行业协会", leader: "郑理事长", phone: "138****8007", memberCount: 50, orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "offline", createdAt: t, updatedAt: t4, createdBy: "市级管理员", publishAt: t },
+      ];
+
+      const vulnerablePersons = [
+        { id: "vul_001", name: "王*国", type: "高龄独居", phone: "137****9001", idCard: "330702********1111", address: "幸福社区1幢102", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", riskLevel: "中", createdAt: t, updatedAt: t, createdBy: "社区管理员" },
+        { id: "vul_002", name: "李*英", type: "残疾", phone: "137****9002", idCard: "330702********2222", address: "幸福社区3幢501", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", riskLevel: "高", createdAt: t, updatedAt: t, createdBy: "社区管理员" },
+        { id: "vul_003", name: "赵*强", type: "低保", phone: "137****9003", idCard: "330702********3333", address: "民丰社区2幢203", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", riskLevel: "中", createdAt: t2, updatedAt: t2, createdBy: "社区管理员" },
+        { id: "vul_004", name: "钱*芳", type: "重病", phone: "137****9004", idCard: "330702********4444", address: "民丰社区5幢101", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", riskLevel: "高", createdAt: t2, updatedAt: t2, createdBy: "社区管理员" },
+        { id: "vul_005", name: "孙*平", type: "留守老人", phone: "137****9005", idCard: "330702********5555", address: "幸福社区6幢302", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", riskLevel: "低", createdAt: t3, updatedAt: t3, createdBy: "社区管理员" },
+        { id: "vul_006", name: "周*华", type: "困境儿童监护人家庭", phone: "137****9006", idCard: "330702********6666", address: "民丰社区1幢401", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "inactive", riskLevel: "中", createdAt: t, updatedAt: t4, createdBy: "社区管理员" },
+      ];
+
+      const aidPolicies = [
+        { id: "pol_001", title: "金华市临时救助实施办法摘要", category: "临时救助", content: "因突发困难可申请临时救助，材料见细则。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", createdAt: t, updatedAt: t, createdBy: "市级管理员", publishAt: t },
+        { id: "pol_002", title: "婺城区残疾人两项补贴标准", category: "残疾人补贴", content: "生活补贴与护理补贴标准公示。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "区管理员", publishAt: t2 },
+        { id: "pol_003", title: "城西街道困难群众帮扶指南", category: "综合帮扶", content: "街道层面帮扶申请渠道与流程。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t3, updatedAt: t3, createdBy: "民政办", publishAt: t3 },
+        { id: "pol_004", title: "金华市高龄津贴政策", category: "养老补贴", content: "高龄津贴发放对象与标准。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", createdAt: t, updatedAt: t, createdBy: "市级管理员", publishAt: t },
+        { id: "pol_005", title: "婺城区医疗救助补充说明", category: "医疗救助", content: "大病医疗救助补充条件。", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "区管理员", publishAt: t3 },
+        { id: "pol_006", title: "城西街道春节慰问政策（下架）", category: "节日慰问", content: "历史政策。", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "offline", createdAt: t, updatedAt: t2, createdBy: "民政办", publishAt: t },
+        { id: "pol_007", title: "困境儿童基本生活保障解读", category: "儿童保障", content: "保障标准与申请方式。", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", createdAt: t4, updatedAt: t4, createdBy: "市级管理员", publishAt: t4 },
+      ];
+
+      const foundations = [
+        { id: "fnd_001", name: "金华市慈善总会", type: "慈善组织", intro: "开展全市性慈善救助项目。", contact: "0579-8***7001", orgId: "org_city", orgLevel: "city", orgName: "金华市", status: "published", createdAt: t, updatedAt: t, createdBy: "市级管理员", publishAt: t },
+        { id: "fnd_002", name: "婺城区红十字会", type: "人道救助", intro: "人道救助与应急救护培训。", contact: "0579-8***7002", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "published", createdAt: t2, updatedAt: t2, createdBy: "区管理员", publishAt: t2 },
+        { id: "fnd_003", name: "城西街道爱心互助基金", type: "街道基金", intro: "面向街道困难群众的小额帮扶。", contact: "0579-8***7003", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "published", createdAt: t3, updatedAt: t3, createdBy: "民政办", publishAt: t3 },
+        { id: "fnd_004", name: "幸福社区邻里互助金", type: "社区基金", intro: "社区内部邻里互助。", contact: "0579-8***1001", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published", createdAt: t3, updatedAt: t3, createdBy: "社区管理员", publishAt: t3 },
+        { id: "fnd_005", name: "金东区慈善分会", type: "慈善组织", intro: "金东区慈善项目对接。", contact: "0579-8***7005", orgId: "org_jd", orgLevel: "district", orgName: "金东区", status: "published", createdAt: t4, updatedAt: t4, createdBy: "区管理员", publishAt: t4 },
+        { id: "fnd_006", name: "民丰社区微心愿基金", type: "社区基金", intro: "圆梦微心愿。", contact: "0579-8***3003", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "offline", createdAt: t, updatedAt: t2, createdBy: "社区管理员", publishAt: t },
+      ];
+
+      const assistRecords = [
+        { id: "asr_001", personId: "vul_001", personName: "王*国", title: "夏季送清凉慰问", content: "送出防暑物资一套。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "done", assistAt: t2, createdAt: t2, updatedAt: t2, createdBy: "社区管理员" },
+        { id: "asr_002", personId: "vul_002", personName: "李*英", title: "残疾辅具适配", content: "完成轮椅检修与更换。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "done", assistAt: t3, createdAt: t3, updatedAt: t3, createdBy: "民政办" },
+        { id: "asr_003", personId: "vul_003", personName: "赵*强", title: "低保户走访", content: "季度走访并记录生活情况。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "done", assistAt: t3, createdAt: t3, updatedAt: t3, createdBy: "社区管理员" },
+        { id: "asr_004", personId: "vul_004", personName: "钱*芳", title: "重病关爱探访", content: "协调医疗救助咨询。", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "processing", assistAt: t4, createdAt: t4, updatedAt: t4, createdBy: "民政办" },
+        { id: "asr_005", personId: "vul_005", personName: "孙*平", title: "留守老人电话问安", content: "每周电话问安记录。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "done", assistAt: t4, createdAt: t4, updatedAt: t4, createdBy: "社区管理员" },
+        { id: "asr_006", personId: "vul_001", personName: "王*国", title: "居家安全排查", content: "排查燃气与用电隐患。", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "done", assistAt: t, createdAt: t, updatedAt: t, createdBy: "社区管理员" },
+      ];
+
+      const assistApplications = [
+        {
+          id: "aap_001",
+          userId: "res_001",
+          userName: "张先生",
+          title: "申请临时困难帮扶",
+          reason: "家人突发疾病，短期内生活困难，申请临时帮扶。",
+          phone: "138****1001",
+          orgId: "org_xf",
+          orgLevel: "village",
+          orgName: "幸福社区",
+          status: "submitted",
+          centerOrgId: "org_cx",
+          deptId: null,
+          deptName: null,
+          assignRemark: null,
+          rejectReason: null,
+          returnReason: null,
+          timeline: [
+            { step: "submit", label: "提交", at: t4, by: "张先生", remark: "群众提交申请" }
+          ],
+          createdAt: t4,
+          updatedAt: t4,
+        },
+        {
+          id: "aap_002",
+          userId: "res_002",
+          userName: "李女士",
+          title: "申请残疾辅具补贴",
+          reason: "需要更换辅助器具，申请相关补贴与协助。",
+          phone: "139****2002",
+          orgId: "org_xf",
+          orgLevel: "village",
+          orgName: "幸福社区",
+          status: "assigned",
+          centerOrgId: "org_cx",
+          deptId: "dept_mz",
+          deptName: "民政办",
+          assignRemark: "请民政办按残疾人两项补贴政策审核材料",
+          rejectReason: null,
+          returnReason: null,
+          timeline: [
+            { step: "submit", label: "提交", at: t2, by: "李女士", remark: "群众提交申请" },
+            { step: "accept", label: "受理", at: t3, by: "中心管理员", remark: "综合信息指挥室受理" },
+            { step: "assign", label: "指派", at: t3, by: "中心管理员", remark: "指派至民政办" }
+          ],
+          createdAt: t2,
+          updatedAt: t3,
+        },
+        {
+          id: "aap_003",
+          userId: "res_003",
+          userName: "王大爷",
+          title: "申请高龄关爱服务",
+          reason: "独居高龄，希望申请定期探访服务。",
+          phone: "137****3003",
+          orgId: "org_mf",
+          orgLevel: "village",
+          orgName: "民丰社区",
+          status: "completed",
+          centerOrgId: "org_cx",
+          deptId: "dept_sh",
+          deptName: "社会事务办",
+          assignRemark: "请社会事务办对接社区探访力量",
+          rejectReason: null,
+          returnReason: null,
+          timeline: [
+            { step: "submit", label: "提交", at: t, by: "王大爷", remark: "群众提交申请" },
+            { step: "accept", label: "受理", at: t2, by: "中心管理员", remark: "已受理" },
+            { step: "assign", label: "指派", at: t2, by: "中心管理员", remark: "指派至社会事务办" },
+            { step: "audit", label: "审核", at: t3, by: "社会事务办", remark: "审核通过，纳入探访名单" }
+          ],
+          createdAt: t,
+          updatedAt: t3,
+        },
+        {
+          id: "aap_004",
+          userId: "res_001",
+          userName: "张先生",
+          title: "申请就业援助",
+          reason: "失业后求职困难，申请就业援助。",
+          phone: "138****1001",
+          orgId: "org_xf",
+          orgLevel: "village",
+          orgName: "幸福社区",
+          status: "returned",
+          centerOrgId: "org_cx",
+          deptId: "dept_sh",
+          deptName: "社会事务办",
+          assignRemark: "请社会事务办审核就业援助资格",
+          rejectReason: null,
+          returnReason: "材料不齐，缺失业证明，请中心重新核实后指派",
+          timeline: [
+            { step: "submit", label: "提交", at: t, by: "张先生", remark: "群众提交申请" },
+            { step: "accept", label: "受理", at: t2, by: "中心管理员", remark: "已受理" },
+            { step: "assign", label: "指派", at: t2, by: "中心管理员", remark: "指派至社会事务办" },
+            { step: "return", label: "退回", at: t3, by: "社会事务办", remark: "材料不齐，退回中心" }
+          ],
+          createdAt: t,
+          updatedAt: t3,
+        },
+        {
+          id: "aap_005",
+          userId: "res_002",
+          userName: "李女士",
+          title: "申请节日慰问金",
+          reason: "家庭困难申请节日慰问。",
+          phone: "139****2002",
+          orgId: "org_xf",
+          orgLevel: "village",
+          orgName: "幸福社区",
+          status: "rejected",
+          centerOrgId: "org_cx",
+          deptId: null,
+          deptName: null,
+          assignRemark: null,
+          rejectReason: "不在本期慰问对象范围",
+          returnReason: null,
+          timeline: [
+            { step: "submit", label: "提交", at: t2, by: "李女士", remark: "群众提交申请" },
+            { step: "reject", label: "不予受理", at: t3, by: "中心管理员", remark: "不在本期慰问对象范围" }
+          ],
+          createdAt: t2,
+          updatedAt: t3,
+        },
+      ];
+
+      const emergingObjects = [
+        { id: "emo_001", name: "城西商圈商会", category: "新兴领域", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, address: "城西大道商圈", createdAt: t, updatedAt: syncedAt },
+        { id: "emo_002", name: "幸福路写字楼园区", category: "楼宇经济", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, address: "幸福路88号", createdAt: t, updatedAt: syncedAt },
+        { id: "emo_003", name: "民丰网约配送站点", category: "新就业群体", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, address: "民丰路配送站", createdAt: t2, updatedAt: syncedAt },
+        { id: "emo_004", name: "婺城直播电商集聚区", category: "数字经济", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "active", source: PROV, syncedAt, address: "婺城数字产业园", createdAt: t2, updatedAt: syncedAt },
+      ];
+
+      const emergingParty = [
+        { id: "emp_001", name: "城西商圈联合党支部", category: "党组织", memberCount: 18, orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, secretary: "陈*强", createdAt: t, updatedAt: syncedAt },
+        { id: "emp_002", name: "幸福路园区党小组", category: "党小组", memberCount: 7, orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, secretary: "李*敏", createdAt: t, updatedAt: syncedAt },
+        { id: "emp_003", name: "民丰新就业群体党员联络站", category: "联络站", memberCount: 5, orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, secretary: "王*军", createdAt: t2, updatedAt: syncedAt },
+        { id: "emp_004", name: "婺城直播行业临时党支部", category: "临时党组织", memberCount: 12, orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "active", source: PROV, syncedAt, secretary: "赵*丽", createdAt: t3, updatedAt: syncedAt },
+      ];
+
+      const emergingGovernance = [
+        { id: "emg_001", name: "城西商圈共治理事会", category: "共治组织", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, leadUnit: "城西街道", createdAt: t, updatedAt: syncedAt },
+        { id: "emg_002", name: "幸福路楼宇自治联盟", category: "自治联盟", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, leadUnit: "幸福社区", createdAt: t2, updatedAt: syncedAt },
+        { id: "emg_003", name: "民丰骑手服务驿站共治小组", category: "服务共治", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, leadUnit: "民丰社区", createdAt: t3, updatedAt: syncedAt },
+        { id: "emg_004", name: "婺城园区矛盾调解工作室", category: "调解组织", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "active", source: PROV, syncedAt, leadUnit: "婺城区", createdAt: t4, updatedAt: syncedAt },
+      ];
+
+      const baseVillage = [
+        { id: "bvl_001", name: "幸福社区", code: "330702001001", population: 5200, households: 1800, orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, createdAt: t, updatedAt: syncedAt },
+        { id: "bvl_002", name: "民丰社区", code: "330702001002", population: 4800, households: 1650, orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, createdAt: t, updatedAt: syncedAt },
+        { id: "bvl_003", name: "城西街道本级（台账）", code: "330702001000", population: 32000, households: 11000, orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, createdAt: t2, updatedAt: syncedAt },
+        { id: "bvl_004", name: "金东示例村社（回流）", code: "330703001001", population: 3100, households: 980, orgId: "org_jd", orgLevel: "district", orgName: "金东区", status: "active", source: PROV, syncedAt, createdAt: t3, updatedAt: syncedAt },
+      ];
+
+      const baseConsult = [
+        { id: "bct_001", title: "幸福社区居民议事会制度", orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, year: 2026, createdAt: t, updatedAt: syncedAt },
+        { id: "bct_002", title: "民丰社区协商议事清单", orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, year: 2026, createdAt: t, updatedAt: syncedAt },
+        { id: "bct_003", title: "城西街道基层协商联席机制", orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, year: 2025, createdAt: t2, updatedAt: syncedAt },
+        { id: "bct_004", title: "婺城区村社协商示范点", orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "active", source: PROV, syncedAt, year: 2026, createdAt: t3, updatedAt: syncedAt },
+      ];
+
+      const baseLists = [
+        { id: "bls_001", title: "幸福社区重点人员清单", listType: "重点关注", count: 12, orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, createdAt: t, updatedAt: syncedAt },
+        { id: "bls_002", title: "民丰社区困难群众清单", listType: "困难群众", count: 25, orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, createdAt: t, updatedAt: syncedAt },
+        { id: "bls_003", title: "城西街道退役军人服务清单", listType: "优抚", count: 48, orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, createdAt: t2, updatedAt: syncedAt },
+        { id: "bls_004", title: "婺城区新就业群体台账", listType: "新就业群体", count: 320, orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "active", source: PROV, syncedAt, createdAt: t3, updatedAt: syncedAt },
+      ];
+
+      const baseTeams = [
+        { id: "btm_001", name: "幸福社区网格员队伍", teamType: "网格力量", memberCount: 8, orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "active", source: PROV, syncedAt, createdAt: t, updatedAt: syncedAt },
+        { id: "btm_002", name: "民丰社区综治队伍", teamType: "综治力量", memberCount: 6, orgId: "org_mf", orgLevel: "village", orgName: "民丰社区", status: "active", source: PROV, syncedAt, createdAt: t, updatedAt: syncedAt },
+        { id: "btm_003", name: "城西街道应急突击队", teamType: "应急力量", memberCount: 15, orgId: "org_cx", orgLevel: "town", orgName: "城西街道", status: "active", source: PROV, syncedAt, createdAt: t2, updatedAt: syncedAt },
+        { id: "btm_004", name: "婺城区法律顾问团队", teamType: "法律服务", memberCount: 10, orgId: "org_wc", orgLevel: "district", orgName: "婺城区", status: "active", source: PROV, syncedAt, createdAt: t3, updatedAt: syncedAt },
+      ];
+
+      return {
+        orgs,
+        depts,
+        residents,
+        notices,
+        activities,
+        activitySignups,
+        affairs,
+        serviceItems,
+        suggestionInbox,
+        collectCampaigns,
+        suggestions,
+        surveys,
+        surveyAnswers,
+        topics,
+        topicComments,
+        topicVotes,
+        facilities,
+        forces,
+        vulnerablePersons,
+        aidPolicies,
+        foundations,
+        assistRecords,
+        assistApplications,
+        emergingObjects,
+        emergingParty,
+        emergingGovernance,
+        baseVillage,
+        baseConsult,
+        baseLists,
+        baseTeams,
+      };
+    }
+
+    function ensureSeed(forceReset) {
+      const meta = storageGet(KEYS.meta);
+      if (forceReset || !meta || meta.version !== 1) {
+        const seed = buildSeed();
+        // Explicit mapping: seed property → KEYS storage key
+        storageSet(KEYS.orgs, seed.orgs);
+        storageSet(KEYS.depts, seed.depts);
+        storageSet(KEYS.residents, seed.residents);
+        storageSet(KEYS.notices, seed.notices);
+        storageSet(KEYS.activities, seed.activities);
+        storageSet(KEYS.activitySignups, seed.activitySignups);
+        storageSet(KEYS.affairs, seed.affairs);
+        storageSet(KEYS.serviceItems, seed.serviceItems);
+        storageSet(KEYS.suggestionInbox, seed.suggestionInbox);
+        storageSet(KEYS.collectCampaigns, seed.collectCampaigns);
+        storageSet(KEYS.suggestions, seed.suggestions);
+        storageSet(KEYS.surveys, seed.surveys);
+        storageSet(KEYS.surveyAnswers, seed.surveyAnswers);
+        storageSet(KEYS.topics, seed.topics);
+        storageSet(KEYS.topicComments, seed.topicComments);
+        storageSet(KEYS.topicVotes, seed.topicVotes);
+        storageSet(KEYS.facilities, seed.facilities);
+        storageSet(KEYS.forces, seed.forces);
+        storageSet(KEYS.vulnerablePersons, seed.vulnerablePersons);
+        storageSet(KEYS.aidPolicies, seed.aidPolicies);
+        storageSet(KEYS.foundations, seed.foundations);
+        storageSet(KEYS.assistRecords, seed.assistRecords);
+        storageSet(KEYS.assistApplications, seed.assistApplications);
+        storageSet(KEYS.emergingObjects, seed.emergingObjects);
+        storageSet(KEYS.emergingParty, seed.emergingParty);
+        storageSet(KEYS.emergingGovernance, seed.emergingGovernance);
+        storageSet(KEYS.baseVillage, seed.baseVillage);
+        storageSet(KEYS.baseConsult, seed.baseConsult);
+        storageSet(KEYS.baseLists, seed.baseLists);
+        storageSet(KEYS.baseTeams, seed.baseTeams);
+        storageSet(KEYS.meta, { version: 1, seededAt: nowISO() });
+        if (!storageGet(KEYS.pcSession)) {
+          storageSet(KEYS.pcSession, {
+            orgId: "org_cx",
+            userName: "中心管理员",
+            role: "center",
+            deptId: "dept_center",
+          });
+        }
+        if (!storageGet(KEYS.h5Session)) {
+          storageSet(KEYS.h5Session, {
+            userId: "res_001",
+            userName: "张先生",
+            orgId: "org_xf",
+          });
+        }
+      }
+    }
+
+    function resetDemoData() {
+      ensureSeed(true);
+    }
+
+    /* ========== Boot ========== */
+    ensureSeed(false);
+    console.log("notices", (storageGet(KEYS.notices) || []).length);
+    console.log("assistApplications", (storageGet(KEYS.assistApplications) || []).length);
+    console.log("activities", (storageGet(KEYS.activities) || []).length);
+    console.log("orgs", (storageGet(KEYS.orgs) || []).length);
+    console.log("residents", (storageGet(KEYS.residents) || []).length);
+
+    document.getElementById("app").textContent = "社会工作服务 PC 原型骨架 OK（种子数据已加载）";
   </script>
 </body>
 </html>
