@@ -30,7 +30,427 @@
       color: var(--color-text);
       background: var(--color-bg);
     }
-    #app { min-height: 100vh; }
+    #app { min-height: 100vh; display: flex; flex-direction: column; }
+    a { color: var(--color-primary); text-decoration: none; }
+    a:hover { color: #4096ff; }
+
+    /* ---- Shell layout ---- */
+    .pc-header {
+      height: var(--header-height);
+      background: #1677FF;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      flex-shrink: 0;
+      z-index: 100;
+    }
+    .pc-header .logo {
+      font-size: 15px;
+      font-weight: 600;
+      margin-right: 32px;
+      white-space: nowrap;
+    }
+    .pc-header .nav-item {
+      padding: 0 14px;
+      height: var(--header-height);
+      line-height: var(--header-height);
+      color: rgba(255,255,255,0.85);
+      cursor: pointer;
+      font-size: 14px;
+      border-bottom: 2px solid transparent;
+    }
+    .pc-header .nav-item:hover { color: #fff; background: rgba(255,255,255,0.08); }
+    .pc-header .nav-item.active {
+      color: #fff;
+      font-weight: 600;
+      border-bottom-color: #fff;
+      background: rgba(0,0,0,0.08);
+    }
+    .pc-header .header-right {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.9);
+    }
+    .pc-body { display: flex; flex: 1; min-height: 0; }
+    .pc-sidebar {
+      width: var(--sidebar-width);
+      background: #fff;
+      border-right: 1px solid var(--color-border);
+      flex-shrink: 0;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+    .pc-sidebar .menu-group-title {
+      padding: 10px 16px 6px;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+    }
+    .pc-sidebar .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px 9px 20px;
+      color: var(--color-text);
+      cursor: pointer;
+      font-size: 13px;
+      border-right: 2px solid transparent;
+    }
+    .pc-sidebar .menu-item:hover { background: #f5f5f5; }
+    .pc-sidebar .menu-item.active {
+      color: var(--color-primary);
+      background: #e6f4ff;
+      border-right-color: var(--color-primary);
+      font-weight: 500;
+    }
+    .pc-sidebar .menu-item i { font-size: 16px; }
+    .pc-main {
+      flex: 1;
+      min-width: 0;
+      padding: 12px 16px;
+      overflow: auto;
+    }
+    .page-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: var(--color-text);
+    }
+
+    /* ---- Filter card ---- */
+    .filter-card {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 16px 16px 8px;
+      margin-bottom: 12px;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      align-items: flex-start;
+      margin-bottom: 8px;
+    }
+    .filter-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-item label {
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      white-space: nowrap;
+    }
+    .filter-actions {
+      display: flex;
+      gap: 8px;
+      margin-left: auto;
+      align-items: center;
+    }
+    .toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    /* ---- Form controls ---- */
+    .form-control {
+      height: var(--control-height);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 4px 11px;
+      font-size: 13px;
+      color: var(--color-text);
+      background: #fff;
+      outline: none;
+      min-width: 160px;
+    }
+    .form-control:focus { border-color: var(--color-primary); }
+    .form-control:disabled,
+    .form-control[readonly] {
+      background: #f5f5f5;
+      color: var(--color-text-secondary);
+      cursor: not-allowed;
+    }
+    select.form-control { padding-right: 24px; }
+    textarea.form-control {
+      height: auto;
+      min-height: 72px;
+      padding: 8px 11px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    /* ---- Buttons ---- */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      height: var(--control-height);
+      padding: 0 15px;
+      font-size: 13px;
+      border-radius: var(--radius);
+      border: 1px solid transparent;
+      cursor: pointer;
+      white-space: nowrap;
+      background: #fff;
+      color: var(--color-text);
+      line-height: 1;
+      transition: none;
+    }
+    .btn:hover { opacity: 0.92; }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #4096ff; border-color: #4096ff; opacity: 1; }
+    .btn-success {
+      background: var(--color-success);
+      border-color: var(--color-success);
+      color: #fff;
+    }
+    .btn-success:hover { background: #73d13d; border-color: #73d13d; opacity: 1; }
+    .btn-default {
+      background: #fff;
+      border-color: var(--color-border);
+      color: var(--color-text);
+    }
+    .btn-default:hover { color: var(--color-primary); border-color: var(--color-primary); opacity: 1; }
+    .btn-danger-ghost {
+      background: #fff;
+      border-color: #ffccc7;
+      color: var(--color-danger);
+    }
+    .btn-danger-ghost:hover { border-color: var(--color-danger); opacity: 1; }
+    .btn-link {
+      background: transparent;
+      border: none;
+      color: var(--color-primary);
+      padding: 0 6px;
+      height: auto;
+      font-size: 13px;
+    }
+    .btn-link:hover { color: #4096ff; opacity: 1; }
+    .btn-link.danger { color: var(--color-danger); }
+    .btn-sm { height: 28px; padding: 0 10px; font-size: 12px; }
+
+    /* ---- Table ---- */
+    .table-wrap {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      overflow: auto;
+    }
+    .table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .table-wrap th {
+      background: #e6f4ff;
+      color: var(--color-text);
+      font-weight: 600;
+      font-size: 13px;
+      padding: 10px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--color-border);
+      white-space: nowrap;
+    }
+    .table-wrap td {
+      padding: 10px 12px;
+      font-size: 13px;
+      border-bottom: 1px solid #f0f0f0;
+      color: var(--color-text);
+      word-break: break-all;
+      vertical-align: middle;
+    }
+    .table-wrap tr:last-child td { border-bottom: none; }
+    .table-wrap tbody tr:hover { background: #fafafa; }
+    .table-wrap .col-actions {
+      white-space: nowrap;
+      color: var(--color-primary);
+    }
+    .table-wrap .col-actions a,
+    .table-wrap .col-actions .link-action {
+      color: var(--color-primary);
+      cursor: pointer;
+      margin-right: 12px;
+      font-size: 13px;
+      background: none;
+      border: none;
+      padding: 0;
+      font-family: inherit;
+    }
+    .table-wrap .col-actions a:last-child,
+    .table-wrap .col-actions .link-action:last-child { margin-right: 0; }
+    .table-wrap .col-actions a:hover,
+    .table-wrap .col-actions .link-action:hover { color: #4096ff; }
+    .table-empty {
+      text-align: center;
+      color: var(--color-text-secondary);
+      padding: 32px 12px !important;
+    }
+    .table-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+      padding: 10px 0 0;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+    .tag {
+      display: inline-block;
+      padding: 0 7px;
+      height: 22px;
+      line-height: 20px;
+      font-size: 12px;
+      border-radius: var(--radius);
+      border: 1px solid var(--color-border);
+      background: #fafafa;
+      color: var(--color-text-secondary);
+    }
+    .tag-blue { color: var(--color-primary); background: #e6f4ff; border-color: #91caff; }
+    .tag-green { color: var(--color-success); background: #f6ffed; border-color: #b7eb8f; }
+    .tag-orange { color: #d48806; background: #fffbe6; border-color: #ffe58f; }
+    .tag-red { color: var(--color-danger); background: #fff2f0; border-color: #ffccc7; }
+
+    /* ---- Drawer ---- */
+    .drawer-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 1000;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: var(--drawer-width);
+      max-width: 100%;
+      height: 100vh;
+      background: #fff;
+      z-index: 1001;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--color-border);
+    }
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      height: 48px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .drawer-title {
+      font-size: 15px;
+      font-weight: 600;
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .drawer-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 12px;
+    }
+    .drawer-body {
+      flex: 1;
+      overflow: auto;
+      padding: 16px 20px 24px;
+    }
+    .form-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 8px 0 16px;
+      padding-left: 8px;
+      border-left: 3px solid var(--color-primary);
+      line-height: 1.2;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 24px;
+    }
+    .form-grid .form-field.full { grid-column: 1 / -1; }
+    .form-field { display: flex; flex-direction: column; gap: 6px; }
+    .form-field > label {
+      font-size: 13px;
+      color: var(--color-text);
+    }
+    .form-field > label .req {
+      color: var(--color-danger);
+      margin-right: 2px;
+    }
+    .form-field .form-control { width: 100%; min-width: 0; }
+
+    /* ---- Confirm dialog ---- */
+    .confirm-mask {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      z-index: 3000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .confirm-dialog {
+      width: 400px;
+      max-width: calc(100vw - 32px);
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid var(--color-border);
+    }
+    .confirm-dialog .confirm-title {
+      padding: 14px 16px 8px;
+      font-size: 15px;
+      font-weight: 600;
+    }
+    .confirm-dialog .confirm-content {
+      padding: 8px 16px 20px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+    .confirm-dialog .confirm-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 0 16px 14px;
+    }
+
+    /* ---- Toast ---- */
+    #sws-toast {
+      position: fixed;
+      top: 64px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      z-index: 4000;
+      font-size: 13px;
+      display: none;
+      max-width: 80vw;
+      text-align: center;
+      pointer-events: none;
+    }
+    #sws-toast.toast-success { background: rgba(82, 196, 26, 0.92); }
+    #sws-toast.toast-error { background: rgba(255, 77, 79, 0.92); }
+    #sws-toast.toast-warning { background: rgba(250, 173, 20, 0.95); color: #fff; }
   </style>
 </head>
 <body>
@@ -679,15 +1099,428 @@
       storageSet(key, list);
     }
 
-    /* ========== Boot ========== */
+    /* ========== UI Kit ========== */
+    function escapeHtml(str) {
+      if (str == null) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function toast(message, type) {
+      let el = document.getElementById("sws-toast");
+      if (!el) {
+        el = document.createElement("div");
+        el.id = "sws-toast";
+        document.body.appendChild(el);
+      }
+      el.className = "";
+      if (type === "success") el.classList.add("toast-success");
+      else if (type === "error") el.classList.add("toast-error");
+      else if (type === "warning") el.classList.add("toast-warning");
+      el.textContent = message == null ? "" : String(message);
+      el.style.display = "block";
+      clearTimeout(el._t);
+      el._t = setTimeout(function () {
+        el.style.display = "none";
+      }, 2000);
+    }
+
+    function confirmDialog(opts) {
+      opts = opts || {};
+      const title = opts.title || "确认";
+      const content = opts.content || "";
+      const onOk = opts.onOk;
+      const mask = document.createElement("div");
+      mask.className = "confirm-mask";
+      mask.innerHTML =
+        '<div class="confirm-dialog" role="dialog">' +
+        '<div class="confirm-title">' + escapeHtml(title) + "</div>" +
+        '<div class="confirm-content">' + escapeHtml(content) + "</div>" +
+        '<div class="confirm-footer">' +
+        '<button type="button" class="btn btn-default" data-act="cancel">取消</button>' +
+        '<button type="button" class="btn btn-primary" data-act="ok">确定</button>' +
+        "</div></div>";
+      function close() {
+        if (mask.parentNode) mask.parentNode.removeChild(mask);
+      }
+      mask.addEventListener("click", function (e) {
+        if (e.target === mask) close();
+      });
+      mask.querySelector('[data-act="cancel"]').addEventListener("click", close);
+      mask.querySelector('[data-act="ok"]').addEventListener("click", function () {
+        let keep = false;
+        if (typeof onOk === "function") {
+          try {
+            keep = onOk() === false;
+          } catch (err) {
+            console.error(err);
+          }
+        }
+        if (!keep) close();
+      });
+      document.body.appendChild(mask);
+      return { close: close };
+    }
+
+    let _drawerState = null;
+
+    function closeDrawer() {
+      const mask = document.getElementById("sws-drawer-mask");
+      const panel = document.getElementById("sws-drawer");
+      if (mask && mask.parentNode) mask.parentNode.removeChild(mask);
+      if (panel && panel.parentNode) panel.parentNode.removeChild(panel);
+      _drawerState = null;
+    }
+
+    function openDrawer(opts) {
+      opts = opts || {};
+      const title = opts.title || "";
+      const mode = opts.mode || "create";
+      const bodyHtml = opts.bodyHtml || "";
+      const onSubmit = opts.onSubmit;
+      closeDrawer();
+
+      const mask = document.createElement("div");
+      mask.className = "drawer-mask";
+      mask.id = "sws-drawer-mask";
+      mask.addEventListener("click", closeDrawer);
+
+      const panel = document.createElement("div");
+      panel.className = "drawer";
+      panel.id = "sws-drawer";
+      const showSubmit = mode !== "view";
+      panel.innerHTML =
+        '<div class="drawer-header">' +
+        '<div class="drawer-title">' + escapeHtml(title) + "</div>" +
+        '<div class="drawer-header-actions">' +
+        (showSubmit
+          ? '<button type="button" class="btn btn-primary" data-act="submit">提交</button>'
+          : "") +
+        '<button type="button" class="btn btn-danger-ghost" data-act="close">关闭</button>' +
+        "</div></div>" +
+        '<div class="drawer-body">' + bodyHtml + "</div>";
+
+      panel.querySelector('[data-act="close"]').addEventListener("click", closeDrawer);
+      const submitBtn = panel.querySelector('[data-act="submit"]');
+      if (submitBtn) {
+        submitBtn.addEventListener("click", function () {
+          if (typeof onSubmit === "function") {
+            let shouldClose = true;
+            try {
+              shouldClose = onSubmit() !== false;
+            } catch (err) {
+              console.error(err);
+              shouldClose = false;
+            }
+            if (shouldClose) closeDrawer();
+          } else {
+            closeDrawer();
+          }
+        });
+      }
+
+      // view mode: disable form controls in body
+      if (mode === "view") {
+        const body = panel.querySelector(".drawer-body");
+        body.querySelectorAll("input, select, textarea, button").forEach(function (ctrl) {
+          if (ctrl.getAttribute("data-act")) return;
+          if (ctrl.tagName === "BUTTON") {
+            ctrl.disabled = true;
+          } else {
+            ctrl.disabled = true;
+          }
+        });
+      }
+
+      document.body.appendChild(mask);
+      document.body.appendChild(panel);
+      _drawerState = { mode: mode, onSubmit: onSubmit };
+      return { close: closeDrawer, panel: panel };
+    }
+
+    function renderTable(container, options) {
+      options = options || {};
+      const columns = options.columns || [];
+      const rows = options.rows || [];
+      const rowActions = options.rowActions;
+      if (!container) return;
+
+      let html = '<div class="table-wrap"><table><thead><tr>';
+      columns.forEach(function (col) {
+        const w = col.width ? ' style="width:' + col.width + '"' : "";
+        html += "<th" + w + ">" + escapeHtml(col.title || col.key || "") + "</th>";
+      });
+      if (rowActions) {
+        html += '<th style="width:160px">操作</th>';
+      }
+      html += "</tr></thead><tbody>";
+
+      if (!rows.length) {
+        const colSpan = columns.length + (rowActions ? 1 : 0);
+        html +=
+          '<tr><td class="table-empty" colspan="' +
+          colSpan +
+          '">暂无数据</td></tr>';
+      } else {
+        rows.forEach(function (row, rowIndex) {
+          html += '<tr data-row-index="' + rowIndex + '">';
+          columns.forEach(function (col) {
+            let cell;
+            if (typeof col.render === "function") {
+              cell = col.render(row, rowIndex);
+              if (cell == null) cell = "";
+            } else {
+              cell = escapeHtml(row[col.key] == null ? "" : row[col.key]);
+            }
+            html += "<td>" + cell + "</td>";
+          });
+          if (rowActions) {
+            html += '<td class="col-actions">';
+            let actions = [];
+            try {
+              actions = rowActions(row, rowIndex) || [];
+            } catch (err) {
+              console.error(err);
+            }
+            actions.forEach(function (act, actIndex) {
+              if (!act) return;
+              if (act.show === false) return;
+              html +=
+                '<button type="button" class="link-action" data-row="' +
+                rowIndex +
+                '" data-act="' +
+                actIndex +
+                '">' +
+                escapeHtml(act.label || "") +
+                "</button>";
+            });
+            html += "</td>";
+          }
+          html += "</tr>";
+        });
+      }
+      html += "</tbody></table></div>";
+      container.innerHTML = html;
+
+      if (rowActions && rows.length) {
+        container.querySelectorAll(".link-action").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            const ri = parseInt(btn.getAttribute("data-row"), 10);
+            const ai = parseInt(btn.getAttribute("data-act"), 10);
+            const row = rows[ri];
+            const acts = rowActions(row, ri) || [];
+            const act = acts[ai];
+            if (act && typeof act.onClick === "function") act.onClick(row, ri);
+          });
+        });
+      }
+    }
+
+    /* ========== Boot: temporary UI Kit demo page ========== */
+    function renderUiKitDemo() {
+      const app = document.getElementById("app");
+      app.innerHTML =
+        '<header class="pc-header">' +
+        '<div class="logo">金华市基层智治综合应用 -智治系统</div>' +
+        '<div class="nav-item">首页</div>' +
+        '<div class="nav-item active">社会工作服务</div>' +
+        '<div class="nav-item" data-demo-nav="other">应急管理指挥</div>' +
+        '<div class="header-right"><span>XHD（测试账号）</span><span>城西街道</span></div>' +
+        "</header>" +
+        '<div class="pc-body">' +
+        '<aside class="pc-sidebar">' +
+        '<div class="menu-group-title">社会工作服务</div>' +
+        '<div class="menu-item active"><i class="ri-megaphone-line"></i>通知公告</div>' +
+        '<div class="menu-item"><i class="ri-calendar-event-line"></i>活动管理</div>' +
+        '<div class="menu-item"><i class="ri-service-line"></i>服务事项</div>' +
+        "</aside>" +
+        '<main class="pc-main" id="pc-main">' +
+        '<div class="page-title">通知公告（UI Kit 演示）</div>' +
+        '<div class="filter-card">' +
+        '<div class="filter-row">' +
+        '<div class="filter-item"><label>标题</label><input class="form-control" id="demo-title" placeholder="请输入标题" /></div>' +
+        '<div class="filter-item"><label>状态</label>' +
+        '<select class="form-control" id="demo-status">' +
+        '<option value="">全部</option>' +
+        '<option value="published">已发布</option>' +
+        '<option value="draft">草稿</option>' +
+        "</select></div>" +
+        '<div class="filter-actions">' +
+        '<button type="button" class="btn btn-primary" id="demo-query">查询</button>' +
+        '<button type="button" class="btn btn-default" id="demo-reset">重置</button>' +
+        "</div></div></div>" +
+        '<div class="toolbar">' +
+        '<button type="button" class="btn btn-success" id="demo-add"><i class="ri-add-line"></i> 新增</button>' +
+        "</div>" +
+        '<div id="demo-table"></div>' +
+        '<div class="table-footer"><span>共 5 条</span></div>' +
+        "</main></div>";
+
+      const demoRows = [
+        { id: "1", title: "关于开展夏季防汛安全检查的通知", orgName: "金华市", status: "已发布", createdAt: "2026-07-20" },
+        { id: "2", title: "婺城区文明创建工作推进会纪要", orgName: "婺城区", status: "已发布", createdAt: "2026-07-21" },
+        { id: "3", title: "城西街道燃气安全排查公告", orgName: "城西街道", status: "已发布", createdAt: "2026-07-22" },
+        { id: "4", title: "幸福社区垃圾分类宣讲会通知", orgName: "幸福社区", status: "已发布", createdAt: "2026-07-22" },
+        { id: "5", title: "社会工作服务平台试运行公告（草稿）", orgName: "城西街道", status: "草稿", createdAt: "2026-07-23" },
+      ];
+
+      function statusTag(s) {
+        if (s === "已发布") return '<span class="tag tag-green">已发布</span>';
+        if (s === "草稿") return '<span class="tag tag-orange">草稿</span>';
+        return '<span class="tag">' + escapeHtml(s) + "</span>";
+      }
+
+      function formBody(row, readonly) {
+        const r = row || {};
+        const dis = readonly ? " disabled" : "";
+        return (
+          '<div class="form-section-title">基本信息</div>' +
+          '<div class="form-grid">' +
+          '<div class="form-field full"><label><span class="req">*</span>标题</label>' +
+          '<input class="form-control" name="title" value="' +
+          escapeHtml(r.title || "") +
+          '"' +
+          dis +
+          ' placeholder="请输入标题" /></div>' +
+          '<div class="form-field"><label>发布层级</label>' +
+          '<input class="form-control" name="orgName" value="' +
+          escapeHtml(r.orgName || "城西街道") +
+          '"' +
+          dis +
+          " /></div>" +
+          '<div class="form-field"><label>状态</label>' +
+          '<select class="form-control" name="status"' +
+          dis +
+          ">" +
+          '<option value="草稿"' +
+          (r.status === "草稿" ? " selected" : "") +
+          ">草稿</option>" +
+          '<option value="已发布"' +
+          (r.status === "已发布" || !r.status ? " selected" : "") +
+          ">已发布</option>" +
+          "</select></div>" +
+          '<div class="form-field full"><label>内容</label>' +
+          '<textarea class="form-control" name="content" rows="4"' +
+          dis +
+          ' placeholder="请输入内容">' +
+          escapeHtml(r.content || "") +
+          "</textarea></div>" +
+          "</div>"
+        );
+      }
+
+      function refreshTable(list) {
+        renderTable(document.getElementById("demo-table"), {
+          columns: [
+            { key: "title", title: "标题", width: "36%" },
+            { key: "orgName", title: "发布层级", width: "14%" },
+            {
+              key: "status",
+              title: "状态",
+              width: "12%",
+              render: function (row) {
+                return statusTag(row.status);
+              },
+            },
+            { key: "createdAt", title: "创建时间", width: "14%" },
+          ],
+          rows: list,
+          rowActions: function (row) {
+            return [
+              {
+                label: "查看",
+                onClick: function () {
+                  openDrawer({
+                    title: "查看通知公告",
+                    mode: "view",
+                    bodyHtml: formBody(row, true),
+                  });
+                },
+              },
+              {
+                label: "编辑",
+                onClick: function () {
+                  openDrawer({
+                    title: "编辑通知公告",
+                    mode: "edit",
+                    bodyHtml: formBody(row, false),
+                    onSubmit: function () {
+                      toast("已提交（演示）", "success");
+                    },
+                  });
+                },
+              },
+              {
+                label: "删除",
+                onClick: function () {
+                  confirmDialog({
+                    title: "删除确认",
+                    content: "确定删除「" + row.title + "」吗？删除后不可恢复。",
+                    onOk: function () {
+                      toast("已删除（演示）");
+                    },
+                  });
+                },
+              },
+            ];
+          },
+        });
+      }
+
+      refreshTable(demoRows);
+
+      document.getElementById("demo-query").addEventListener("click", function () {
+        const kw = (document.getElementById("demo-title").value || "").trim();
+        const st = document.getElementById("demo-status").value;
+        const filtered = demoRows.filter(function (r) {
+          if (kw && r.title.indexOf(kw) < 0) return false;
+          if (st === "published" && r.status !== "已发布") return false;
+          if (st === "draft" && r.status !== "草稿") return false;
+          return true;
+        });
+        refreshTable(filtered);
+        toast("查询完成，共 " + filtered.length + " 条");
+      });
+      document.getElementById("demo-reset").addEventListener("click", function () {
+        document.getElementById("demo-title").value = "";
+        document.getElementById("demo-status").value = "";
+        refreshTable(demoRows);
+        toast("已重置");
+      });
+      document.getElementById("demo-add").addEventListener("click", function () {
+        openDrawer({
+          title: "新增通知公告",
+          mode: "create",
+          bodyHtml: formBody(null, false),
+          onSubmit: function () {
+            const input = document.querySelector("#sws-drawer input[name=title]");
+            if (input && !String(input.value || "").trim()) {
+              toast("请填写标题", "warning");
+              return false;
+            }
+            toast("提交成功（演示）", "success");
+          },
+        });
+      });
+      const otherNav = app.querySelector('[data-demo-nav="other"]');
+      if (otherNav) {
+        otherNav.addEventListener("click", function () {
+          toast("本演示仅开放社会工作服务");
+        });
+      }
+    }
+
     ensureSeed(false);
     console.log("notices", (storageGet(KEYS.notices) || []).length);
     console.log("assistApplications", (storageGet(KEYS.assistApplications) || []).length);
     console.log("activities", (storageGet(KEYS.activities) || []).length);
     console.log("orgs", (storageGet(KEYS.orgs) || []).length);
     console.log("residents", (storageGet(KEYS.residents) || []).length);
-
-    document.getElementById("app").textContent = "社会工作服务 PC 原型骨架 OK（种子数据已加载）";
+    renderUiKitDemo();
   </script>
 </body>
 </html>
