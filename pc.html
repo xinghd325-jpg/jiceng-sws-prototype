@@ -561,6 +561,124 @@
       ensureSeed(true);
     }
 
+    /* ========== DataAPI + 权限 ========== */
+    const VISIBILITY = {};
+    VISIBILITY[KEYS.notices] = "upward";
+    VISIBILITY[KEYS.serviceItems] = "upward";
+    VISIBILITY[KEYS.facilities] = "upward";
+    VISIBILITY[KEYS.forces] = "upward";
+    VISIBILITY[KEYS.aidPolicies] = "upward";
+    VISIBILITY[KEYS.foundations] = "upward";
+    VISIBILITY[KEYS.affairs] = "village";
+    VISIBILITY[KEYS.topics] = "village";
+    VISIBILITY[KEYS.activities] = "scope";
+    VISIBILITY[KEYS.collectCampaigns] = "scope";
+    VISIBILITY[KEYS.surveys] = "scope";
+    VISIBILITY[KEYS.suggestions] = "self";
+    VISIBILITY[KEYS.assistApplications] = "self";
+
+    function getAll(key) {
+      return storageGet(key) || [];
+    }
+    function getOrg(id) {
+      return getAll(KEYS.orgs).find((o) => o.id === id) || null;
+    }
+    function getOrgDescendants(orgId) {
+      return getAll(KEYS.orgs)
+        .filter((o) => (o.path || []).includes(orgId))
+        .map((o) => o.id);
+    }
+    function isAncestorOrg(ancestorId, childId) {
+      const child = getOrg(childId);
+      return !!(child && (child.path || []).includes(ancestorId));
+    }
+
+    function getPcSession() {
+      return storageGet(KEYS.pcSession);
+    }
+    function setPcSession(s) {
+      storageSet(KEYS.pcSession, s);
+    }
+    function getH5Session() {
+      return storageGet(KEYS.h5Session);
+    }
+    function setH5Session(s) {
+      storageSet(KEYS.h5Session, s);
+    }
+
+    function listForPc(key) {
+      const session = getPcSession();
+      if (!session || !session.orgId) return [];
+      const ids = new Set(getOrgDescendants(session.orgId));
+      return getAll(key).filter((r) => ids.has(r.orgId) && !r.deleted);
+    }
+    function canManage(record) {
+      const session = getPcSession();
+      return !!(record && session && record.orgId === session.orgId);
+    }
+
+    function scopeMatchesUser(record, sessionOrgId, path) {
+      const ids = record.scopeOrgIds;
+      if (ids && ids.length) return ids.includes(sessionOrgId);
+      if (record.scopeType === "org") return record.orgId === sessionOrgId;
+      // all_children / default: 发布方为本级或上级
+      return (path || []).includes(record.orgId);
+    }
+
+    function listForH5(moduleKey) {
+      const session = getH5Session();
+      if (!session) return [];
+      const orgId = session.orgId;
+      const userId = session.userId;
+      const userOrg = getOrg(orgId);
+      const path = userOrg ? (userOrg.path || []) : [];
+      const all = getAll(moduleKey).filter((r) => !r.deleted);
+      const rule = VISIBILITY[moduleKey];
+
+      if (rule === "upward") {
+        return all.filter((r) => r.status === "published" && path.includes(r.orgId));
+      }
+      if (rule === "village") {
+        if (moduleKey === KEYS.topics) {
+          return all.filter((r) => r.orgId === orgId && r.status !== "draft");
+        }
+        return all.filter((r) => r.orgId === orgId && r.status === "published");
+      }
+      if (rule === "scope") {
+        const statusOk =
+          moduleKey === KEYS.activities
+            ? (s) => s === "published"
+            : (s) => s === "open";
+        return all.filter((r) => statusOk(r.status) && scopeMatchesUser(r, orgId, path));
+      }
+      if (rule === "self") {
+        return all.filter((r) => r.userId === userId);
+      }
+      return all.filter((r) => r.status === "published");
+    }
+
+    function listVisible(key, opts) {
+      opts = opts || {};
+      if (opts.side === "h5" || opts.client === "h5") return listForH5(key);
+      return listForPc(key);
+    }
+
+    function getById(key, id) {
+      return getAll(key).find((x) => x.id === id) || null;
+    }
+    function saveRecord(key, record) {
+      const list = getAll(key);
+      const idx = list.findIndex((x) => x.id === record.id);
+      if (idx >= 0) list[idx] = record;
+      else list.unshift(record);
+      storageSet(key, list);
+      return record;
+    }
+    function removeRecord(key, id) {
+      const list = getAll(key).map((x) => (x.id === id ? Object.assign({}, x, { deleted: true }) : x));
+      storageSet(key, list);
+    }
+
     /* ========== Boot ========== */
     ensureSeed(false);
     console.log("notices", (storageGet(KEYS.notices) || []).length);
