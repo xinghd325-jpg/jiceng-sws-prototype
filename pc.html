@@ -1394,6 +1394,14 @@
       closed: { label: "已关闭", tag: "" },
       active: { label: "有效", tag: "tag-green" },
       inactive: { label: "停用", tag: "" },
+      pending: { label: "待处理", tag: "tag-orange" },
+      accepted: { label: "已受理", tag: "tag-blue" },
+      rejected: { label: "已驳回", tag: "tag-red" },
+      submitted: { label: "已提交", tag: "tag-orange" },
+      processing: { label: "办理中", tag: "tag-blue" },
+      done: { label: "已办结", tag: "tag-green" },
+      discussing: { label: "讨论中", tag: "tag-blue" },
+      voting: { label: "表决中", tag: "tag-green" },
     };
     const LEVEL_LABEL = { city: "市级", district: "区县", town: "乡镇", village: "村社" };
     const AFFAIR_TYPE_LABEL = { party: "党务", village: "村务", finance: "财务" };
@@ -1477,6 +1485,16 @@
           /* handled below */
         } else if (f.type === "arrayText" && Array.isArray(val)) {
           val = val.join(",");
+        } else if (
+          (f.type === "textarea" || f.type === "json") &&
+          val != null &&
+          typeof val === "object"
+        ) {
+          try {
+            val = JSON.stringify(val, null, 2);
+          } catch (e) {
+            val = String(val);
+          }
         }
         html +=
           '<div class="form-field' +
@@ -2270,6 +2288,1432 @@
       };
     }
 
+    /* ========== 人民建议 + 议事协商 + 服务资源 ========== */
+    function openReasonDrawer(opts) {
+      opts = opts || {};
+      const fields = [
+        {
+          key: "reason",
+          label: opts.label || "原因/说明",
+          type: "textarea",
+          required: !!opts.required,
+          full: true,
+          rows: opts.rows || 4,
+          placeholder: opts.placeholder || "请输入",
+        },
+      ];
+      const initial = { reason: opts.defaultValue || "" };
+      openDrawer({
+        title: opts.title || "填写说明",
+        mode: "edit",
+        bodyHtml: buildFormHtml(fields, initial, "edit"),
+        onSubmit: function () {
+          const panel = document.getElementById("sws-drawer");
+          if (!panel) return false;
+          const values = readFormValues(panel, fields);
+          const err = validateFormFields(fields, values);
+          if (err) {
+            toast(err, "warning");
+            return false;
+          }
+          if (typeof opts.onOk === "function") {
+            const r = opts.onOk(values.reason || "");
+            if (r === false) return false;
+          }
+          return true;
+        },
+      });
+    }
+
+    function parseJsonField(raw, fallback) {
+      if (raw == null || raw === "") return fallback;
+      if (typeof raw === "object") return raw;
+      try {
+        return JSON.parse(raw);
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function registerSuggestDeliberationResourcePages() {
+      const timeCol = {
+        title: "更新时间",
+        key: "updatedAt",
+        width: "140px",
+        render: function (r) {
+          return escapeHtml(formatDateTime(r.updatedAt || r.createdAt));
+        },
+      };
+      const statusCol = {
+        title: "状态",
+        key: "status",
+        width: "90px",
+        render: function (r) {
+          return statusTagHtml(r.status);
+        },
+      };
+      const pubStatusFilter = {
+        key: "status",
+        label: "状态",
+        type: "select",
+        options: [
+          { value: "draft", label: "草稿" },
+          { value: "published", label: "已发布" },
+          { value: "offline", label: "已下架" },
+        ],
+      };
+
+      function setRowStatus(storeKey, row, nextStatus, extra, successMsg) {
+        if (!canManage(row)) {
+          toast("仅可操作本级数据", "warning");
+          return;
+        }
+        const now = nowISO();
+        const next = Object.assign({}, row, extra || {}, { status: nextStatus, updatedAt: now });
+        if (nextStatus === "published" && !next.publishAt) next.publishAt = now;
+        if (nextStatus === "open" && !next.publishAt) next.publishAt = now;
+        saveRecord(storeKey, next);
+        toast(successMsg || "状态已更新", "success");
+      }
+
+      /* ---- Step1 建议线索归集 ---- */
+      Pages["suggestion-inbox"] = function (container) {
+        const api = mountCrudPage(container, {
+          title: "建议线索归集",
+          storeKey: KEYS.suggestionInbox,
+          idPrefix: "sin",
+          allowCreate: false,
+          statusActions: false,
+          filters: [
+            { key: "title", label: "标题", placeholder: "标题关键词" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "pending", label: "待处理" },
+                { value: "accepted", label: "已受理" },
+                { value: "rejected", label: "已驳回" },
+                { value: "closed", label: "已办结" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            { title: "来源", key: "source", width: "100px" },
+            statusCol,
+            {
+              title: "驳回原因",
+              key: "rejectReason",
+              width: "140px",
+              render: function (r) {
+                return escapeHtml(r.rejectReason || "-");
+              },
+            },
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", required: true, full: true },
+            { key: "source", label: "来源" },
+            { key: "content", label: "内容", type: "textarea", full: true, rows: 5 },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "pending", label: "待处理" },
+                { value: "accepted", label: "已受理" },
+                { value: "rejected", label: "已驳回" },
+                { value: "closed", label: "已办结" },
+              ],
+            },
+            { key: "rejectReason", label: "驳回原因", type: "textarea", full: true, rows: 3 },
+          ],
+          extraRowActions: function (row) {
+            if (!canManage(row)) return [];
+            const acts = [];
+            if (row.status === "pending") {
+              acts.push({
+                label: "受理",
+                onClick: function () {
+                  confirmDialog({
+                    title: "确认受理",
+                    content: "确认受理该归集线索？",
+                    onOk: function () {
+                      setRowStatus(KEYS.suggestionInbox, row, "accepted", {}, "已受理");
+                      api.refresh();
+                    },
+                  });
+                },
+              });
+              acts.push({
+                label: "驳回",
+                onClick: function () {
+                  openReasonDrawer({
+                    title: "驳回线索",
+                    label: "驳回原因",
+                    required: true,
+                    placeholder: "请填写驳回原因",
+                    onOk: function (reason) {
+                      setRowStatus(
+                        KEYS.suggestionInbox,
+                        row,
+                        "rejected",
+                        { rejectReason: reason },
+                        "已驳回"
+                      );
+                      api.refresh();
+                    },
+                  });
+                },
+              });
+              acts.push({
+                label: "办结",
+                onClick: function () {
+                  openReasonDrawer({
+                    title: "办结线索",
+                    label: "办结说明",
+                    required: false,
+                    placeholder: "可选填说明",
+                    onOk: function (reason) {
+                      setRowStatus(
+                        KEYS.suggestionInbox,
+                        row,
+                        "closed",
+                        reason ? { handleRemark: reason } : {},
+                        "已办结"
+                      );
+                      api.refresh();
+                    },
+                  });
+                },
+              });
+            }
+            if (row.status === "pending" || row.status === "accepted") {
+              acts.push({
+                label: "转为处置",
+                onClick: function () {
+                  confirmDialog({
+                    title: "转为处置",
+                    content: "将写入一条「已提交」的线索建议，是否继续？",
+                    onOk: function () {
+                      const ctx = getSessionOrgContext();
+                      const now = nowISO();
+                      const sug = {
+                        id: uid("sug"),
+                        campaignId: null,
+                        userId: null,
+                        userName: row.createdBy || "归集线索",
+                        title: row.title,
+                        content: row.content,
+                        orgId: row.orgId || ctx.orgId,
+                        orgLevel: row.orgLevel || ctx.orgLevel,
+                        orgName: row.orgName || ctx.orgName,
+                        status: "submitted",
+                        fromInboxId: row.id,
+                        createdAt: now,
+                        updatedAt: now,
+                      };
+                      saveRecord(KEYS.suggestions, sug);
+                      setRowStatus(KEYS.suggestionInbox, row, "accepted", {}, "已转为处置");
+                      toast("已写入线索建议（submitted）", "success");
+                      api.refresh();
+                    },
+                  });
+                },
+              });
+            }
+            return acts;
+          },
+        });
+      };
+
+      /* ---- Step2 征集活动 ---- */
+      Pages["collect-campaign"] = function (container) {
+        const api = mountCrudPage(container, {
+          title: "线索建议征集活动",
+          storeKey: KEYS.collectCampaigns,
+          idPrefix: "cmp",
+          statusActions: false,
+          filters: [
+            { key: "title", label: "标题", placeholder: "活动名称" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "open", label: "进行中" },
+                { value: "closed", label: "已关闭" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "活动名称", key: "title" },
+            {
+              title: "时间",
+              key: "startAt",
+              width: "180px",
+              render: function (r) {
+                return escapeHtml(formatDateTime(r.startAt) + " ~ " + formatDateTime(r.endAt));
+              },
+            },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "活动名称", required: true, full: true },
+            { key: "desc", label: "活动说明", type: "textarea", full: true, rows: 4 },
+            { key: "startAt", label: "开始时间", type: "datetime" },
+            { key: "endAt", label: "结束时间", type: "datetime" },
+            {
+              key: "scopeType",
+              label: "可见范围",
+              type: "select",
+              options: [
+                { value: "all_children", label: "本级及下级" },
+                { value: "org", label: "仅本组织" },
+              ],
+              defaultValue: "all_children",
+            },
+            {
+              key: "scopeOrgIds",
+              label: "指定组织ID",
+              type: "arrayText",
+              placeholder: "逗号分隔，可空",
+            },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "open", label: "进行中" },
+                { value: "closed", label: "已关闭" },
+              ],
+              defaultValue: "draft",
+            },
+          ],
+          extraRowActions: function (row) {
+            if (!canManage(row)) return [];
+            const acts = [];
+            if (row.status === "draft" || row.status === "closed") {
+              acts.push({
+                label: "开启",
+                onClick: function () {
+                  setRowStatus(KEYS.collectCampaigns, row, "open", {}, "已开启征集");
+                  api.refresh();
+                },
+              });
+            }
+            if (row.status === "open") {
+              acts.push({
+                label: "关闭",
+                onClick: function () {
+                  setRowStatus(KEYS.collectCampaigns, row, "closed", {}, "已关闭征集");
+                  api.refresh();
+                },
+              });
+            }
+            return acts;
+          },
+        });
+      };
+
+      /* ---- Step3 线索建议受理 ---- */
+      Pages["suggestion-handle"] = function (container) {
+        const api = mountCrudPage(container, {
+          title: "线索建议受理",
+          storeKey: KEYS.suggestions,
+          idPrefix: "sug",
+          allowCreate: false,
+          statusActions: false,
+          filters: [
+            { key: "title", label: "标题", placeholder: "建议标题" },
+            { key: "userName", label: "提交人", placeholder: "姓名" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "submitted", label: "已提交" },
+                { value: "accepted", label: "已受理" },
+                { value: "processing", label: "办理中" },
+                { value: "done", label: "已办结" },
+                { value: "rejected", label: "已驳回" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            { title: "提交人", key: "userName", width: "90px" },
+            {
+              title: "征集活动",
+              key: "campaignId",
+              width: "120px",
+              render: function (r) {
+                if (!r.campaignId) return "-";
+                const c = getById(KEYS.collectCampaigns, r.campaignId);
+                return escapeHtml((c && c.title) || r.campaignId);
+              },
+            },
+            statusCol,
+            {
+              title: "办理回复",
+              key: "handleRemark",
+              render: function (r) {
+                const t = r.handleRemark || r.reply || "";
+                return escapeHtml(t ? (t.length > 28 ? t.slice(0, 28) + "…" : t) : "-");
+              },
+            },
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", full: true },
+            { key: "userName", label: "提交人" },
+            { key: "content", label: "建议内容", type: "textarea", full: true, rows: 5 },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "submitted", label: "已提交" },
+                { value: "accepted", label: "已受理" },
+                { value: "processing", label: "办理中" },
+                { value: "done", label: "已办结" },
+                { value: "rejected", label: "已驳回" },
+              ],
+            },
+            {
+              key: "handleRemark",
+              label: "办理回复",
+              type: "textarea",
+              full: true,
+              rows: 3,
+              placeholder: "写 reply/handleRemark",
+            },
+          ],
+          onBeforeSave: function (saved) {
+            if (saved.handleRemark) saved.reply = saved.handleRemark;
+            return saved;
+          },
+          extraRowActions: function (row) {
+            if (!canManage(row)) return [];
+            const acts = [];
+            function flow(nextStatus, title, needReason) {
+              return {
+                label: title,
+                onClick: function () {
+                  if (needReason) {
+                    openReasonDrawer({
+                      title: title,
+                      label: "办理回复",
+                      required: nextStatus === "rejected" || nextStatus === "done",
+                      defaultValue: row.handleRemark || row.reply || "",
+                      onOk: function (reason) {
+                        setRowStatus(
+                          KEYS.suggestions,
+                          row,
+                          nextStatus,
+                          { handleRemark: reason, reply: reason },
+                          "状态已更新"
+                        );
+                        api.refresh();
+                      },
+                    });
+                  } else {
+                    confirmDialog({
+                      title: title,
+                      content: "确认将状态变更为「" + title + "」？",
+                      onOk: function () {
+                        setRowStatus(KEYS.suggestions, row, nextStatus, {}, "状态已更新");
+                        api.refresh();
+                      },
+                    });
+                  }
+                },
+              };
+            }
+            if (row.status === "submitted") {
+              acts.push(flow("accepted", "受理", false));
+              acts.push(flow("rejected", "驳回", true));
+            }
+            if (row.status === "accepted") {
+              acts.push(flow("processing", "开始办理", false));
+              acts.push(flow("rejected", "驳回", true));
+            }
+            if (row.status === "processing") {
+              acts.push(flow("done", "办结", true));
+              acts.push(flow("rejected", "驳回", true));
+            }
+            if (row.status === "accepted" || row.status === "processing") {
+              acts.push({
+                label: "写回复",
+                onClick: function () {
+                  openReasonDrawer({
+                    title: "办理回复",
+                    label: "回复内容",
+                    required: true,
+                    defaultValue: row.handleRemark || row.reply || "",
+                    onOk: function (reason) {
+                      setRowStatus(
+                        KEYS.suggestions,
+                        row,
+                        row.status,
+                        { handleRemark: reason, reply: reason },
+                        "回复已保存"
+                      );
+                      api.refresh();
+                    },
+                  });
+                },
+              });
+            }
+            return acts;
+          },
+        });
+      };
+
+      /* ---- Step4 民主评议与满意度测评 ---- */
+      const SURVEY_TYPE_LABEL = { review: "民主评议", satisfaction: "满意度测评" };
+      Pages["survey-manage"] = function (container) {
+        const api = mountCrudPage(container, {
+          title: "民主评议与满意度测评",
+          storeKey: KEYS.surveys,
+          idPrefix: "srv",
+          statusActions: false,
+          filters: [
+            { key: "title", label: "标题", placeholder: "问卷标题" },
+            {
+              key: "type",
+              label: "类型",
+              type: "select",
+              options: [
+                { value: "review", label: "民主评议" },
+                { value: "satisfaction", label: "满意度测评" },
+              ],
+            },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "open", label: "进行中" },
+                { value: "closed", label: "已关闭" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            {
+              title: "类型",
+              key: "type",
+              width: "100px",
+              render: function (r) {
+                return escapeHtml(SURVEY_TYPE_LABEL[r.type] || r.type || "满意度测评");
+              },
+            },
+            {
+              title: "题目数",
+              key: "questions",
+              width: "70px",
+              render: function (r) {
+                return String((r.questions && r.questions.length) || 0);
+              },
+            },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", required: true, full: true },
+            { key: "desc", label: "说明", type: "textarea", full: true, rows: 3 },
+            {
+              key: "type",
+              label: "类型",
+              type: "select",
+              options: [
+                { value: "review", label: "民主评议" },
+                { value: "satisfaction", label: "满意度测评" },
+              ],
+              defaultValue: "satisfaction",
+            },
+            {
+              key: "questions",
+              label: "题目(JSON数组)",
+              type: "textarea",
+              required: true,
+              full: true,
+              rows: 6,
+              placeholder: '[{"id":"q1","type":"score","label":"满意度"}]',
+              defaultValue: '[{"id":"q1","type":"score","label":"整体满意度(1-5)"}]',
+            },
+            { key: "startAt", label: "开始时间", type: "datetime" },
+            { key: "endAt", label: "结束时间", type: "datetime" },
+            {
+              key: "scopeType",
+              label: "可见范围",
+              type: "select",
+              options: [
+                { value: "all_children", label: "本级及下级" },
+                { value: "org", label: "仅本组织" },
+              ],
+              defaultValue: "all_children",
+            },
+            {
+              key: "scopeOrgIds",
+              label: "指定组织ID",
+              type: "arrayText",
+              placeholder: "逗号分隔，可空",
+            },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "open", label: "进行中" },
+                { value: "closed", label: "已关闭" },
+              ],
+              defaultValue: "draft",
+            },
+          ],
+          onBeforeSave: function (saved) {
+            const q = parseJsonField(saved.questions, null);
+            if (!Array.isArray(q)) {
+              toast("题目须为合法 JSON 数组", "warning");
+              return false;
+            }
+            saved.questions = q;
+            if (!saved.type) saved.type = "satisfaction";
+            return saved;
+          },
+          extraRowActions: function (row) {
+            const acts = [];
+            if (canManage(row)) {
+              if (row.status === "draft" || row.status === "closed") {
+                acts.push({
+                  label: "开启",
+                  onClick: function () {
+                    setRowStatus(KEYS.surveys, row, "open", {}, "已开启");
+                    api.refresh();
+                  },
+                });
+              }
+              if (row.status === "open") {
+                acts.push({
+                  label: "关闭",
+                  onClick: function () {
+                    setRowStatus(KEYS.surveys, row, "closed", {}, "已关闭");
+                    api.refresh();
+                  },
+                });
+              }
+            }
+            acts.push({
+              label: "答卷明细",
+              onClick: function () {
+                openSurveyAnswersDrawer(row);
+              },
+            });
+            return acts;
+          },
+        });
+      };
+
+      function openSurveyAnswersDrawer(survey) {
+        const all = getAll(KEYS.surveyAnswers).filter(function (a) {
+          return a.surveyId === survey.id && !a.deleted;
+        });
+        const qLabels = {};
+        (survey.questions || []).forEach(function (q) {
+          if (q && q.id) qLabels[q.id] = q.label || q.id;
+        });
+        const body =
+          '<div class="form-section-title">答卷明细（' +
+          all.length +
+          "）</div>" +
+          '<div class="toolbar"><button type="button" class="btn btn-primary btn-sm" data-act="export-csv">导出 CSV</button></div>' +
+          '<div data-role="ans-table"></div>';
+        const drawer = openDrawer({
+          title: "答卷 — " + (survey.title || ""),
+          mode: "view",
+          bodyHtml: body,
+        });
+        const host = drawer.panel.querySelector('[data-role="ans-table"]');
+        renderTable(host, {
+          columns: [
+            { title: "姓名", key: "userName", width: "90px" },
+            { title: "所属组织", key: "orgName", width: "110px" },
+            {
+              title: "答案摘要",
+              key: "answers",
+              render: function (r) {
+                const ans = r.answers || {};
+                const parts = Object.keys(ans).map(function (k) {
+                  return (qLabels[k] || k) + ":" + ans[k];
+                });
+                const t = parts.join("；");
+                return escapeHtml(t.length > 48 ? t.slice(0, 48) + "…" : t || "-");
+              },
+            },
+            {
+              title: "提交时间",
+              key: "createdAt",
+              width: "140px",
+              render: function (r) {
+                return escapeHtml(formatDateTime(r.createdAt));
+              },
+            },
+          ],
+          rows: all,
+        });
+        const expBtn = drawer.panel.querySelector('[data-act="export-csv"]');
+        if (expBtn) {
+          expBtn.addEventListener("click", function () {
+            const qIds = (survey.questions || []).map(function (q) {
+              return q.id;
+            });
+            const headers = ["姓名", "所属组织", "提交时间"].concat(
+              qIds.map(function (id) {
+                return qLabels[id] || id;
+              })
+            );
+            exportCsv(
+              "survey_answers_" + (survey.id || "") + ".csv",
+              headers,
+              all.map(function (r) {
+                const ans = r.answers || {};
+                return [r.userName || "", r.orgName || "", formatDateTime(r.createdAt)].concat(
+                  qIds.map(function (id) {
+                    return ans[id] != null ? ans[id] : "";
+                  })
+                );
+              })
+            );
+            toast("已导出 CSV", "success");
+          });
+        }
+      }
+
+      /* ---- Step5 议事四页 ---- */
+      Pages["topic-list"] = function (container) {
+        const api = mountCrudPage(container, {
+          title: "议题发布管理",
+          storeKey: KEYS.topics,
+          idPrefix: "top",
+          statusActions: false,
+          filters: [
+            { key: "title", label: "标题", placeholder: "议题标题" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "discussing", label: "讨论中" },
+                { value: "voting", label: "表决中" },
+                { value: "closed", label: "已关闭" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "议题", key: "title" },
+            {
+              title: "选项数",
+              key: "options",
+              width: "70px",
+              render: function (r) {
+                return String((r.options && r.options.length) || 0);
+              },
+            },
+            statusCol,
+            {
+              title: "结果公示",
+              key: "resultPublic",
+              width: "80px",
+              render: function (r) {
+                return r.resultPublic ? '<span class="tag tag-green">已公示</span>' : "未公示";
+              },
+            },
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "议题标题", required: true, full: true },
+            { key: "content", label: "议题说明", type: "textarea", required: true, full: true, rows: 4 },
+            {
+              key: "options",
+              label: "表决选项(JSON)",
+              type: "textarea",
+              full: true,
+              rows: 4,
+              placeholder: '[{"id":"opt_a","label":"同意"},{"id":"opt_b","label":"反对"}]',
+              defaultValue:
+                '[{"id":"opt_a","label":"同意"},{"id":"opt_b","label":"反对"},{"id":"opt_c","label":"弃权"}]',
+            },
+            { key: "discussStart", label: "讨论开始", type: "datetime" },
+            { key: "voteStart", label: "表决开始", type: "datetime" },
+            { key: "voteEnd", label: "表决结束", type: "datetime" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "discussing", label: "讨论中" },
+                { value: "voting", label: "表决中" },
+                { value: "closed", label: "已关闭" },
+              ],
+              defaultValue: "draft",
+            },
+            {
+              key: "resultPublic",
+              label: "结果公示",
+              type: "checkbox",
+              checkLabel: "向居民公示表决结果",
+              defaultValue: false,
+            },
+          ],
+          onBeforeSave: function (saved) {
+            const opts = parseJsonField(saved.options, null);
+            if (!Array.isArray(opts) || !opts.length) {
+              toast("表决选项须为非空 JSON 数组", "warning");
+              return false;
+            }
+            saved.options = opts;
+            saved.resultPublic = !!saved.resultPublic;
+            return saved;
+          },
+          extraRowActions: function (row) {
+            if (!canManage(row)) return [];
+            const acts = [];
+            if (row.status === "draft") {
+              acts.push({
+                label: "开启讨论",
+                onClick: function () {
+                  setRowStatus(
+                    KEYS.topics,
+                    row,
+                    "discussing",
+                    { discussStart: row.discussStart || nowISO() },
+                    "已开启讨论"
+                  );
+                  api.refresh();
+                },
+              });
+            }
+            if (row.status === "discussing") {
+              acts.push({
+                label: "开启表决",
+                onClick: function () {
+                  setRowStatus(
+                    KEYS.topics,
+                    row,
+                    "voting",
+                    { voteStart: row.voteStart || nowISO() },
+                    "已开启表决"
+                  );
+                  api.refresh();
+                },
+              });
+            }
+            if (row.status === "voting" || row.status === "discussing") {
+              acts.push({
+                label: "关闭议题",
+                onClick: function () {
+                  setRowStatus(KEYS.topics, row, "closed", {}, "议题已关闭");
+                  api.refresh();
+                },
+              });
+            }
+            return acts;
+          },
+        });
+      };
+
+      Pages["topic-discuss"] = function (container) {
+        let filterTopicId = "";
+        let filterKeyword = "";
+        container.innerHTML =
+          '<div class="page-title">讨论协商管理</div>' +
+          '<div class="filter-card" data-role="filters"></div>' +
+          '<div class="toolbar" data-role="toolbar"></div>' +
+          '<div data-role="table"></div>' +
+          '<div class="table-footer" data-role="footer"></div>';
+        const filterEl = container.querySelector('[data-role="filters"]');
+        const toolbarEl = container.querySelector('[data-role="toolbar"]');
+        const tableEl = container.querySelector('[data-role="table"]');
+        const footerEl = container.querySelector('[data-role="footer"]');
+
+        function topicsOpts() {
+          return listForPc(KEYS.topics)
+            .filter(function (t) {
+              return t.status !== "draft";
+            })
+            .map(function (t) {
+              return { value: t.id, label: t.title };
+            });
+        }
+
+        function renderFilters() {
+          const opts = topicsOpts();
+          let html =
+            '<div class="filter-row">' +
+            '<div class="filter-item"><label>议题</label><select class="form-control" data-filter="topicId"><option value="">全部议题</option>';
+          opts.forEach(function (o) {
+            html +=
+              '<option value="' +
+              escapeHtml(o.value) +
+              '"' +
+              (filterTopicId === o.value ? " selected" : "") +
+              ">" +
+              escapeHtml(o.label) +
+              "</option>";
+          });
+          html +=
+            "</select></div>" +
+            '<div class="filter-item"><label>内容</label><input type="text" class="form-control" data-filter="kw" value="' +
+            escapeHtml(filterKeyword) +
+            '" placeholder="评论关键词" /></div>' +
+            '<div class="filter-actions">' +
+            '<button type="button" class="btn btn-primary" data-act="query">查询</button>' +
+            '<button type="button" class="btn btn-default" data-act="reset">重置</button>' +
+            "</div></div>";
+          filterEl.innerHTML = html;
+          filterEl.querySelector('[data-act="query"]').addEventListener("click", function () {
+            filterTopicId = filterEl.querySelector('[data-filter="topicId"]').value;
+            filterKeyword = filterEl.querySelector('[data-filter="kw"]').value || "";
+            refresh();
+          });
+          filterEl.querySelector('[data-act="reset"]').addEventListener("click", function () {
+            filterTopicId = "";
+            filterKeyword = "";
+            renderFilters();
+            refresh();
+          });
+        }
+
+        toolbarEl.innerHTML =
+          '<button type="button" class="btn btn-success" data-act="admin-reply"><i class="ri-reply-line"></i> 管理员发言</button>';
+        toolbarEl.querySelector('[data-act="admin-reply"]').addEventListener("click", function () {
+          const topics = listForPc(KEYS.topics).filter(function (t) {
+            return t.status === "discussing" || t.status === "voting";
+          });
+          if (!topics.length) {
+            toast("暂无可讨论议题", "warning");
+            return;
+          }
+          const fields = [
+            {
+              key: "topicId",
+              label: "议题",
+              type: "select",
+              required: true,
+              options: topics.map(function (t) {
+                return { value: t.id, label: t.title };
+              }),
+              defaultValue: filterTopicId || topics[0].id,
+            },
+            {
+              key: "content",
+              label: "回复内容",
+              type: "textarea",
+              required: true,
+              full: true,
+              rows: 4,
+            },
+          ];
+          openDrawer({
+            title: "管理员回复",
+            mode: "create",
+            bodyHtml: buildFormHtml(fields, {}, "create"),
+            onSubmit: function () {
+              const panel = document.getElementById("sws-drawer");
+              const values = readFormValues(panel, fields);
+              const err = validateFormFields(fields, values);
+              if (err) {
+                toast(err, "warning");
+                return false;
+              }
+              const topic = getById(KEYS.topics, values.topicId);
+              if (!topic) {
+                toast("议题不存在", "error");
+                return false;
+              }
+              if (!canManage(topic)) {
+                toast("仅可对本级议题回复", "warning");
+                return false;
+              }
+              const ctx = getSessionOrgContext();
+              const now = nowISO();
+              saveRecord(KEYS.topicComments, {
+                id: uid("tcm"),
+                topicId: values.topicId,
+                userId: "admin",
+                userName: ctx.userName || "管理员",
+                content: values.content,
+                orgId: topic.orgId,
+                orgLevel: topic.orgLevel,
+                orgName: topic.orgName,
+                status: "active",
+                isAdmin: true,
+                createdAt: now,
+                updatedAt: now,
+              });
+              toast("回复已发布", "success");
+              refresh();
+              return true;
+            },
+          });
+        });
+
+        function refresh() {
+          const topicIds = new Set(
+            listForPc(KEYS.topics).map(function (t) {
+              return t.id;
+            })
+          );
+          let rows = getAll(KEYS.topicComments).filter(function (c) {
+            return !c.deleted && topicIds.has(c.topicId);
+          });
+          if (filterTopicId) {
+            rows = rows.filter(function (c) {
+              return c.topicId === filterTopicId;
+            });
+          }
+          if (filterKeyword) {
+            rows = rows.filter(function (c) {
+              return String(c.content || "").indexOf(filterKeyword) >= 0;
+            });
+          }
+          rows = rows.slice().sort(function (a, b) {
+            return String(b.createdAt || "").localeCompare(String(a.createdAt || ""));
+          });
+          renderTable(tableEl, {
+            columns: [
+              {
+                title: "议题",
+                key: "topicId",
+                width: "160px",
+                render: function (r) {
+                  const t = getById(KEYS.topics, r.topicId);
+                  return escapeHtml((t && t.title) || r.topicId);
+                },
+              },
+              { title: "发言人", key: "userName", width: "90px" },
+              {
+                title: "内容",
+                key: "content",
+                render: function (r) {
+                  const prefix = r.isAdmin ? "[管理员] " : "";
+                  return escapeHtml(prefix + (r.content || ""));
+                },
+              },
+              {
+                title: "时间",
+                key: "createdAt",
+                width: "140px",
+                render: function (r) {
+                  return escapeHtml(formatDateTime(r.createdAt));
+                },
+              },
+            ],
+            rows: rows,
+            rowActions: function (row) {
+              const topic = getById(KEYS.topics, row.topicId);
+              if (!topic || !canManage(topic)) return [];
+              return [
+                {
+                  label: "回复",
+                  onClick: function () {
+                    openReasonDrawer({
+                      title: "回复评论",
+                      label: "回复内容",
+                      required: true,
+                      placeholder: "回复 @" + (row.userName || ""),
+                      onOk: function (reason) {
+                        const ctx = getSessionOrgContext();
+                        const now = nowISO();
+                        saveRecord(KEYS.topicComments, {
+                          id: uid("tcm"),
+                          topicId: row.topicId,
+                          userId: "admin",
+                          userName: ctx.userName || "管理员",
+                          content: "回复 @" + (row.userName || "") + "：" + reason,
+                          orgId: topic.orgId,
+                          orgLevel: topic.orgLevel,
+                          orgName: topic.orgName,
+                          status: "active",
+                          isAdmin: true,
+                          replyToId: row.id,
+                          createdAt: now,
+                          updatedAt: now,
+                        });
+                        toast("已回复", "success");
+                        refresh();
+                      },
+                    });
+                  },
+                },
+              ];
+            },
+          });
+          footerEl.textContent = "共 " + rows.length + " 条";
+        }
+
+        renderFilters();
+        refresh();
+      };
+
+      Pages["topic-vote"] = function (container) {
+        container.innerHTML =
+          '<div class="page-title">表决结果管理</div>' +
+          '<div class="filter-card" data-role="filters"></div>' +
+          '<div data-role="table"></div>' +
+          '<div class="table-footer" data-role="footer"></div>';
+        const filterEl = container.querySelector('[data-role="filters"]');
+        const tableEl = container.querySelector('[data-role="table"]');
+        const footerEl = container.querySelector('[data-role="footer"]');
+        let statusFilter = "";
+
+        filterEl.innerHTML =
+          '<div class="filter-row">' +
+          '<div class="filter-item"><label>状态</label><select class="form-control" data-filter="status">' +
+          '<option value="">全部</option>' +
+          '<option value="voting">表决中</option>' +
+          '<option value="closed">已关闭</option>' +
+          '<option value="discussing">讨论中</option>' +
+          "</select></div>" +
+          '<div class="filter-actions">' +
+          '<button type="button" class="btn btn-primary" data-act="query">查询</button>' +
+          '<button type="button" class="btn btn-default" data-act="reset">重置</button>' +
+          "</div></div>";
+        filterEl.querySelector('[data-act="query"]').addEventListener("click", function () {
+          statusFilter = filterEl.querySelector('[data-filter="status"]').value;
+          refresh();
+        });
+        filterEl.querySelector('[data-act="reset"]').addEventListener("click", function () {
+          statusFilter = "";
+          filterEl.querySelector('[data-filter="status"]').value = "";
+          refresh();
+        });
+
+        function aggregateVotes(topic) {
+          const votes = getAll(KEYS.topicVotes).filter(function (v) {
+            return v.topicId === topic.id && !v.deleted;
+          });
+          const options = topic.options || [];
+          const counts = {};
+          options.forEach(function (o) {
+            counts[o.id] = 0;
+          });
+          votes.forEach(function (v) {
+            if (counts[v.optionId] == null) counts[v.optionId] = 0;
+            counts[v.optionId]++;
+          });
+          let agree = 0;
+          let oppose = 0;
+          let abstain = 0;
+          options.forEach(function (o) {
+            const n = counts[o.id] || 0;
+            const lb = o.label || o.id;
+            if (/弃权/.test(lb)) abstain += n;
+            else if (/反对|不同意|不设置|暂不|延期/.test(lb)) oppose += n;
+            else if (/同意|赞成|支持|设置|按期|改建/.test(lb) && !/不/.test(lb.replace(/不同意|不设置/g, ""))) {
+              // 正向选项（含「同意改建」等）；排除纯否定词已在上一分支
+              if (/不[同设]|反对/.test(lb)) oppose += n;
+              else agree += n;
+            } else if (o.id === "opt_a") agree += n;
+            else if (o.id === "opt_b") oppose += n;
+            else if (o.id === "opt_c") abstain += n;
+          });
+          return {
+            total: votes.length,
+            agree: agree,
+            oppose: oppose,
+            abstain: abstain,
+            counts: counts,
+            options: options,
+          };
+        }
+
+        function refresh() {
+          let rows = listForPc(KEYS.topics).filter(function (t) {
+            return t.status === "voting" || t.status === "closed" || t.status === "discussing";
+          });
+          if (statusFilter) {
+            rows = rows.filter(function (t) {
+              return t.status === statusFilter;
+            });
+          }
+          renderTable(tableEl, {
+            columns: [
+              { title: "议题", key: "title" },
+              statusCol,
+              {
+                title: "同意",
+                key: "_agree",
+                width: "70px",
+                render: function (r) {
+                  return String(aggregateVotes(r).agree);
+                },
+              },
+              {
+                title: "反对",
+                key: "_oppose",
+                width: "70px",
+                render: function (r) {
+                  return String(aggregateVotes(r).oppose);
+                },
+              },
+              {
+                title: "弃权",
+                key: "_abstain",
+                width: "70px",
+                render: function (r) {
+                  return String(aggregateVotes(r).abstain);
+                },
+              },
+              {
+                title: "总票数",
+                key: "_total",
+                width: "70px",
+                render: function (r) {
+                  return String(aggregateVotes(r).total);
+                },
+              },
+              {
+                title: "分项",
+                key: "_detail",
+                render: function (r) {
+                  const agg = aggregateVotes(r);
+                  const parts = (agg.options || []).map(function (o) {
+                    return (o.label || o.id) + ":" + (agg.counts[o.id] || 0);
+                  });
+                  return escapeHtml(parts.join("；") || "-");
+                },
+              },
+              {
+                title: "公示",
+                key: "resultPublic",
+                width: "80px",
+                render: function (r) {
+                  return r.resultPublic
+                    ? '<span class="tag tag-green">已公示</span>'
+                    : '<span class="tag">未公示</span>';
+                },
+              },
+            ],
+            rows: rows,
+            rowActions: function (row) {
+              const acts = [
+                {
+                  label: "明细",
+                  onClick: function () {
+                    openVoteDetailDrawer(row);
+                  },
+                },
+              ];
+              if (canManage(row)) {
+                acts.push({
+                  label: row.resultPublic ? "取消公示" : "开启公示",
+                  onClick: function () {
+                    const next = Object.assign({}, row, {
+                      resultPublic: !row.resultPublic,
+                      updatedAt: nowISO(),
+                    });
+                    saveRecord(KEYS.topics, next);
+                    toast(next.resultPublic ? "已开启公示" : "已取消公示", "success");
+                    refresh();
+                  },
+                });
+              }
+              return acts;
+            },
+          });
+          footerEl.textContent = "共 " + rows.length + " 条";
+        }
+
+        function openVoteDetailDrawer(topic) {
+          const votes = getAll(KEYS.topicVotes).filter(function (v) {
+            return v.topicId === topic.id && !v.deleted;
+          });
+          const optMap = {};
+          (topic.options || []).forEach(function (o) {
+            optMap[o.id] = o.label || o.id;
+          });
+          const body =
+            '<div class="form-section-title">投票明细（' +
+            votes.length +
+            "）</div><div data-role=" +
+            '"vt-table"></div>';
+          const drawer = openDrawer({
+            title: "表决明细 — " + (topic.title || ""),
+            mode: "view",
+            bodyHtml: body,
+          });
+          renderTable(drawer.panel.querySelector('[data-role="vt-table"]'), {
+            columns: [
+              { title: "姓名", key: "userName", width: "90px" },
+              {
+                title: "选项",
+                key: "optionId",
+                render: function (r) {
+                  return escapeHtml(optMap[r.optionId] || r.optionId || "-");
+                },
+              },
+              { title: "所属组织", key: "orgName", width: "110px" },
+              {
+                title: "投票时间",
+                key: "createdAt",
+                width: "140px",
+                render: function (r) {
+                  return escapeHtml(formatDateTime(r.createdAt));
+                },
+              },
+            ],
+            rows: votes,
+          });
+        }
+
+        refresh();
+      };
+
+      Pages["resident-list"] = function (container) {
+        mountCrudPage(container, {
+          title: "村社居民人员管理",
+          storeKey: KEYS.residents,
+          idPrefix: "res",
+          statusActions: false,
+          filters: [
+            { key: "name", label: "姓名", placeholder: "姓名" },
+            { key: "phone", label: "手机", placeholder: "手机号" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "active", label: "有效" },
+                { value: "inactive", label: "停用" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "姓名", key: "name", width: "90px" },
+            { title: "手机", key: "phone", width: "120px" },
+            { title: "证件号", key: "idCard", width: "160px" },
+            { title: "地址", key: "address" },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "name", label: "姓名", required: true },
+            { key: "phone", label: "手机", required: true },
+            { key: "idCard", label: "证件号" },
+            { key: "address", label: "住址", full: true },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "active", label: "有效" },
+                { value: "inactive", label: "停用" },
+              ],
+              defaultValue: "active",
+            },
+          ],
+        });
+      };
+
+      /* ---- Step6 设施与力量 ---- */
+      Pages["facility-list"] = function (container) {
+        mountCrudPage(container, {
+          title: "设施资源管理",
+          storeKey: KEYS.facilities,
+          idPrefix: "fac",
+          filters: [
+            { key: "name", label: "名称", placeholder: "设施名称" },
+            { key: "type", label: "类型", placeholder: "如党群服务" },
+            pubStatusFilter,
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类型", key: "type", width: "110px" },
+            { title: "地址", key: "address" },
+            { title: "开放时间", key: "openTime", width: "120px" },
+            { title: "联系方式", key: "contact", width: "120px" },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "name", label: "设施名称", required: true },
+            { key: "type", label: "类型", required: true, placeholder: "如党群服务" },
+            { key: "address", label: "地址", required: true, full: true },
+            { key: "openTime", label: "开放时间", placeholder: "如工作日 8:30-17:30" },
+            { key: "contact", label: "联系方式" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "published", label: "已发布" },
+                { value: "offline", label: "已下架" },
+              ],
+              defaultValue: "draft",
+            },
+          ],
+        });
+      };
+
+      Pages["force-list"] = function (container) {
+        mountCrudPage(container, {
+          title: "力量资源管理",
+          storeKey: KEYS.forces,
+          idPrefix: "frc",
+          filters: [
+            { key: "name", label: "名称", placeholder: "队伍名称" },
+            { key: "type", label: "类型", placeholder: "如志愿服务" },
+            pubStatusFilter,
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类型", key: "type", width: "100px" },
+            { title: "负责人", key: "leader", width: "90px" },
+            { title: "电话", key: "phone", width: "120px" },
+            {
+              title: "人数",
+              key: "memberCount",
+              width: "70px",
+              render: function (r) {
+                return r.memberCount != null ? String(r.memberCount) : "-";
+              },
+            },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "name", label: "队伍名称", required: true },
+            { key: "type", label: "类型", required: true, placeholder: "如志愿服务" },
+            { key: "leader", label: "负责人", required: true },
+            { key: "phone", label: "联系电话" },
+            { key: "memberCount", label: "成员人数", type: "number", min: 0, defaultValue: 0 },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "published", label: "已发布" },
+                { value: "offline", label: "已下架" },
+              ],
+              defaultValue: "draft",
+            },
+          ],
+        });
+      };
+    }
+
     /* ========== PC Shell: top menu + sidebar routes ========== */
     const TOP_MENUS = [
       { id: "home", label: "首页", enabled: false },
@@ -2374,6 +3818,7 @@
 
     const Pages = {};
     registerInfoDisclosurePages();
+    registerSuggestDeliberationResourcePages();
     const DEFAULT_ROUTE = "notice-list";
     let _currentRouteId = null;
     const _menuCollapsed = {};
