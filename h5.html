@@ -359,6 +359,342 @@
       transition: opacity 0.2s;
     }
     .h5-toast.show { opacity: 1; }
+
+    /* ---- List / detail / form ---- */
+    .h5-page { min-height: 100%; display: flex; flex-direction: column; }
+    .h5-page.with-footer { padding-bottom: 64px; }
+    .h5-list { padding: 10px 12px 16px; display: flex; flex-direction: column; gap: 8px; }
+    .h5-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 12px;
+      cursor: pointer;
+    }
+    .h5-card:active { background: #fafafa; }
+    .h5-card.static { cursor: default; }
+    .h5-card.static:active { background: #fff; }
+    .h5-card-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.88);
+      line-height: 1.4;
+    }
+    .h5-card-meta {
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px 10px;
+      align-items: center;
+    }
+    .h5-card-desc {
+      margin-top: 6px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.65);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      line-height: 16px;
+      padding: 0 6px;
+      border-radius: 2px;
+      border: 1px solid var(--color-border);
+      color: rgba(0,0,0,0.65);
+      background: #fafafa;
+    }
+    .tag.primary { color: var(--color-primary); border-color: #91caff; background: #e6f4ff; }
+    .tag.success { color: #389e0d; border-color: #b7eb8f; background: #f6ffed; }
+    .tag.warning { color: #d48806; border-color: #ffe58f; background: #fffbe6; }
+    .tag.danger { color: #cf1322; border-color: #ffa39e; background: #fff1f0; }
+    .h5-detail { padding: 12px; }
+    .h5-detail-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 14px;
+    }
+    .h5-detail-title { font-size: 17px; font-weight: 600; line-height: 1.4; }
+    .h5-detail-meta { margin-top: 8px; font-size: 12px; color: rgba(0,0,0,0.45); line-height: 1.7; }
+    .h5-detail-body {
+      margin-top: 12px;
+      font-size: 14px;
+      color: rgba(0,0,0,0.88);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+    .h5-section {
+      margin-top: 12px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 12px;
+    }
+    .h5-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .h5-section-title::before {
+      content: "";
+      width: 3px;
+      height: 12px;
+      background: var(--color-primary);
+      border-radius: 1px;
+    }
+    .h5-form { padding: 12px; }
+    .form-item { margin-bottom: 12px; }
+    .form-label {
+      display: block;
+      font-size: 13px;
+      color: rgba(0,0,0,0.65);
+      margin-bottom: 6px;
+    }
+    .form-label .req { color: var(--color-danger); margin-right: 2px; }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      height: 36px;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 0 10px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: rgba(0,0,0,0.88);
+      outline: none;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--color-primary);
+    }
+    .form-textarea { height: auto; min-height: 96px; padding: 8px 10px; resize: vertical; line-height: 1.5; }
+    .form-select { appearance: none; background-image: linear-gradient(45deg, transparent 50%, #999 50%), linear-gradient(135deg, #999 50%, transparent 50%); background-position: calc(100% - 14px) 15px, calc(100% - 9px) 15px; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; }
+    .score-row { display: flex; gap: 6px; flex-wrap: wrap; }
+    .score-opt {
+      width: 36px;
+      height: 32px;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: rgba(0,0,0,0.65);
+      cursor: pointer;
+      background: #fff;
+    }
+    .score-opt.active {
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      background: #e6f4ff;
+    }
+    .h5-footer {
+      position: sticky;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin-top: auto;
+      padding: 10px 12px;
+      background: #fff;
+      border-top: 1px solid var(--color-border);
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+    }
+    .phone-body { position: relative; display: flex; flex-direction: column; }
+    .h5-page.with-footer { flex: 1; display: flex; flex-direction: column; min-height: calc(100% - 0px); }
+    .btn-primary, .btn-default, .btn-danger-ghost {
+      height: 40px;
+      border-radius: 2px;
+      font-size: 15px;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .btn-primary:active { opacity: 0.9; }
+    .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-default {
+      background: #fff;
+      color: rgba(0,0,0,0.88);
+      border: 1px solid var(--color-border);
+    }
+    .btn-block {
+      width: 100%;
+      height: 40px;
+      border-radius: 2px;
+      font-size: 15px;
+      background: var(--color-primary);
+      color: #fff;
+    }
+    .btn-block:disabled { opacity: 0.5; }
+    .comment-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 13px;
+    }
+    .comment-item:last-child { border-bottom: none; }
+    .comment-user { font-weight: 600; color: rgba(0,0,0,0.88); }
+    .comment-time { font-size: 11px; color: rgba(0,0,0,0.45); margin-left: 8px; font-weight: 400; }
+    .comment-text { margin-top: 4px; color: rgba(0,0,0,0.75); line-height: 1.5; }
+    .vote-opt {
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+    .vote-opt:active { background: #fafafa; }
+    .vote-opt.selected {
+      border-color: var(--color-primary);
+      background: #e6f4ff;
+      color: var(--color-primary);
+    }
+    .vote-opt .vote-count { margin-left: auto; font-size: 12px; color: rgba(0,0,0,0.45); }
+    .filter-bar {
+      padding: 10px 12px 0;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .filter-chip {
+      height: 28px;
+      padding: 0 10px;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.65);
+      background: #fff;
+      display: inline-flex;
+      align-items: center;
+      cursor: pointer;
+    }
+    .filter-chip.active {
+      color: var(--color-primary);
+      border-color: var(--color-primary);
+      background: #e6f4ff;
+    }
+    .search-box {
+      margin: 10px 12px 0;
+      height: 36px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 6px;
+    }
+    .search-box i { color: rgba(0,0,0,0.45); font-size: 16px; }
+    .search-box input {
+      flex: 1;
+      border: none;
+      outline: none;
+      font-size: 13px;
+      font-family: inherit;
+      background: transparent;
+    }
+    /* Assist progress card */
+    .assist-card {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 12px;
+      margin-bottom: 8px;
+    }
+    .assist-card-title { font-size: 14px; font-weight: 600; }
+    .assist-steps {
+      display: flex;
+      align-items: flex-start;
+      margin: 14px 0 10px;
+      padding: 0 4px;
+    }
+    .assist-step {
+      flex: 1;
+      text-align: center;
+      position: relative;
+      font-size: 11px;
+      color: rgba(0,0,0,0.45);
+    }
+    .assist-step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      top: 7px;
+      left: calc(50% + 10px);
+      right: calc(-50% + 10px);
+      height: 2px;
+      background: #e8e8e8;
+      z-index: 0;
+    }
+    .assist-step.done:not(:last-child)::after,
+    .assist-step.current:not(:last-child)::after { background: var(--color-success); }
+    .assist-step.fail:not(:last-child)::after { background: var(--color-danger); }
+    .assist-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid #d9d9d9;
+      background: #fff;
+      margin: 0 auto 6px;
+      position: relative;
+      z-index: 1;
+      box-sizing: border-box;
+    }
+    .assist-step.done .assist-dot {
+      border-color: var(--color-success);
+      background: var(--color-success);
+    }
+    .assist-step.current .assist-dot {
+      border-color: var(--color-success);
+      background: #fff;
+      box-shadow: 0 0 0 2px rgba(82,196,26,0.2);
+    }
+    .assist-step.fail .assist-dot {
+      border-color: var(--color-danger);
+      background: var(--color-danger);
+    }
+    .assist-step.warn .assist-dot {
+      border-color: #FAAD14;
+      background: #FAAD14;
+    }
+    .assist-step.done, .assist-step.current { color: rgba(0,0,0,0.88); }
+    .assist-step.fail { color: var(--color-danger); }
+    .assist-step.warn { color: #d48806; }
+    .assist-info {
+      font-size: 12px;
+      color: rgba(0,0,0,0.65);
+      line-height: 1.7;
+      border-top: 1px solid #f0f0f0;
+      padding-top: 8px;
+    }
+    .assist-info .label { color: rgba(0,0,0,0.45); }
+    .about-block {
+      margin: 12px;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 14px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: rgba(0,0,0,0.75);
+    }
+    .about-block h3 { font-size: 14px; margin-bottom: 8px; color: rgba(0,0,0,0.88); }
   </style>
 </head>
 <body>
@@ -1056,7 +1392,10 @@
     const PagesH5 = {};
     let h5Route = "home";
     let h5History = [];
+    let h5Params = {};
+    let h5NavTitle = null;
     let h5ShowPicker = false;
+    let h5UiState = {}; // ephemeral UI filters/search per route
 
     const TAB_ROOTS = { home: true, service: true, mine: true };
 
@@ -1093,27 +1432,41 @@
     function h5Navigate(path, opts) {
       opts = opts || {};
       if (!path) return;
+      const nextParams = opts.params ? Object.assign({}, opts.params) : {};
       if (isTabRoot(path)) {
         h5History = [];
         h5Route = path;
+        h5Params = {};
       } else if (opts.replace) {
         h5Route = path;
-      } else if (path !== h5Route) {
-        h5History.push(h5Route);
+        h5Params = nextParams;
+      } else if (path !== h5Route || JSON.stringify(nextParams) !== JSON.stringify(h5Params)) {
+        h5History.push({ route: h5Route, params: Object.assign({}, h5Params) });
         h5Route = path;
+        h5Params = nextParams;
       }
       h5ShowPicker = false;
+      h5NavTitle = null;
       renderH5Shell();
     }
 
     function h5Back() {
       if (h5History.length) {
-        h5Route = h5History.pop();
+        const prev = h5History.pop();
+        if (typeof prev === "string") {
+          h5Route = prev;
+          h5Params = {};
+        } else {
+          h5Route = prev.route;
+          h5Params = prev.params || {};
+        }
       } else {
         const root = (h5Route || "home").split("/")[0];
         h5Route = TAB_ROOTS[root] ? root : "home";
+        h5Params = {};
       }
       h5ShowPicker = false;
+      h5NavTitle = null;
       renderH5Shell();
     }
 
@@ -1122,25 +1475,963 @@
         '<div class="stub-page">' +
         '<i class="ri-tools-line"></i>' +
         "<div>" + escapeHtml(title || "功能") + "</div>" +
-        '<div style="margin-top:8px;font-size:12px">开发中，Task 9 将补全业务页</div>' +
+        '<div style="margin-top:8px;font-size:12px">页面暂不可用</div>' +
         "</div>"
       );
     }
 
-    function registerStub(route) {
-      PagesH5[route] = function () {
-        return renderStubPage(ROUTE_TITLES[route] || route);
-      };
+    /* ---------- Shared H5 page helpers ---------- */
+    function sortByTimeDesc(arr, fields) {
+      fields = fields || ["updatedAt", "createdAt", "publishAt"];
+      return (arr || []).slice().sort(function (a, b) {
+        function key(x) {
+          for (let i = 0; i < fields.length; i++) {
+            if (x[fields[i]]) return String(x[fields[i]]);
+          }
+          return "";
+        }
+        return key(b).localeCompare(key(a));
+      });
     }
 
-    [
-      "home/notices", "home/activities", "home/affairs", "home/service-items",
-      "home/campaigns", "home/surveys", "home/satisfaction", "home/progress", "home/topics",
-      "home/policies", "home/foundations", "home/assist-apply", "home/assist-mine",
-      "home/search", "home/news",
-      "service/facilities", "service/forces",
-      "mine/signups", "mine/suggestions", "mine/surveys", "mine/assist", "mine/topics", "mine/about",
-    ].forEach(registerStub);
+    function statusTag(text, tone) {
+      return '<span class="tag' + (tone ? " " + tone : "") + '">' + escapeHtml(text) + "</span>";
+    }
+
+    function emptyList(msg) {
+      return '<div class="empty-tip">' + escapeHtml(msg || "暂无数据") + "</div>";
+    }
+
+    function listCard(opts) {
+      opts = opts || {};
+      const navAttr = opts.path
+        ? ' data-nav="' + escapeHtml(opts.path) + '"' + (opts.id ? ' data-id="' + escapeHtml(opts.id) + '"' : "")
+        : "";
+      return (
+        '<div class="h5-card' + (opts.path ? "" : " static") + '"' + navAttr + ">" +
+        '<div class="h5-card-title">' + escapeHtml(opts.title || "") + "</div>" +
+        (opts.desc ? '<div class="h5-card-desc">' + escapeHtml(opts.desc) + "</div>" : "") +
+        '<div class="h5-card-meta">' + (opts.metaHtml || "") + "</div>" +
+        "</div>"
+      );
+    }
+
+    function detailShell(title, metaHtml, bodyHtml, extraHtml, footerHtml) {
+      h5NavTitle = title || h5NavTitle;
+      let html = '<div class="h5-page' + (footerHtml ? " with-footer" : "") + '">';
+      html += '<div class="h5-detail">';
+      html += '<div class="h5-detail-card">';
+      html += '<div class="h5-detail-title">' + escapeHtml(title || "") + "</div>";
+      if (metaHtml) html += '<div class="h5-detail-meta">' + metaHtml + "</div>";
+      if (bodyHtml) html += '<div class="h5-detail-body">' + escapeHtml(bodyHtml) + "</div>";
+      html += "</div>";
+      if (extraHtml) html += extraHtml;
+      html += "</div>";
+      if (footerHtml) html += '<div class="h5-footer">' + footerHtml + "</div>";
+      html += "</div>";
+      return html;
+    }
+
+    function AFFAIR_TYPE_LABEL(t) {
+      return ({ party: "党务", village: "村务", finance: "财务" })[t] || t || "三务";
+    }
+
+    function SUGGEST_STATUS(s) {
+      const map = {
+        submitted: ["已提交", "primary"],
+        accepted: ["已受理", "primary"],
+        processing: ["办理中", "warning"],
+        done: ["已办结", "success"],
+        rejected: ["已驳回", "danger"],
+      };
+      return map[s] || [s || "-", ""];
+    }
+
+    function TOPIC_STATUS(s) {
+      const map = {
+        discussing: ["讨论中", "primary"],
+        voting: ["表决中", "warning"],
+        closed: ["已关闭", ""],
+        draft: ["草稿", ""],
+      };
+      return map[s] || [s || "-", ""];
+    }
+
+    function currentUserSignups() {
+      const session = getH5Session() || {};
+      return getAll(KEYS.activitySignups).filter(function (x) {
+        return x.userId === session.userId && !x.deleted;
+      });
+    }
+
+    function hasSignedActivity(activityId) {
+      return currentUserSignups().some(function (x) { return x.activityId === activityId; });
+    }
+
+    function currentUserSuggestions() {
+      return listForH5(KEYS.suggestions);
+    }
+
+    function currentUserSurveyAnswers() {
+      const session = getH5Session() || {};
+      return getAll(KEYS.surveyAnswers).filter(function (x) {
+        return x.userId === session.userId && !x.deleted;
+      });
+    }
+
+    function hasAnsweredSurvey(surveyId) {
+      return currentUserSurveyAnswers().some(function (x) { return x.surveyId === surveyId; });
+    }
+
+    function currentUserAssistApps() {
+      return listForH5(KEYS.assistApplications);
+    }
+
+    function getAssistProgressText(app) {
+      if (app.progressText) return app.progressText;
+      const st = app.status;
+      if (st === "submitted") return "已提交，待乡镇中心受理";
+      if (st === "rejected") return "中心不予受理" + (app.rejectReason ? "：" + app.rejectReason : "");
+      if (st === "assigned") return "已受理并指派" + (app.deptName || "部门") + "，待部门审核";
+      if (st === "returned") return "部门退回" + (app.returnReason ? "：" + app.returnReason : "");
+      if (st === "completed") return "部门审核通过，办结";
+      return "";
+    }
+
+    function getAssistHandleOrg(app) {
+      if (app.handleOrgName) return app.handleOrgName;
+      if (app.status === "assigned" && app.deptName) return "城西街道" + app.deptName;
+      if (app.status === "completed" && app.deptName) return "城西街道" + app.deptName;
+      return "城西街道综合信息指挥室";
+    }
+
+    /** 四步：提交 / 受理 / 指派 / 审核；禁止咨询电话 */
+    function renderAssistProgressCard(app) {
+      const st = app.status || "submitted";
+      // step states: pending | done | current | fail | warn
+      const steps = [
+        { key: "submit", label: "提交" },
+        { key: "accept", label: "受理" },
+        { key: "assign", label: "指派" },
+        { key: "audit", label: "审核" },
+      ];
+      let states = ["done", "pending", "pending", "pending"];
+      if (st === "submitted") {
+        states = ["done", "current", "pending", "pending"];
+        steps[1].label = "受理中";
+      } else if (st === "rejected") {
+        states = ["done", "fail", "pending", "pending"];
+        steps[1].label = "不予受理";
+      } else if (st === "assigned") {
+        states = ["done", "done", "done", "current"];
+        steps[3].label = "审核中";
+      } else if (st === "returned") {
+        states = ["done", "done", "warn", "pending"];
+        steps[2].label = "已退回";
+      } else if (st === "completed") {
+        states = ["done", "done", "done", "done"];
+        steps[3].label = "完成";
+      }
+      let stepsHtml = '<div class="assist-steps">';
+      steps.forEach(function (s, i) {
+        stepsHtml +=
+          '<div class="assist-step ' + states[i] + '">' +
+          '<div class="assist-dot"></div>' +
+          "<div>" + escapeHtml(s.label) + "</div>" +
+          "</div>";
+      });
+      stepsHtml += "</div>";
+      const progressText = getAssistProgressText(app);
+      const handleOrg = getAssistHandleOrg(app);
+      return (
+        '<div class="assist-card">' +
+        '<div class="assist-card-title">' + escapeHtml(app.title || "帮扶申请") + "</div>" +
+        stepsHtml +
+        '<div class="assist-info">' +
+        '<div><span class="label">办理单位：</span>' + escapeHtml(handleOrg) + "</div>" +
+        '<div><span class="label">进度说明：</span>' + escapeHtml(progressText) + "</div>" +
+        '<div><span class="label">申报时间：</span>' + escapeHtml(formatDate(app.createdAt)) + "</div>" +
+        (app.type ? '<div><span class="label">申请类型：</span>' + escapeHtml(app.type) + "</div>" : "") +
+        "</div></div>"
+      );
+    }
+
+    /* ---------- Business pages ---------- */
+    function pageNotices() {
+      if (h5Params.id) {
+        const item = getById(KEYS.notices, h5Params.id);
+        if (!item) return emptyList("通知不存在");
+        h5NavTitle = "通知详情";
+        return detailShell(
+          item.title,
+          escapeHtml(item.orgName || "") + " · " + escapeHtml(formatDate(item.publishAt || item.updatedAt)),
+          item.content || ""
+        );
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.notices), ["publishAt", "updatedAt", "createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无通知公告");
+      list.forEach(function (n) {
+        html += listCard({
+          title: n.title,
+          desc: n.content,
+          path: "home/notices",
+          id: n.id,
+          metaHtml: statusTag(n.orgName || "发布单位", "primary") + "<span>" + escapeHtml(formatDate(n.publishAt || n.updatedAt)) + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageActivities() {
+      if (h5Params.id) {
+        const item = getById(KEYS.activities, h5Params.id);
+        if (!item) return emptyList("活动不存在");
+        h5NavTitle = "活动详情";
+        const signed = hasSignedActivity(item.id);
+        const session = getH5Session() || {};
+        const meta =
+          escapeHtml(item.orgName || "") +
+          " · " + escapeHtml(item.place || "") +
+          "<br/>报名 " + escapeHtml(formatDate(item.signupStart)) + " 至 " + escapeHtml(formatDate(item.signupEnd)) +
+          "<br/>活动 " + escapeHtml(formatDate(item.startAt)) + " 至 " + escapeHtml(formatDate(item.endAt));
+        const footer = signed
+          ? '<button type="button" class="btn-primary" disabled>已报名</button>'
+          : '<button type="button" class="btn-primary" id="btn-activity-signup" data-activity-id="' +
+            escapeHtml(item.id) + '">立即报名</button>';
+        return detailShell(item.title, meta, item.content || "", "", footer);
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.activities), ["publishAt", "startAt", "updatedAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无可报名活动");
+      list.forEach(function (a) {
+        const signed = hasSignedActivity(a.id);
+        html += listCard({
+          title: a.title,
+          desc: a.content,
+          path: "home/activities",
+          id: a.id,
+          metaHtml:
+            statusTag(signed ? "已报名" : "可报名", signed ? "success" : "primary") +
+            "<span>" + escapeHtml(a.place || "") + "</span>" +
+            "<span>" + escapeHtml(formatDate(a.startAt)) + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageAffairs() {
+      const filter = (h5UiState["home/affairs"] && h5UiState["home/affairs"].type) || "all";
+      if (h5Params.id) {
+        const item = getById(KEYS.affairs, h5Params.id);
+        if (!item) return emptyList("公开事项不存在");
+        h5NavTitle = "三务详情";
+        return detailShell(
+          item.title,
+          statusTag(AFFAIR_TYPE_LABEL(item.type), "primary") +
+            " · " + escapeHtml(item.orgName || "") +
+            " · " + escapeHtml(formatDate(item.publishAt || item.updatedAt)),
+          item.content || ""
+        );
+      }
+      let list = sortByTimeDesc(listForH5(KEYS.affairs), ["publishAt", "updatedAt"]);
+      if (filter !== "all") list = list.filter(function (x) { return x.type === filter; });
+      let html = '<div class="filter-bar">';
+      [
+        { k: "all", l: "全部" },
+        { k: "party", l: "党务" },
+        { k: "village", l: "村务" },
+        { k: "finance", l: "财务" },
+      ].forEach(function (f) {
+        html +=
+          '<div class="filter-chip' + (filter === f.k ? " active" : "") + '" data-filter-type="' + f.k + '">' +
+          escapeHtml(f.l) + "</div>";
+      });
+      html += '</div><div class="h5-list">';
+      if (!list.length) html += emptyList("暂无三务公开");
+      list.forEach(function (a) {
+        html += listCard({
+          title: a.title,
+          desc: a.content,
+          path: "home/affairs",
+          id: a.id,
+          metaHtml: statusTag(AFFAIR_TYPE_LABEL(a.type), "primary") + "<span>" + escapeHtml(formatDate(a.publishAt || a.updatedAt)) + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageServiceItems() {
+      if (h5Params.id) {
+        const item = getById(KEYS.serviceItems, h5Params.id);
+        if (!item) return emptyList("服务项目不存在");
+        h5NavTitle = "服务详情";
+        return detailShell(
+          item.title,
+          escapeHtml(item.category || "") + " · " + escapeHtml(item.orgName || "") + " · " + escapeHtml(formatDate(item.publishAt || item.updatedAt)),
+          item.desc || item.content || ""
+        );
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.serviceItems), ["publishAt", "updatedAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无服务项目");
+      list.forEach(function (s) {
+        html += listCard({
+          title: s.title,
+          desc: s.desc || s.content,
+          path: "home/service-items",
+          id: s.id,
+          metaHtml: statusTag(s.category || "服务", "primary") + "<span>" + escapeHtml(s.orgName || "") + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageCampaigns() {
+      if (h5Params.mode === "submit" && h5Params.id) {
+        const camp = getById(KEYS.collectCampaigns, h5Params.id);
+        if (!camp) return emptyList("征集不存在");
+        h5NavTitle = "提交建议";
+        let html = '<div class="h5-page with-footer"><div class="h5-form">';
+        html += '<div class="form-item"><div class="form-label">征集主题</div><div style="font-size:14px;font-weight:600">' + escapeHtml(camp.title) + "</div></div>";
+        html += '<div class="form-item"><label class="form-label"><span class="req">*</span>建议标题</label><input class="form-input" id="sug-title" maxlength="50" placeholder="请输入标题" /></div>';
+        html += '<div class="form-item"><label class="form-label"><span class="req">*</span>建议内容</label><textarea class="form-textarea" id="sug-content" maxlength="500" placeholder="请填写具体建议"></textarea></div>';
+        html += "</div>";
+        html +=
+          '<div class="h5-footer"><button type="button" class="btn-primary" id="btn-submit-suggestion" data-campaign-id="' +
+          escapeHtml(camp.id) +
+          '">提交建议</button></div></div>';
+        return html;
+      }
+      if (h5Params.id) {
+        const item = getById(KEYS.collectCampaigns, h5Params.id);
+        if (!item) return emptyList("征集不存在");
+        h5NavTitle = "征集详情";
+        const meta =
+          escapeHtml(item.orgName || "") +
+          "<br/>征集期 " + escapeHtml(formatDate(item.startAt)) + " 至 " + escapeHtml(formatDate(item.endAt));
+        const footer =
+          item.status === "open"
+            ? '<button type="button" class="btn-primary" id="btn-go-suggest" data-campaign-id="' +
+              escapeHtml(item.id) +
+              '">我要建议</button>'
+            : '<button type="button" class="btn-primary" disabled>征集已结束</button>';
+        return detailShell(item.title, meta, item.desc || item.content || "", "", footer);
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.collectCampaigns), ["publishAt", "updatedAt", "startAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无建议征集");
+      list.forEach(function (c) {
+        html += listCard({
+          title: c.title,
+          desc: c.desc,
+          path: "home/campaigns",
+          id: c.id,
+          metaHtml:
+            statusTag(c.status === "open" ? "征集中" : "已结束", c.status === "open" ? "success" : "") +
+            "<span>" + escapeHtml(formatDate(c.endAt)) + " 截止</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageSurveys(routeKey) {
+      routeKey = routeKey || "home/surveys";
+      if (h5Params.mode === "answer" && h5Params.id) {
+        const survey = getById(KEYS.surveys, h5Params.id);
+        if (!survey) return emptyList("问卷不存在");
+        if (hasAnsweredSurvey(survey.id)) {
+          h5NavTitle = "答题";
+          return '<div class="empty-tip">您已提交过该问卷，无需重复作答</div>';
+        }
+        h5NavTitle = "填写问卷";
+        const questions = survey.questions || [];
+        let html = '<div class="h5-page with-footer"><div class="h5-form">';
+        html += '<div class="form-item"><div style="font-weight:600;font-size:15px">' + escapeHtml(survey.title) + "</div>";
+        html += '<div style="font-size:12px;color:rgba(0,0,0,0.45);margin-top:4px">' + escapeHtml(survey.desc || "") + "</div></div>";
+        questions.forEach(function (q, idx) {
+          html += '<div class="form-item" data-qid="' + escapeHtml(q.id) + '" data-qtype="' + escapeHtml(q.type || "text") + '">';
+          html += '<label class="form-label"><span class="req">*</span>' + (idx + 1) + ". " + escapeHtml(q.label || q.id) + "</label>";
+          if (q.type === "score") {
+            html += '<div class="score-row">';
+            for (let s = 1; s <= 5; s++) {
+              html +=
+                '<div class="score-opt" data-score="' +
+                s +
+                '" data-for="' +
+                escapeHtml(q.id) +
+                '">' +
+                s +
+                "</div>";
+            }
+            html += "</div>";
+          } else {
+            html += '<textarea class="form-textarea ans-text" data-for="' + escapeHtml(q.id) + '" placeholder="请输入"></textarea>';
+          }
+          html += "</div>";
+        });
+        html += "</div>";
+        html +=
+          '<div class="h5-footer"><button type="button" class="btn-primary" id="btn-submit-survey" data-survey-id="' +
+          escapeHtml(survey.id) +
+          '">提交答卷</button></div></div>';
+        return html;
+      }
+      if (h5Params.id) {
+        const item = getById(KEYS.surveys, h5Params.id);
+        if (!item) return emptyList("问卷不存在");
+        h5NavTitle = "问卷详情";
+        const answered = hasAnsweredSurvey(item.id);
+        const meta =
+          escapeHtml(item.orgName || "") +
+          "<br/>" +
+          escapeHtml(formatDate(item.startAt)) +
+          " 至 " +
+          escapeHtml(formatDate(item.endAt));
+        let footer = "";
+        if (answered) footer = '<button type="button" class="btn-primary" disabled>已作答</button>';
+        else if (item.status === "open")
+          footer =
+            '<button type="button" class="btn-primary" id="btn-go-answer" data-survey-id="' +
+            escapeHtml(item.id) +
+            '" data-route="' +
+            escapeHtml(routeKey) +
+            '">开始答题</button>';
+        else footer = '<button type="button" class="btn-primary" disabled>已结束</button>';
+        return detailShell(item.title, meta, item.desc || "", "", footer);
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.surveys), ["publishAt", "updatedAt", "startAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无问卷");
+      list.forEach(function (s) {
+        const answered = hasAnsweredSurvey(s.id);
+        html += listCard({
+          title: s.title,
+          desc: s.desc,
+          path: routeKey,
+          id: s.id,
+          metaHtml:
+            statusTag(answered ? "已答" : s.status === "open" ? "进行中" : "已结束", answered ? "success" : "primary") +
+            "<span>" + escapeHtml(s.orgName || "") + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageProgress() {
+      const list = sortByTimeDesc(currentUserSuggestions(), ["updatedAt", "createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无建议办理进度");
+      list.forEach(function (s) {
+        const st = SUGGEST_STATUS(s.status);
+        html +=
+          '<div class="h5-card static">' +
+          '<div class="h5-card-title">' + escapeHtml(s.title || "建议") + "</div>" +
+          '<div class="h5-card-desc">' + escapeHtml(s.content || "") + "</div>" +
+          '<div class="h5-card-meta">' +
+          statusTag(st[0], st[1]) +
+          "<span>" + escapeHtml(formatDate(s.updatedAt || s.createdAt)) + "</span>" +
+          (s.handleRemark ? "<span>" + escapeHtml(s.handleRemark) + "</span>" : "") +
+          "</div></div>";
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageTopics() {
+      if (h5Params.id) {
+        const topic = getById(KEYS.topics, h5Params.id);
+        if (!topic) return emptyList("议题不存在");
+        h5NavTitle = "议题详情";
+        const session = getH5Session() || {};
+        const comments = getAll(KEYS.topicComments)
+          .filter(function (c) { return c.topicId === topic.id && !c.deleted && c.status !== "deleted"; })
+          .sort(function (a, b) { return String(a.createdAt || "").localeCompare(String(b.createdAt || "")); });
+        const votes = getAll(KEYS.topicVotes).filter(function (v) {
+          return v.topicId === topic.id && !v.deleted;
+        });
+        const myVote = votes.find(function (v) { return v.userId === session.userId; });
+        const st = TOPIC_STATUS(topic.status);
+        let extra = "";
+        extra += '<div class="h5-section"><div class="h5-section-title">讨论</div>';
+        if (!comments.length) extra += '<div class="empty-tip" style="padding:8px 0">暂无评论</div>';
+        comments.forEach(function (c) {
+          extra +=
+            '<div class="comment-item"><div><span class="comment-user">' +
+            escapeHtml(c.userName || "居民") +
+            '</span><span class="comment-time">' +
+            escapeHtml(formatDate(c.createdAt)) +
+            "</span></div><div class=\"comment-text\">" +
+            escapeHtml(c.content) +
+            "</div></div>";
+        });
+        if (topic.status === "discussing" || topic.status === "voting") {
+          extra +=
+            '<div class="form-item" style="margin-top:10px;margin-bottom:0">' +
+            '<textarea class="form-textarea" id="topic-comment" placeholder="发表看法…" maxlength="300"></textarea>' +
+            '<button type="button" class="btn-block" style="margin-top:8px" id="btn-topic-comment" data-topic-id="' +
+            escapeHtml(topic.id) +
+            '">发表评论</button></div>';
+        }
+        extra += "</div>";
+
+        const options = topic.options || [];
+        const showVote = topic.status === "voting" || topic.status === "closed" || myVote;
+        if (showVote && options.length) {
+          extra += '<div class="h5-section"><div class="h5-section-title">表决</div>';
+          options.forEach(function (opt) {
+            const count = votes.filter(function (v) { return v.optionId === opt.id; }).length;
+            const selected = myVote && myVote.optionId === opt.id;
+            const canVote = topic.status === "voting" && !myVote;
+            extra +=
+              '<div class="vote-opt' +
+              (selected ? " selected" : "") +
+              '"' +
+              (canVote
+                ? ' data-vote-opt="' + escapeHtml(opt.id) + '" data-topic-id="' + escapeHtml(topic.id) + '"'
+                : "") +
+              ">" +
+              '<span>' +
+              escapeHtml(opt.label) +
+              "</span>" +
+              (myVote || topic.status === "closed"
+                ? '<span class="vote-count">' + count + " 票</span>"
+                : "") +
+              (selected ? ' <i class="ri-check-line"></i>' : "") +
+              "</div>";
+          });
+          if (topic.status === "voting" && !myVote) {
+            extra += '<div style="font-size:12px;color:rgba(0,0,0,0.45)">点击选项完成表决（一人一票）</div>';
+          } else if (myVote) {
+            extra += '<div style="font-size:12px;color:rgba(0,0,0,0.45)">您已完成表决</div>';
+          }
+          extra += "</div>";
+        }
+
+        return detailShell(
+          topic.title,
+          statusTag(st[0], st[1]) + " · " + escapeHtml(topic.orgName || "") + " · " + escapeHtml(formatDate(topic.publishAt || topic.createdAt)),
+          topic.content || "",
+          extra,
+          ""
+        );
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.topics), ["publishAt", "updatedAt", "createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无议事议题");
+      list.forEach(function (t) {
+        const st = TOPIC_STATUS(t.status);
+        html += listCard({
+          title: t.title,
+          desc: t.content,
+          path: "home/topics",
+          id: t.id,
+          metaHtml: statusTag(st[0], st[1]) + "<span>" + escapeHtml(formatDate(t.publishAt || t.createdAt)) + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageFacilities() {
+      const kw = ((h5UiState["service/facilities"] && h5UiState["service/facilities"].kw) || "").trim();
+      if (h5Params.id) {
+        const item = getById(KEYS.facilities, h5Params.id);
+        if (!item) return emptyList("设施不存在");
+        h5NavTitle = "设施详情";
+        const meta =
+          escapeHtml(item.type || "") +
+          " · " + escapeHtml(item.orgName || "") +
+          "<br/>地址：" + escapeHtml(item.address || "-") +
+          "<br/>开放：" + escapeHtml(item.openTime || "-") +
+          (item.contact ? "<br/>联系：" + escapeHtml(item.contact) : "");
+        return detailShell(item.name || item.title, meta, item.intro || item.desc || item.content || "暂无更多介绍");
+      }
+      let list = sortByTimeDesc(listForH5(KEYS.facilities), ["publishAt", "updatedAt"]);
+      if (kw) {
+        const k = kw.toLowerCase();
+        list = list.filter(function (f) {
+          return (
+            String(f.name || "").toLowerCase().indexOf(k) >= 0 ||
+            String(f.type || "").toLowerCase().indexOf(k) >= 0 ||
+            String(f.address || "").toLowerCase().indexOf(k) >= 0
+          );
+        });
+      }
+      let html = '<div class="search-box"><i class="ri-search-line"></i><input id="fac-search" placeholder="搜索设施名称/类型/地址" value="' + escapeHtml(kw) + '" /></div>';
+      html += '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无设施资源");
+      list.forEach(function (f) {
+        html += listCard({
+          title: f.name,
+          desc: (f.type || "") + " · " + (f.address || ""),
+          path: "service/facilities",
+          id: f.id,
+          metaHtml: statusTag(f.orgName || "", "primary") + "<span>" + escapeHtml(f.openTime || "") + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageForces() {
+      const kw = ((h5UiState["service/forces"] && h5UiState["service/forces"].kw) || "").trim();
+      if (h5Params.id) {
+        const item = getById(KEYS.forces, h5Params.id);
+        if (!item) return emptyList("力量不存在");
+        h5NavTitle = "力量详情";
+        const meta =
+          escapeHtml(item.type || "") +
+          " · " + escapeHtml(item.orgName || "") +
+          "<br/>负责人：" + escapeHtml(item.leader || "-") +
+          "<br/>人数：" + escapeHtml(String(item.memberCount != null ? item.memberCount : "-")) +
+          (item.phone ? "<br/>联系：" + escapeHtml(item.phone) : "");
+        return detailShell(item.name || item.title, meta, item.intro || item.desc || item.content || "暂无更多介绍");
+      }
+      let list = sortByTimeDesc(listForH5(KEYS.forces), ["publishAt", "updatedAt"]);
+      if (kw) {
+        const k = kw.toLowerCase();
+        list = list.filter(function (f) {
+          return (
+            String(f.name || "").toLowerCase().indexOf(k) >= 0 ||
+            String(f.type || "").toLowerCase().indexOf(k) >= 0 ||
+            String(f.leader || "").toLowerCase().indexOf(k) >= 0
+          );
+        });
+      }
+      let html = '<div class="search-box"><i class="ri-search-line"></i><input id="frc-search" placeholder="搜索力量名称/类型/负责人" value="' + escapeHtml(kw) + '" /></div>';
+      html += '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无力量资源");
+      list.forEach(function (f) {
+        html += listCard({
+          title: f.name,
+          desc: (f.type || "") + " · 负责人 " + (f.leader || "-"),
+          path: "service/forces",
+          id: f.id,
+          metaHtml: statusTag(f.orgName || "", "primary") + "<span>" + escapeHtml(String(f.memberCount != null ? f.memberCount + " 人" : "")) + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pagePolicies() {
+      if (h5Params.id) {
+        const item = getById(KEYS.aidPolicies, h5Params.id);
+        if (!item) return emptyList("政策不存在");
+        h5NavTitle = "政策详情";
+        return detailShell(
+          item.title,
+          escapeHtml(item.category || "") + " · " + escapeHtml(item.orgName || "") + " · " + escapeHtml(formatDate(item.publishAt || item.updatedAt)),
+          item.content || item.desc || ""
+        );
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.aidPolicies), ["publishAt", "updatedAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无救助政策");
+      list.forEach(function (p) {
+        html += listCard({
+          title: p.title,
+          desc: p.content || p.desc,
+          path: "home/policies",
+          id: p.id,
+          metaHtml: statusTag(p.category || "政策", "primary") + "<span>" + escapeHtml(p.orgName || "") + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageFoundations() {
+      if (h5Params.id) {
+        const item = getById(KEYS.foundations, h5Params.id);
+        if (!item) return emptyList("基金会信息不存在");
+        h5NavTitle = "基金会详情";
+        const meta =
+          escapeHtml(item.type || "") +
+          " · " + escapeHtml(item.orgName || "") +
+          (item.contact ? "<br/>联系：" + escapeHtml(item.contact) : "");
+        return detailShell(item.name || item.title, meta, item.intro || item.content || item.desc || "");
+      }
+      const list = sortByTimeDesc(listForH5(KEYS.foundations), ["publishAt", "updatedAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无基金会信息");
+      list.forEach(function (f) {
+        html += listCard({
+          title: f.name,
+          desc: f.intro || f.desc,
+          path: "home/foundations",
+          id: f.id,
+          metaHtml: statusTag(f.type || "基金会", "primary") + "<span>" + escapeHtml(f.orgName || "") + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageAssistApply() {
+      const session = getH5Session() || {};
+      const org = getOrg(session.orgId);
+      const resident = getAll(KEYS.residents).find(function (r) { return r.id === session.userId; });
+      h5NavTitle = "帮扶申请";
+      let html = '<div class="h5-page with-footer"><div class="h5-form">';
+      html += '<div class="form-item"><div class="form-label">申请人</div><div>' + escapeHtml(session.userName || "") + " · " + escapeHtml((org && org.name) || "") + "</div></div>";
+      html +=
+        '<div class="form-item"><label class="form-label"><span class="req">*</span>申请标题</label><input class="form-input" id="apl-title" maxlength="40" placeholder="如：申请临时困难帮扶" /></div>';
+      html +=
+        '<div class="form-item"><label class="form-label"><span class="req">*</span>申请类型</label><select class="form-select" id="apl-type">' +
+        ["临时救助", "残疾人补贴", "养老服务", "就业援助", "医疗救助", "节日慰问", "其他"].map(function (t) {
+          return '<option value="' + t + '">' + t + "</option>";
+        }).join("") +
+        "</select></div>";
+      html +=
+        '<div class="form-item"><label class="form-label"><span class="req">*</span>申请说明</label><textarea class="form-textarea" id="apl-content" maxlength="500" placeholder="请说明困难情况与诉求"></textarea></div>';
+      html +=
+        '<div style="font-size:12px;color:rgba(0,0,0,0.45);line-height:1.6">提交后将推送至乡镇综合信息指挥室受理，可在「我的申请」查看四步进度。</div>';
+      html += "</div>";
+      html +=
+        '<div class="h5-footer"><button type="button" class="btn-primary" id="btn-submit-assist">提交申请</button></div></div>';
+      return html;
+    }
+
+    function pageAssistMine() {
+      if (h5Params.id) {
+        const app = getById(KEYS.assistApplications, h5Params.id);
+        if (!app) return emptyList("申请不存在");
+        const session = getH5Session() || {};
+        if (app.userId !== session.userId) return emptyList("无权查看");
+        h5NavTitle = "申请进度";
+        let html = '<div class="h5-detail">' + renderAssistProgressCard(app);
+        html +=
+          '<div class="h5-section"><div class="h5-section-title">申请内容</div><div class="h5-detail-body" style="margin-top:0">' +
+          escapeHtml(app.reason || app.content || "") +
+          "</div></div></div>";
+        return html;
+      }
+      const list = sortByTimeDesc(currentUserAssistApps(), ["updatedAt", "createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无帮扶申请");
+      list.forEach(function (a) {
+        html +=
+          '<div data-nav="home/assist-mine" data-id="' +
+          escapeHtml(a.id) +
+          '">' +
+          renderAssistProgressCard(a) +
+          "</div>";
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageSearch() {
+      const kw = ((h5UiState["home/search"] && h5UiState["home/search"].kw) || "").trim();
+      let html =
+        '<div class="search-box"><i class="ri-search-line"></i><input id="global-search" placeholder="搜索通知、活动、服务项目" value="' +
+        escapeHtml(kw) +
+        '" /></div><div class="h5-list">';
+      if (!kw) {
+        html += emptyList("输入关键词开始搜索");
+        html += "</div>";
+        return html;
+      }
+      const k = kw.toLowerCase();
+      const results = [];
+      listForH5(KEYS.notices).forEach(function (n) {
+        if (String(n.title || "").toLowerCase().indexOf(k) >= 0 || String(n.content || "").toLowerCase().indexOf(k) >= 0) {
+          results.push({ title: n.title, meta: "通知公告", path: "home/notices", id: n.id });
+        }
+      });
+      listForH5(KEYS.activities).forEach(function (a) {
+        if (String(a.title || "").toLowerCase().indexOf(k) >= 0 || String(a.content || "").toLowerCase().indexOf(k) >= 0) {
+          results.push({ title: a.title, meta: "活动报名", path: "home/activities", id: a.id });
+        }
+      });
+      listForH5(KEYS.serviceItems).forEach(function (s) {
+        if (String(s.title || "").toLowerCase().indexOf(k) >= 0 || String(s.desc || "").toLowerCase().indexOf(k) >= 0) {
+          results.push({ title: s.title, meta: "服务项目", path: "home/service-items", id: s.id });
+        }
+      });
+      listForH5(KEYS.aidPolicies).forEach(function (p) {
+        if (String(p.title || "").toLowerCase().indexOf(k) >= 0) {
+          results.push({ title: p.title, meta: "救助政策", path: "home/policies", id: p.id });
+        }
+      });
+      if (!results.length) html += emptyList("未找到相关内容");
+      results.forEach(function (r) {
+        html += listCard({
+          title: r.title,
+          path: r.path,
+          id: r.id,
+          metaHtml: statusTag(r.meta, "primary"),
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageNews() {
+      // 兼容入口：展示资讯摘要列表
+      h5NavTitle = "资讯";
+      const notices = sortByTimeDesc(listForH5(KEYS.notices), ["publishAt", "updatedAt"]).slice(0, 5);
+      const acts = sortByTimeDesc(listForH5(KEYS.activities), ["publishAt", "startAt"]).slice(0, 3);
+      let html = '<div class="h5-list">';
+      notices.forEach(function (n) {
+        html += listCard({
+          title: n.title,
+          path: "home/notices",
+          id: n.id,
+          metaHtml: statusTag("通知", "primary") + "<span>" + escapeHtml(formatDate(n.publishAt || n.updatedAt)) + "</span>",
+        });
+      });
+      acts.forEach(function (a) {
+        html += listCard({
+          title: a.title,
+          path: "home/activities",
+          id: a.id,
+          metaHtml: statusTag("活动", "primary") + "<span>" + escapeHtml(formatDate(a.startAt)) + "</span>",
+        });
+      });
+      if (!notices.length && !acts.length) html += emptyList("暂无资讯");
+      html += "</div>";
+      return html;
+    }
+
+    function pageMineSignups() {
+      const session = getH5Session() || {};
+      const signups = sortByTimeDesc(currentUserSignups(), ["createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!signups.length) html += emptyList("暂无活动报名");
+      signups.forEach(function (s) {
+        const act = getById(KEYS.activities, s.activityId);
+        html += listCard({
+          title: (act && act.title) || "活动",
+          desc: "报名时间 " + formatDate(s.createdAt),
+          path: act ? "home/activities" : "",
+          id: act ? act.id : "",
+          metaHtml: statusTag("已报名", "success") + "<span>" + escapeHtml((act && act.place) || "") + "</span>",
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageMineSuggestions() {
+      return pageProgress();
+    }
+
+    function pageMineSurveys() {
+      const answers = sortByTimeDesc(currentUserSurveyAnswers(), ["createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!answers.length) html += emptyList("暂无评议测评记录");
+      answers.forEach(function (a) {
+        const survey = getById(KEYS.surveys, a.surveyId);
+        html += listCard({
+          title: (survey && survey.title) || "问卷",
+          desc: "提交于 " + formatDate(a.createdAt),
+          path: survey ? "home/surveys" : "",
+          id: survey ? survey.id : "",
+          metaHtml: statusTag("已提交", "success"),
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageMineAssist() {
+      // 复用帮扶进度列表
+      const keep = Object.assign({}, h5Params);
+      h5Params = {};
+      // 使用 assist-mine 的列表逻辑
+      const list = sortByTimeDesc(currentUserAssistApps(), ["updatedAt", "createdAt"]);
+      let html = '<div class="h5-list">';
+      if (!list.length) html += emptyList("暂无帮扶申请");
+      list.forEach(function (a) {
+        html +=
+          '<div data-nav="home/assist-mine" data-id="' +
+          escapeHtml(a.id) +
+          '">' +
+          renderAssistProgressCard(a) +
+          "</div>";
+      });
+      html += "</div>";
+      h5Params = keep;
+      return html;
+    }
+
+    function pageMineTopics() {
+      const session = getH5Session() || {};
+      const comments = getAll(KEYS.topicComments).filter(function (c) {
+        return c.userId === session.userId && !c.deleted;
+      });
+      const votes = getAll(KEYS.topicVotes).filter(function (v) {
+        return v.userId === session.userId && !v.deleted;
+      });
+      const topicIds = {};
+      comments.forEach(function (c) { topicIds[c.topicId] = true; });
+      votes.forEach(function (v) { topicIds[v.topicId] = true; });
+      const ids = Object.keys(topicIds);
+      let html = '<div class="h5-list">';
+      if (!ids.length) html += emptyList("暂无议事参与记录");
+      ids.forEach(function (tid) {
+        const t = getById(KEYS.topics, tid);
+        if (!t) return;
+        const st = TOPIC_STATUS(t.status);
+        const didComment = comments.some(function (c) { return c.topicId === tid; });
+        const didVote = votes.some(function (v) { return v.topicId === tid; });
+        html += listCard({
+          title: t.title,
+          path: "home/topics",
+          id: t.id,
+          metaHtml:
+            statusTag(st[0], st[1]) +
+            (didComment ? statusTag("已评论", "primary") : "") +
+            (didVote ? statusTag("已表决", "success") : ""),
+        });
+      });
+      html += "</div>";
+      return html;
+    }
+
+    function pageAbout() {
+      return (
+        '<div class="about-block">' +
+        "<h3>社会工作服务 · 群众端演示</h3>" +
+        "<p>本页面为基层智治「社会工作服务」板块群众端演示。数据与 PC 管理端共用浏览器 localStorage，跨端读写实时可见。</p>" +
+        "<p style=\"margin-top:8px\">支持：信息公开浏览、活动报名、建议征集与进度、评议测评、议事讨论表决、服务资源查询、帮扶申请与四步进度（提交-受理-指派-审核）。</p>" +
+        "<p style=\"margin-top:8px;color:rgba(0,0,0,0.45)\">演示数据可在 PC 端一键重置。当前环境仅用于演示，非生产系统。</p>" +
+        "</div>"
+      );
+    }
+
+    PagesH5["home/notices"] = pageNotices;
+    PagesH5["home/activities"] = pageActivities;
+    PagesH5["home/affairs"] = pageAffairs;
+    PagesH5["home/service-items"] = pageServiceItems;
+    PagesH5["home/campaigns"] = pageCampaigns;
+    PagesH5["home/surveys"] = function () { return pageSurveys("home/surveys"); };
+    PagesH5["home/satisfaction"] = function () { return pageSurveys("home/satisfaction"); };
+    PagesH5["home/progress"] = pageProgress;
+    PagesH5["home/topics"] = pageTopics;
+    PagesH5["home/policies"] = pagePolicies;
+    PagesH5["home/foundations"] = pageFoundations;
+    PagesH5["home/assist-apply"] = pageAssistApply;
+    PagesH5["home/assist-mine"] = pageAssistMine;
+    PagesH5["home/search"] = pageSearch;
+    PagesH5["home/news"] = pageNews;
+    PagesH5["service/facilities"] = pageFacilities;
+    PagesH5["service/forces"] = pageForces;
+    PagesH5["mine/signups"] = pageMineSignups;
+    PagesH5["mine/suggestions"] = pageMineSuggestions;
+    PagesH5["mine/surveys"] = pageMineSurveys;
+    PagesH5["mine/assist"] = pageMineAssist;
+    PagesH5["mine/topics"] = pageMineTopics;
+    PagesH5["mine/about"] = pageAbout;
 
     /* ---------- Home ---------- */
     function gridItem(icon, label, path) {
@@ -1166,10 +2457,10 @@
       });
       const news = [];
       notices.slice(0, 2).forEach(function (n) {
-        news.push({ tag: "通知", title: n.title, meta: (n.orgName || "") + " · " + formatDate(n.publishAt || n.updatedAt), path: "home/notices" });
+        news.push({ tag: "通知", title: n.title, meta: (n.orgName || "") + " · " + formatDate(n.publishAt || n.updatedAt), path: "home/notices", id: n.id });
       });
       activities.slice(0, 1).forEach(function (a) {
-        news.push({ tag: "活动", title: a.title, meta: (a.orgName || "") + " · " + formatDate(a.publishAt || a.startAt), path: "home/activities" });
+        news.push({ tag: "活动", title: a.title, meta: (a.orgName || "") + " · " + formatDate(a.publishAt || a.startAt), path: "home/activities", id: a.id });
       });
 
       let html = "";
@@ -1217,7 +2508,8 @@
       } else {
         news.forEach(function (item) {
           html +=
-            '<div class="news-item" data-nav="' + escapeHtml(item.path) + '">' +
+            '<div class="news-item" data-nav="' + escapeHtml(item.path) + '"' +
+            (item.id ? ' data-id="' + escapeHtml(item.id) + '"' : "") + ">" +
             '<span class="news-tag">' + escapeHtml(item.tag) + "</span>" +
             '<div class="news-body">' +
             '<div class="news-title">' + escapeHtml(item.title) + "</div>" +
@@ -1323,21 +2615,25 @@
       const app = document.getElementById("app");
       const showTab = isTabRoot(h5Route);
       const pageFn = PagesH5[h5Route];
-      const title = ROUTE_TITLES[h5Route] || "";
+      h5NavTitle = null;
+
+      let pageHtml = "";
+      if (typeof pageFn === "function") {
+        pageHtml = pageFn();
+      } else {
+        pageHtml = renderStubPage(h5Route);
+      }
+      const title = h5NavTitle || ROUTE_TITLES[h5Route] || "详情";
 
       let bodyHtml = "";
       if (!showTab) {
         bodyHtml +=
           '<div class="h5-nav">' +
           '<div class="h5-nav-back" id="h5-back"><i class="ri-arrow-left-s-line"></i></div>' +
-          '<div class="h5-nav-title">' + escapeHtml(title || "详情") + "</div>" +
+          '<div class="h5-nav-title">' + escapeHtml(title) + "</div>" +
           "</div>";
       }
-      if (typeof pageFn === "function") {
-        bodyHtml += pageFn();
-      } else {
-        bodyHtml += renderStubPage(h5Route);
-      }
+      bodyHtml += pageHtml;
 
       const tabItems = [
         { key: "home", icon: "ri-home-line", label: "首页" },
@@ -1371,8 +2667,12 @@
         body.querySelectorAll("[data-nav]").forEach(function (el) {
           el.addEventListener("click", function (e) {
             e.preventDefault();
+            e.stopPropagation();
             const path = el.getAttribute("data-nav");
-            if (path) h5Navigate(path);
+            const id = el.getAttribute("data-id");
+            if (!path) return;
+            if (id) h5Navigate(path, { params: { id: id } });
+            else h5Navigate(path);
           });
         });
       }
@@ -1426,6 +2726,299 @@
             toast("已切换为 " + r.name);
             renderH5Shell();
           });
+        });
+      }
+
+      /* filters */
+      if (body) {
+        body.querySelectorAll("[data-filter-type]").forEach(function (el) {
+          el.addEventListener("click", function () {
+            const t = el.getAttribute("data-filter-type");
+            h5UiState["home/affairs"] = { type: t };
+            renderH5Shell();
+          });
+        });
+      }
+
+      function bindSearchInput(inputId, stateKey, field) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        let timer = null;
+        input.addEventListener("input", function () {
+          clearTimeout(timer);
+          const val = input.value;
+          timer = setTimeout(function () {
+            h5UiState[stateKey] = h5UiState[stateKey] || {};
+            h5UiState[stateKey][field || "kw"] = val;
+            renderH5Shell();
+            const again = document.getElementById(inputId);
+            if (again) {
+              again.focus();
+              const len = again.value.length;
+              try { again.setSelectionRange(len, len); } catch (e) { /* ignore */ }
+            }
+          }, 280);
+        });
+        input.addEventListener("keydown", function (e) {
+          if (e.key === "Enter") {
+            h5UiState[stateKey] = h5UiState[stateKey] || {};
+            h5UiState[stateKey][field || "kw"] = input.value;
+            renderH5Shell();
+          }
+        });
+      }
+      bindSearchInput("fac-search", "service/facilities", "kw");
+      bindSearchInput("frc-search", "service/forces", "kw");
+      bindSearchInput("global-search", "home/search", "kw");
+
+      /* activity signup */
+      const btnSignup = document.getElementById("btn-activity-signup");
+      if (btnSignup) {
+        btnSignup.addEventListener("click", function () {
+          const activityId = btnSignup.getAttribute("data-activity-id");
+          const session = getH5Session();
+          if (!session || !activityId) return;
+          if (hasSignedActivity(activityId)) {
+            toast("您已报名该活动");
+            return;
+          }
+          const act = getById(KEYS.activities, activityId);
+          const resident = getAll(KEYS.residents).find(function (r) { return r.id === session.userId; });
+          const org = getOrg(session.orgId);
+          saveRecord(KEYS.activitySignups, {
+            id: uid("asg"),
+            activityId: activityId,
+            userId: session.userId,
+            userName: session.userName,
+            phone: (resident && resident.phone) || "",
+            mobile: (resident && resident.phone) || "",
+            orgId: session.orgId,
+            orgLevel: (org && org.level) || "village",
+            orgName: (org && org.name) || "",
+            status: "submitted",
+            createdAt: nowISO(),
+            updatedAt: nowISO(),
+          });
+          toast("报名成功");
+          renderH5Shell();
+        });
+      }
+
+      /* campaign suggest */
+      const btnGoSuggest = document.getElementById("btn-go-suggest");
+      if (btnGoSuggest) {
+        btnGoSuggest.addEventListener("click", function () {
+          const cid = btnGoSuggest.getAttribute("data-campaign-id");
+          h5Navigate("home/campaigns", { params: { id: cid, mode: "submit" } });
+        });
+      }
+      const btnSubmitSug = document.getElementById("btn-submit-suggestion");
+      if (btnSubmitSug) {
+        btnSubmitSug.addEventListener("click", function () {
+          const campaignId = btnSubmitSug.getAttribute("data-campaign-id");
+          const title = (document.getElementById("sug-title") || {}).value || "";
+          const content = (document.getElementById("sug-content") || {}).value || "";
+          if (!title.trim() || !content.trim()) {
+            toast("请填写标题和内容");
+            return;
+          }
+          const session = getH5Session() || {};
+          const org = getOrg(session.orgId);
+          saveRecord(KEYS.suggestions, {
+            id: uid("sug"),
+            campaignId: campaignId,
+            userId: session.userId,
+            userName: session.userName,
+            title: title.trim(),
+            content: content.trim(),
+            orgId: session.orgId,
+            orgLevel: (org && org.level) || "village",
+            orgName: (org && org.name) || "",
+            status: "submitted",
+            createdAt: nowISO(),
+            updatedAt: nowISO(),
+          });
+          toast("提交成功");
+          h5Navigate("home/progress", { replace: true });
+        });
+      }
+
+      /* survey answer */
+      if (body) {
+        body.querySelectorAll(".score-opt").forEach(function (el) {
+          el.addEventListener("click", function () {
+            const qid = el.getAttribute("data-for");
+            body.querySelectorAll('.score-opt[data-for="' + qid + '"]').forEach(function (x) {
+              x.classList.remove("active");
+            });
+            el.classList.add("active");
+          });
+        });
+      }
+      const btnGoAnswer = document.getElementById("btn-go-answer");
+      if (btnGoAnswer) {
+        btnGoAnswer.addEventListener("click", function () {
+          const sid = btnGoAnswer.getAttribute("data-survey-id");
+          const route = btnGoAnswer.getAttribute("data-route") || "home/surveys";
+          h5Navigate(route, { params: { id: sid, mode: "answer" } });
+        });
+      }
+      const btnSubmitSurvey = document.getElementById("btn-submit-survey");
+      if (btnSubmitSurvey) {
+        btnSubmitSurvey.addEventListener("click", function () {
+          const surveyId = btnSubmitSurvey.getAttribute("data-survey-id");
+          const survey = getById(KEYS.surveys, surveyId);
+          if (!survey) return;
+          if (hasAnsweredSurvey(surveyId)) {
+            toast("您已提交过该问卷");
+            return;
+          }
+          const answers = {};
+          const questions = survey.questions || [];
+          for (let i = 0; i < questions.length; i++) {
+            const q = questions[i];
+            if (q.type === "score") {
+              const active = body.querySelector('.score-opt.active[data-for="' + q.id + '"]');
+              if (!active) {
+                toast("请完成第 " + (i + 1) + " 题");
+                return;
+              }
+              answers[q.id] = Number(active.getAttribute("data-score"));
+            } else {
+              const ta = body.querySelector('.ans-text[data-for="' + q.id + '"]');
+              const val = ta ? ta.value.trim() : "";
+              if (!val) {
+                toast("请完成第 " + (i + 1) + " 题");
+                return;
+              }
+              answers[q.id] = val;
+            }
+          }
+          const session = getH5Session() || {};
+          const org = getOrg(session.orgId);
+          saveRecord(KEYS.surveyAnswers, {
+            id: uid("ans"),
+            surveyId: surveyId,
+            userId: session.userId,
+            userName: session.userName,
+            orgId: session.orgId,
+            orgLevel: (org && org.level) || "village",
+            orgName: (org && org.name) || "",
+            answers: answers,
+            status: "submitted",
+            createdAt: nowISO(),
+            updatedAt: nowISO(),
+          });
+          toast("提交成功");
+          h5Navigate(h5Route, { replace: true, params: { id: surveyId } });
+        });
+      }
+
+      /* topic comment / vote */
+      const btnTopicComment = document.getElementById("btn-topic-comment");
+      if (btnTopicComment) {
+        btnTopicComment.addEventListener("click", function () {
+          const topicId = btnTopicComment.getAttribute("data-topic-id");
+          const ta = document.getElementById("topic-comment");
+          const content = ta ? ta.value.trim() : "";
+          if (!content) {
+            toast("请输入评论内容");
+            return;
+          }
+          const session = getH5Session() || {};
+          const org = getOrg(session.orgId);
+          saveRecord(KEYS.topicComments, {
+            id: uid("tcm"),
+            topicId: topicId,
+            userId: session.userId,
+            userName: session.userName,
+            content: content,
+            orgId: session.orgId,
+            orgLevel: (org && org.level) || "village",
+            orgName: (org && org.name) || "",
+            status: "active",
+            createdAt: nowISO(),
+            updatedAt: nowISO(),
+          });
+          toast("评论已发布");
+          renderH5Shell();
+        });
+      }
+      if (body) {
+        body.querySelectorAll("[data-vote-opt]").forEach(function (el) {
+          el.addEventListener("click", function () {
+            const topicId = el.getAttribute("data-topic-id");
+            const optionId = el.getAttribute("data-vote-opt");
+            const session = getH5Session() || {};
+            const exists = getAll(KEYS.topicVotes).some(function (v) {
+              return v.topicId === topicId && v.userId === session.userId && !v.deleted;
+            });
+            if (exists) {
+              toast("您已投过票");
+              return;
+            }
+            const org = getOrg(session.orgId);
+            saveRecord(KEYS.topicVotes, {
+              id: uid("tvt"),
+              topicId: topicId,
+              userId: session.userId,
+              userName: session.userName,
+              optionId: optionId,
+              orgId: session.orgId,
+              orgLevel: (org && org.level) || "village",
+              orgName: (org && org.name) || "",
+              status: "submitted",
+              createdAt: nowISO(),
+              updatedAt: nowISO(),
+            });
+            toast("表决成功");
+            renderH5Shell();
+          });
+        });
+      }
+
+      /* assist apply */
+      const btnAssist = document.getElementById("btn-submit-assist");
+      if (btnAssist) {
+        btnAssist.addEventListener("click", function () {
+          const title = ((document.getElementById("apl-title") || {}).value || "").trim();
+          const type = ((document.getElementById("apl-type") || {}).value || "").trim();
+          const content = ((document.getElementById("apl-content") || {}).value || "").trim();
+          if (!title || !type || !content) {
+            toast("请完整填写申请信息");
+            return;
+          }
+          const session = getH5Session() || {};
+          const org = getOrg(session.orgId);
+          const resident = getAll(KEYS.residents).find(function (r) { return r.id === session.userId; });
+          const ts = nowISO();
+          saveRecord(KEYS.assistApplications, {
+            id: uid("apl"),
+            title: title,
+            type: type,
+            content: content,
+            reason: content,
+            userId: session.userId,
+            userName: session.userName,
+            phone: (resident && resident.phone) || "",
+            orgId: session.orgId,
+            orgLevel: (org && org.level) || "village",
+            orgName: (org && org.name) || "",
+            status: "submitted",
+            centerOrgId: "org_cx",
+            deptId: null,
+            deptName: null,
+            assignRemark: null,
+            rejectReason: null,
+            returnReason: null,
+            handleOrgName: "城西街道综合信息指挥室",
+            progressText: "已提交，待乡镇中心受理",
+            timeline: [{ step: "submit", label: "提交", at: ts, by: session.userName || "群众", remark: "群众提交申请" }],
+            createdAt: ts,
+            updatedAt: ts,
+          });
+          toast("申请已提交");
+          h5Navigate("home/assist-mine", { replace: true });
         });
       }
     }
