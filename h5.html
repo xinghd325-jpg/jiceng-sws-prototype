@@ -23,8 +23,342 @@
       font-size: 14px;
       background: #e8e8e8;
       color: rgba(0,0,0,0.88);
+      line-height: 1.5;
     }
-    #app { min-height: 100vh; }
+    #app { min-height: 100vh; padding: 8px 0 24px; }
+    a { color: var(--color-primary); text-decoration: none; }
+    button { font-family: inherit; cursor: pointer; border: none; background: none; }
+
+    /* ---- Phone shell ---- */
+    .phone {
+      width: var(--phone-width);
+      height: var(--phone-height);
+      margin: 16px auto;
+      background: var(--color-bg);
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .phone-body { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; background: var(--color-bg); }
+    .tabbar {
+      height: 50px;
+      border-top: 1px solid var(--color-border);
+      display: flex;
+      background: #fff;
+      flex-shrink: 0;
+    }
+    .tabbar-item {
+      flex: 1;
+      text-align: center;
+      font-size: 11px;
+      color: rgba(0,0,0,0.65);
+      padding-top: 6px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      user-select: none;
+    }
+    .tabbar-item i { font-size: 20px; line-height: 1; }
+    .tabbar-item.active { color: var(--color-primary); }
+    .tabbar.hidden { display: none; }
+
+    /* ---- Sub page nav ---- */
+    .h5-nav {
+      height: 44px;
+      background: #fff;
+      border-bottom: 1px solid var(--color-border);
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .h5-nav-back {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(0,0,0,0.88);
+      font-size: 20px;
+      flex-shrink: 0;
+    }
+    .h5-nav-title {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      font-weight: 600;
+      margin-right: 36px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* ---- Home ---- */
+    .home-hero {
+      background: var(--color-primary);
+      color: #fff;
+      padding: 16px 16px 20px;
+    }
+    .home-hero .org-name { font-size: 13px; opacity: 0.9; }
+    .home-hero .greet { font-size: 18px; font-weight: 600; margin-top: 4px; }
+    .home-search {
+      margin-top: 12px;
+      background: #fff;
+      border-radius: 2px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      gap: 6px;
+      color: rgba(0,0,0,0.45);
+      font-size: 13px;
+      cursor: pointer;
+    }
+    .home-search i { font-size: 16px; color: rgba(0,0,0,0.45); }
+
+    .section-card {
+      background: #fff;
+      margin: 10px 12px;
+      border-radius: 2px;
+      border: 1px solid var(--color-border);
+      overflow: hidden;
+    }
+    .section-title {
+      padding: 10px 12px 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: rgba(0,0,0,0.88);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .section-title::before {
+      content: "";
+      width: 3px;
+      height: 12px;
+      background: var(--color-primary);
+      border-radius: 1px;
+    }
+    .grid-menu {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 4px 4px 12px;
+      gap: 0;
+    }
+    .grid-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 10px 4px;
+      cursor: pointer;
+      color: rgba(0,0,0,0.88);
+    }
+    .grid-item:active { background: #f5f5f5; }
+    .grid-item .grid-icon {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      font-size: 22px;
+      margin-bottom: 4px;
+    }
+    .grid-item .grid-label {
+      font-size: 12px;
+      text-align: center;
+      line-height: 1.3;
+      color: rgba(0,0,0,0.75);
+    }
+    .service-hint {
+      margin: 0 12px 8px;
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+      text-align: center;
+    }
+    .service-hint a { color: var(--color-primary); }
+
+    .news-list { padding: 0 0 8px; }
+    .news-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+    .news-item:active { background: #fafafa; }
+    .news-tag {
+      flex-shrink: 0;
+      font-size: 11px;
+      color: var(--color-primary);
+      border: 1px solid var(--color-primary);
+      border-radius: 2px;
+      padding: 0 4px;
+      height: 18px;
+      line-height: 16px;
+      margin-top: 2px;
+    }
+    .news-body { flex: 1; min-width: 0; }
+    .news-title {
+      font-size: 13px;
+      color: rgba(0,0,0,0.88);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .news-meta { font-size: 11px; color: rgba(0,0,0,0.45); margin-top: 2px; }
+
+    /* ---- Service tab ---- */
+    .svc-entry-list { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+    .svc-entry {
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+    }
+    .svc-entry:active { background: #fafafa; }
+    .svc-entry .svc-icon {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--color-border);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--color-primary);
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+    .svc-entry .svc-text { flex: 1; min-width: 0; }
+    .svc-entry .svc-name { font-size: 15px; font-weight: 600; }
+    .svc-entry .svc-desc { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
+    .svc-entry .svc-arrow { color: rgba(0,0,0,0.25); font-size: 18px; }
+
+    /* ---- Mine tab ---- */
+    .mine-card {
+      background: var(--color-primary);
+      color: #fff;
+      margin: 0;
+      padding: 20px 16px 16px;
+    }
+    .mine-card .mine-name { font-size: 18px; font-weight: 600; }
+    .mine-card .mine-meta { font-size: 12px; opacity: 0.9; margin-top: 6px; line-height: 1.6; }
+    .mine-switch {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      color: #fff;
+      border: 1px solid rgba(255,255,255,0.65);
+      border-radius: 2px;
+      padding: 4px 10px;
+      cursor: pointer;
+      background: transparent;
+    }
+    .mine-switch:active { background: rgba(255,255,255,0.12); }
+    .mine-list { margin: 10px 12px; background: #fff; border: 1px solid var(--color-border); border-radius: 2px; }
+    .mine-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .mine-row:last-child { border-bottom: none; }
+    .mine-row:active { background: #fafafa; }
+    .mine-row i.row-icon { color: var(--color-primary); font-size: 18px; }
+    .mine-row .row-label { flex: 1; }
+    .mine-row .row-arrow { color: rgba(0,0,0,0.25); font-size: 16px; }
+
+    /* ---- Stub / empty ---- */
+    .stub-page {
+      padding: 48px 24px;
+      text-align: center;
+      color: rgba(0,0,0,0.45);
+      font-size: 14px;
+    }
+    .stub-page i { font-size: 40px; color: rgba(0,0,0,0.2); display: block; margin-bottom: 12px; }
+    .empty-tip { padding: 20px; text-align: center; color: rgba(0,0,0,0.45); font-size: 13px; }
+
+    /* ---- Resident picker ---- */
+    .picker-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 100;
+      display: flex;
+      align-items: flex-end;
+    }
+    .picker-panel {
+      width: 100%;
+      background: #fff;
+      border-radius: 2px 2px 0 0;
+      max-height: 70%;
+      overflow: auto;
+    }
+    .picker-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      font-weight: 600;
+      font-size: 15px;
+      position: sticky;
+      top: 0;
+      background: #fff;
+    }
+    .picker-head .picker-close { color: rgba(0,0,0,0.45); font-size: 14px; cursor: pointer; font-weight: 400; }
+    .picker-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .picker-item:active { background: #f5f5f5; }
+    .picker-item.active { color: var(--color-primary); }
+    .picker-item .pi-name { font-size: 14px; font-weight: 600; }
+    .picker-item .pi-meta { font-size: 12px; color: rgba(0,0,0,0.45); margin-top: 2px; }
+    .picker-item .pi-check { margin-left: auto; font-size: 18px; }
+
+    /* ---- Toast ---- */
+    .h5-toast {
+      position: absolute;
+      left: 50%;
+      top: 45%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.75);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: 2px;
+      font-size: 13px;
+      z-index: 200;
+      max-width: 80%;
+      text-align: center;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .h5-toast.show { opacity: 1; }
   </style>
 </head>
 <body>
@@ -673,15 +1007,432 @@
       storageSet(key, list);
     }
 
+    /* ========== H5 UI helpers ========== */
+    function escapeHtml(str) {
+      if (str == null) return "";
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function formatDate(iso) {
+      if (!iso) return "";
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return String(iso).slice(0, 10);
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return d.getFullYear() + "-" + m + "-" + day;
+    }
+
+    function greetByHour() {
+      const h = new Date().getHours();
+      if (h < 6) return "夜深了";
+      if (h < 11) return "早上好";
+      if (h < 13) return "中午好";
+      if (h < 18) return "下午好";
+      return "晚上好";
+    }
+
+    let _toastTimer = null;
+    function toast(message) {
+      const phone = document.querySelector(".phone");
+      if (!phone) return;
+      let el = phone.querySelector(".h5-toast");
+      if (!el) {
+        el = document.createElement("div");
+        el.className = "h5-toast";
+        phone.appendChild(el);
+      }
+      el.textContent = message;
+      el.classList.add("show");
+      clearTimeout(_toastTimer);
+      _toastTimer = setTimeout(function () { el.classList.remove("show"); }, 1800);
+    }
+
+    /* ========== PagesH5 registry + navigation ========== */
+    const PagesH5 = {};
+    let h5Route = "home";
+    let h5History = [];
+    let h5ShowPicker = false;
+
+    const TAB_ROOTS = { home: true, service: true, mine: true };
+
+    const ROUTE_TITLES = {
+      "home/notices": "通知公告",
+      "home/activities": "活动报名",
+      "home/affairs": "三务公开",
+      "home/service-items": "服务项目",
+      "home/campaigns": "建议征集",
+      "home/surveys": "民主评议",
+      "home/satisfaction": "满意度测评",
+      "home/progress": "办理进度",
+      "home/topics": "议事协商",
+      "home/policies": "救助政策",
+      "home/foundations": "基金会救助",
+      "home/assist-apply": "帮扶申请",
+      "home/assist-mine": "我的申请",
+      "home/search": "搜索",
+      "home/news": "资讯详情",
+      "service/facilities": "设施资源",
+      "service/forces": "力量资源",
+      "mine/signups": "我的活动报名",
+      "mine/suggestions": "建议线索进度",
+      "mine/surveys": "评议测评记录",
+      "mine/assist": "我的帮扶申请",
+      "mine/topics": "议事参与",
+      "mine/about": "关于",
+    };
+
+    function isTabRoot(path) {
+      return !!TAB_ROOTS[path];
+    }
+
+    function h5Navigate(path, opts) {
+      opts = opts || {};
+      if (!path) return;
+      if (isTabRoot(path)) {
+        h5History = [];
+        h5Route = path;
+      } else if (opts.replace) {
+        h5Route = path;
+      } else if (path !== h5Route) {
+        h5History.push(h5Route);
+        h5Route = path;
+      }
+      h5ShowPicker = false;
+      renderH5Shell();
+    }
+
+    function h5Back() {
+      if (h5History.length) {
+        h5Route = h5History.pop();
+      } else {
+        const root = (h5Route || "home").split("/")[0];
+        h5Route = TAB_ROOTS[root] ? root : "home";
+      }
+      h5ShowPicker = false;
+      renderH5Shell();
+    }
+
+    function renderStubPage(title) {
+      return (
+        '<div class="stub-page">' +
+        '<i class="ri-tools-line"></i>' +
+        "<div>" + escapeHtml(title || "功能") + "</div>" +
+        '<div style="margin-top:8px;font-size:12px">开发中，Task 9 将补全业务页</div>' +
+        "</div>"
+      );
+    }
+
+    function registerStub(route) {
+      PagesH5[route] = function () {
+        return renderStubPage(ROUTE_TITLES[route] || route);
+      };
+    }
+
+    [
+      "home/notices", "home/activities", "home/affairs", "home/service-items",
+      "home/campaigns", "home/surveys", "home/satisfaction", "home/progress", "home/topics",
+      "home/policies", "home/foundations", "home/assist-apply", "home/assist-mine",
+      "home/search", "home/news",
+      "service/facilities", "service/forces",
+      "mine/signups", "mine/suggestions", "mine/surveys", "mine/assist", "mine/topics", "mine/about",
+    ].forEach(registerStub);
+
+    /* ---------- Home ---------- */
+    function gridItem(icon, label, path) {
+      return (
+        '<div class="grid-item" data-nav="' + escapeHtml(path) + '">' +
+        '<div class="grid-icon"><i class="' + icon + '"></i></div>' +
+        '<div class="grid-label">' + escapeHtml(label) + "</div>" +
+        "</div>"
+      );
+    }
+
+    function renderHomePage() {
+      const session = getH5Session() || {};
+      const org = getOrg(session.orgId);
+      const orgName = (org && org.name) || session.orgName || "社区";
+      const userName = session.userName || "居民";
+
+      const notices = listForH5(KEYS.notices).slice().sort(function (a, b) {
+        return String(b.publishAt || b.updatedAt || "").localeCompare(String(a.publishAt || a.updatedAt || ""));
+      });
+      const activities = listForH5(KEYS.activities).slice().sort(function (a, b) {
+        return String(b.publishAt || b.updatedAt || "").localeCompare(String(a.publishAt || a.updatedAt || ""));
+      });
+      const news = [];
+      notices.slice(0, 2).forEach(function (n) {
+        news.push({ tag: "通知", title: n.title, meta: (n.orgName || "") + " · " + formatDate(n.publishAt || n.updatedAt), path: "home/notices" });
+      });
+      activities.slice(0, 1).forEach(function (a) {
+        news.push({ tag: "活动", title: a.title, meta: (a.orgName || "") + " · " + formatDate(a.publishAt || a.startAt), path: "home/activities" });
+      });
+
+      let html = "";
+      html += '<div class="home-hero">';
+      html += '<div class="org-name">' + escapeHtml(orgName) + "</div>";
+      html += '<div class="greet">' + greetByHour() + "，" + escapeHtml(userName) + "</div>";
+      html += '<div class="home-search" data-nav="home/search"><i class="ri-search-line"></i><span>搜索通知、活动、服务…</span></div>';
+      html += "</div>";
+
+      html += '<div class="section-card">';
+      html += '<div class="section-title">信息公开</div>';
+      html += '<div class="grid-menu">';
+      html += gridItem("ri-notification-3-line", "通知公告", "home/notices");
+      html += gridItem("ri-calendar-event-line", "活动报名", "home/activities");
+      html += gridItem("ri-file-list-3-line", "三务公开", "home/affairs");
+      html += gridItem("ri-service-line", "服务项目", "home/service-items");
+      html += "</div></div>";
+
+      html += '<div class="section-card">';
+      html += '<div class="section-title">社情民意</div>';
+      html += '<div class="grid-menu">';
+      html += gridItem("ri-chat-quote-line", "建议征集", "home/campaigns");
+      html += gridItem("ri-survey-line", "民主评议", "home/surveys");
+      html += gridItem("ri-star-line", "满意度测评", "home/satisfaction");
+      html += gridItem("ri-time-line", "办理进度", "home/progress");
+      html += gridItem("ri-discuss-line", "议事协商", "home/topics");
+      html += "</div></div>";
+
+      html += '<div class="section-card">';
+      html += '<div class="section-title">帮扶服务</div>';
+      html += '<div class="grid-menu">';
+      html += gridItem("ri-book-open-line", "救助政策", "home/policies");
+      html += gridItem("ri-building-line", "基金会救助", "home/foundations");
+      html += gridItem("ri-hand-heart-line", "帮扶申请", "home/assist-apply");
+      html += gridItem("ri-folder-user-line", "我的申请", "home/assist-mine");
+      html += "</div></div>";
+
+      html += '<div class="service-hint">设施与力量资源请前往 <a href="javascript:void(0)" data-nav="service">服务</a> Tab</div>';
+
+      html += '<div class="section-card">';
+      html += '<div class="section-title">资讯摘要</div>';
+      html += '<div class="news-list">';
+      if (!news.length) {
+        html += '<div class="empty-tip">暂无资讯</div>';
+      } else {
+        news.forEach(function (item) {
+          html +=
+            '<div class="news-item" data-nav="' + escapeHtml(item.path) + '">' +
+            '<span class="news-tag">' + escapeHtml(item.tag) + "</span>" +
+            '<div class="news-body">' +
+            '<div class="news-title">' + escapeHtml(item.title) + "</div>" +
+            '<div class="news-meta">' + escapeHtml(item.meta) + "</div>" +
+            "</div></div>";
+        });
+      }
+      html += "</div></div>";
+
+      return html;
+    }
+
+    PagesH5.home = renderHomePage;
+
+    /* ---------- Service ---------- */
+    function renderServicePage() {
+      return (
+        '<div style="padding:12px 12px 0;font-size:16px;font-weight:600">服务资源</div>' +
+        '<div class="svc-entry-list">' +
+        '<div class="svc-entry" data-nav="service/facilities">' +
+        '<div class="svc-icon"><i class="ri-building-4-line"></i></div>' +
+        '<div class="svc-text"><div class="svc-name">设施资源</div><div class="svc-desc">党群服务中心、养老、卫生等场所</div></div>' +
+        '<i class="ri-arrow-right-s-line svc-arrow"></i>' +
+        "</div>" +
+        '<div class="svc-entry" data-nav="service/forces">' +
+        '<div class="svc-icon"><i class="ri-team-line"></i></div>' +
+        '<div class="svc-text"><div class="svc-name">力量资源</div><div class="svc-desc">志愿者队伍、专业社工等力量</div></div>' +
+        '<i class="ri-arrow-right-s-line svc-arrow"></i>' +
+        "</div>" +
+        "</div>"
+      );
+    }
+    PagesH5.service = renderServicePage;
+
+    /* ---------- Mine ---------- */
+    function renderMinePage() {
+      const session = getH5Session() || {};
+      const org = getOrg(session.orgId);
+      const resident = getAll(KEYS.residents).find(function (r) { return r.id === session.userId; });
+      const phone = (resident && resident.phone) || "-";
+      const address = (resident && resident.address) || "-";
+      const orgName = (org && org.name) || session.orgName || "-";
+
+      let html = "";
+      html += '<div class="mine-card">';
+      html += '<div class="mine-name">' + escapeHtml(session.userName || "居民") + "</div>";
+      html += '<div class="mine-meta">手机 ' + escapeHtml(phone) + "<br/>所属 " + escapeHtml(orgName) + "<br/>住址 " + escapeHtml(address) + "</div>";
+      html += '<button type="button" class="mine-switch" id="btn-switch-resident"><i class="ri-swap-line"></i> 切换居民账号</button>';
+      html += "</div>";
+
+      html += '<div class="mine-list">';
+      const rows = [
+        { icon: "ri-calendar-check-line", label: "我的活动报名", path: "mine/signups" },
+        { icon: "ri-chat-check-line", label: "建议线索进度", path: "mine/suggestions" },
+        { icon: "ri-file-list-line", label: "评议测评记录", path: "mine/surveys" },
+        { icon: "ri-hand-heart-line", label: "我的帮扶申请", path: "mine/assist" },
+        { icon: "ri-discuss-line", label: "议事参与", path: "mine/topics" },
+      ];
+      rows.forEach(function (r) {
+        html +=
+          '<div class="mine-row" data-nav="' + escapeHtml(r.path) + '">' +
+          '<i class="' + r.icon + ' row-icon"></i>' +
+          '<span class="row-label">' + escapeHtml(r.label) + "</span>" +
+          '<i class="ri-arrow-right-s-line row-arrow"></i>' +
+          "</div>";
+      });
+      html += "</div>";
+
+      html += '<div class="mine-list" style="margin-top:10px">';
+      html +=
+        '<div class="mine-row" data-nav="mine/about">' +
+        '<i class="ri-information-line row-icon"></i>' +
+        '<span class="row-label">关于 / 数据互通说明</span>' +
+        '<i class="ri-arrow-right-s-line row-arrow"></i>' +
+        "</div>";
+      html += "</div>";
+
+      return html;
+    }
+    PagesH5.mine = renderMinePage;
+
+    function renderResidentPicker() {
+      const session = getH5Session() || {};
+      const residents = getAll(KEYS.residents).filter(function (r) { return r.status === "active"; });
+      let html = '<div class="picker-mask" id="resident-picker">';
+      html += '<div class="picker-panel">';
+      html += '<div class="picker-head"><span>切换演示居民</span><span class="picker-close" id="picker-close">关闭</span></div>';
+      residents.forEach(function (r) {
+        const active = r.id === session.userId;
+        html +=
+          '<div class="picker-item' + (active ? " active" : "") + '" data-res-id="' + escapeHtml(r.id) + '">' +
+          "<div><div class=\"pi-name\">" + escapeHtml(r.name) + "</div>" +
+          '<div class="pi-meta">' + escapeHtml(r.orgName || "") + " · " + escapeHtml(r.phone || "") + "</div></div>" +
+          (active ? '<i class="ri-check-line pi-check"></i>' : "") +
+          "</div>";
+      });
+      html += "</div></div>";
+      return html;
+    }
+
+    /* ========== Shell ========== */
+    function renderH5Shell() {
+      const app = document.getElementById("app");
+      const showTab = isTabRoot(h5Route);
+      const pageFn = PagesH5[h5Route];
+      const title = ROUTE_TITLES[h5Route] || "";
+
+      let bodyHtml = "";
+      if (!showTab) {
+        bodyHtml +=
+          '<div class="h5-nav">' +
+          '<div class="h5-nav-back" id="h5-back"><i class="ri-arrow-left-s-line"></i></div>' +
+          '<div class="h5-nav-title">' + escapeHtml(title || "详情") + "</div>" +
+          "</div>";
+      }
+      if (typeof pageFn === "function") {
+        bodyHtml += pageFn();
+      } else {
+        bodyHtml += renderStubPage(h5Route);
+      }
+
+      const tabItems = [
+        { key: "home", icon: "ri-home-line", label: "首页" },
+        { key: "service", icon: "ri-apps-line", label: "服务" },
+        { key: "mine", icon: "ri-user-line", label: "我的" },
+      ];
+      let tabHtml = '<div class="tabbar' + (showTab ? "" : " hidden") + '">';
+      tabItems.forEach(function (t) {
+        const isActive = showTab && h5Route === t.key;
+        tabHtml +=
+          '<div class="tabbar-item' + (isActive ? " active" : "") + '" data-tab="' + t.key + '">' +
+          '<i class="' + t.icon + '"></i>' +
+          "<span>" + t.label + "</span>" +
+          "</div>";
+      });
+      tabHtml += "</div>";
+
+      app.innerHTML =
+        '<div class="phone">' +
+        '<div class="phone-body" id="phone-body">' + bodyHtml + "</div>" +
+        tabHtml +
+        (h5ShowPicker ? renderResidentPicker() : "") +
+        "</div>";
+
+      bindShellEvents();
+    }
+
+    function bindShellEvents() {
+      const body = document.getElementById("phone-body");
+      if (body) {
+        body.querySelectorAll("[data-nav]").forEach(function (el) {
+          el.addEventListener("click", function (e) {
+            e.preventDefault();
+            const path = el.getAttribute("data-nav");
+            if (path) h5Navigate(path);
+          });
+        });
+      }
+
+      document.querySelectorAll(".tabbar-item[data-tab]").forEach(function (el) {
+        el.addEventListener("click", function () {
+          const tab = el.getAttribute("data-tab");
+          if (tab) h5Navigate(tab, { replace: true });
+        });
+      });
+
+      const back = document.getElementById("h5-back");
+      if (back) {
+        back.addEventListener("click", function () { h5Back(); });
+      }
+
+      const sw = document.getElementById("btn-switch-resident");
+      if (sw) {
+        sw.addEventListener("click", function () {
+          h5ShowPicker = true;
+          renderH5Shell();
+        });
+      }
+
+      const pickerClose = document.getElementById("picker-close");
+      if (pickerClose) {
+        pickerClose.addEventListener("click", function () {
+          h5ShowPicker = false;
+          renderH5Shell();
+        });
+      }
+      const mask = document.getElementById("resident-picker");
+      if (mask) {
+        mask.addEventListener("click", function (e) {
+          if (e.target === mask) {
+            h5ShowPicker = false;
+            renderH5Shell();
+          }
+        });
+        mask.querySelectorAll("[data-res-id]").forEach(function (el) {
+          el.addEventListener("click", function () {
+            const id = el.getAttribute("data-res-id");
+            const r = getAll(KEYS.residents).find(function (x) { return x.id === id; });
+            if (!r) return;
+            setH5Session({
+              userId: r.id,
+              userName: r.name,
+              orgId: r.orgId,
+            });
+            h5ShowPicker = false;
+            toast("已切换为 " + r.name);
+            renderH5Shell();
+          });
+        });
+      }
+    }
+
     /* ========== Boot ========== */
     ensureSeed(false);
-    console.log("notices", (storageGet(KEYS.notices) || []).length);
-    console.log("assistApplications", (storageGet(KEYS.assistApplications) || []).length);
-    console.log("activities", (storageGet(KEYS.activities) || []).length);
-    console.log("orgs", (storageGet(KEYS.orgs) || []).length);
-    console.log("residents", (storageGet(KEYS.residents) || []).length);
-
-    document.getElementById("app").textContent = "社会工作服务 H5 原型骨架 OK（种子数据已加载）";
+    renderH5Shell();
   </script>
 </body>
 </html>
