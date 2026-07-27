@@ -81,8 +81,10 @@
       background: #fff;
       border-right: 1px solid var(--color-border);
       flex-shrink: 0;
-      overflow-y: auto;
-      padding: 8px 0;
+      overflow: hidden;
+      padding: 8px 0 0;
+      display: flex;
+      flex-direction: column;
     }
     .pc-sidebar .menu-group-title {
       padding: 10px 16px 6px;
@@ -182,6 +184,99 @@
       color: var(--color-text-secondary);
       font-size: 14px;
       line-height: 1.6;
+    }
+    .page-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .page-title-row .page-title { margin-bottom: 0; }
+
+    /* ---- Stats ---- */
+    .stats-cards {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stats-card {
+      flex: 1;
+      min-width: 140px;
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+    .stats-card .stats-num {
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--color-primary);
+      line-height: 1.2;
+    }
+    .stats-card .stats-num.danger { color: var(--color-danger); }
+    .stats-card .stats-num.success { color: var(--color-success); }
+    .stats-card .stats-num.warning { color: var(--color-warning); }
+    .stats-card .stats-label {
+      margin-top: 6px;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+    }
+    .stats-panel {
+      background: var(--color-bg-elevated);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius);
+      padding: 16px;
+      margin-bottom: 12px;
+    }
+    .stats-panel-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .bar-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .bar-row:last-child { margin-bottom: 0; }
+    .bar-label {
+      width: 88px;
+      flex-shrink: 0;
+      font-size: 13px;
+      color: var(--color-text-secondary);
+      text-align: right;
+    }
+    .bar-track {
+      flex: 1;
+      height: 16px;
+      background: #f0f0f0;
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      background: var(--color-primary);
+      border-radius: var(--radius);
+      min-width: 0;
+    }
+    .bar-val {
+      width: 48px;
+      flex-shrink: 0;
+      font-size: 12px;
+      color: var(--color-text-secondary);
+      text-align: right;
+    }
+    .pc-sidebar .sidebar-menu { flex: 1; overflow-y: auto; min-height: 0; }
+    .pc-sidebar .sidebar-footer {
+      flex-shrink: 0;
+      border-top: 1px solid var(--color-border);
+      padding: 12px 16px;
+    }
+    .pc-sidebar .sidebar-footer .btn {
+      width: 100%;
     }
 
     /* ---- Filter card ---- */
@@ -783,6 +878,7 @@
           userId: "res_001",
           userName: "张先生",
           title: "申请临时困难帮扶",
+          type: "临时救助",
           reason: "家人突发疾病，短期内生活困难，申请临时帮扶。",
           phone: "138****1001",
           orgId: "org_xf",
@@ -795,6 +891,12 @@
           assignRemark: null,
           rejectReason: null,
           returnReason: null,
+          reviewNote: null,
+          handleOrgName: "城西街道综合信息指挥室",
+          progressText: "已提交，待乡镇中心受理",
+          acceptedAt: null,
+          assignedAt: null,
+          completedAt: null,
           timeline: [
             { step: "submit", label: "提交", at: t4, by: "张先生", remark: "群众提交申请" }
           ],
@@ -806,6 +908,7 @@
           userId: "res_002",
           userName: "李女士",
           title: "申请残疾辅具补贴",
+          type: "残疾人补贴",
           reason: "需要更换辅助器具，申请相关补贴与协助。",
           phone: "139****2002",
           orgId: "org_xf",
@@ -818,6 +921,12 @@
           assignRemark: "请民政办按残疾人两项补贴政策审核材料",
           rejectReason: null,
           returnReason: null,
+          reviewNote: null,
+          handleOrgName: "城西街道民政办",
+          progressText: "已受理并指派民政办，待部门审核",
+          acceptedAt: t3,
+          assignedAt: t3,
+          completedAt: null,
           timeline: [
             { step: "submit", label: "提交", at: t2, by: "李女士", remark: "群众提交申请" },
             { step: "accept", label: "受理", at: t3, by: "中心管理员", remark: "综合信息指挥室受理" },
@@ -831,6 +940,7 @@
           userId: "res_003",
           userName: "王大爷",
           title: "申请高龄关爱服务",
+          type: "养老服务",
           reason: "独居高龄，希望申请定期探访服务。",
           phone: "137****3003",
           orgId: "org_mf",
@@ -843,6 +953,12 @@
           assignRemark: "请社会事务办对接社区探访力量",
           rejectReason: null,
           returnReason: null,
+          reviewNote: "审核通过，纳入探访名单",
+          handleOrgName: "城西街道社会事务办",
+          progressText: "部门审核通过，办结",
+          acceptedAt: t2,
+          assignedAt: t2,
+          completedAt: t3,
           timeline: [
             { step: "submit", label: "提交", at: t, by: "王大爷", remark: "群众提交申请" },
             { step: "accept", label: "受理", at: t2, by: "中心管理员", remark: "已受理" },
@@ -857,6 +973,7 @@
           userId: "res_001",
           userName: "张先生",
           title: "申请就业援助",
+          type: "就业援助",
           reason: "失业后求职困难，申请就业援助。",
           phone: "138****1001",
           orgId: "org_xf",
@@ -869,6 +986,12 @@
           assignRemark: "请社会事务办审核就业援助资格",
           rejectReason: null,
           returnReason: "材料不齐，缺失业证明，请中心重新核实后指派",
+          reviewNote: null,
+          handleOrgName: "城西街道综合信息指挥室",
+          progressText: "部门退回：材料不齐，缺失业证明，请中心重新核实后指派",
+          acceptedAt: t2,
+          assignedAt: t2,
+          completedAt: null,
           timeline: [
             { step: "submit", label: "提交", at: t, by: "张先生", remark: "群众提交申请" },
             { step: "accept", label: "受理", at: t2, by: "中心管理员", remark: "已受理" },
@@ -883,6 +1006,7 @@
           userId: "res_002",
           userName: "李女士",
           title: "申请节日慰问金",
+          type: "节日慰问",
           reason: "家庭困难申请节日慰问。",
           phone: "139****2002",
           orgId: "org_xf",
@@ -895,6 +1019,12 @@
           assignRemark: null,
           rejectReason: "不在本期慰问对象范围",
           returnReason: null,
+          reviewNote: null,
+          handleOrgName: "城西街道综合信息指挥室",
+          progressText: "中心不予受理：不在本期慰问对象范围",
+          acceptedAt: null,
+          assignedAt: null,
+          completedAt: null,
           timeline: [
             { step: "submit", label: "提交", at: t2, by: "李女士", remark: "群众提交申请" },
             { step: "reject", label: "不予受理", at: t3, by: "中心管理员", remark: "不在本期慰问对象范围" }
@@ -1400,6 +1530,9 @@
       submitted: { label: "已提交", tag: "tag-orange" },
       processing: { label: "办理中", tag: "tag-blue" },
       done: { label: "已办结", tag: "tag-green" },
+      assigned: { label: "已指派", tag: "tag-blue" },
+      returned: { label: "已退回", tag: "tag-orange" },
+      completed: { label: "已办结", tag: "tag-green" },
       discussing: { label: "讨论中", tag: "tag-blue" },
       voting: { label: "表决中", tag: "tag-green" },
     };
@@ -3714,6 +3847,1116 @@
       };
     }
 
+    /* ========== 帮扶全流程 + 统计 + 省级只读 ========== */
+    function registerAssistProvincialPages() {
+      const timeCol = {
+        title: "更新时间",
+        key: "updatedAt",
+        width: "140px",
+        render: function (r) {
+          return escapeHtml(formatDateTime(r.updatedAt || r.createdAt || r.syncedAt));
+        },
+      };
+      const statusCol = {
+        title: "状态",
+        key: "status",
+        width: "90px",
+        render: function (r) {
+          return statusTagHtml(r.status);
+        },
+      };
+      const pubStatusFilter = {
+        key: "status",
+        label: "状态",
+        type: "select",
+        options: [
+          { value: "draft", label: "草稿" },
+          { value: "published", label: "已发布" },
+          { value: "offline", label: "已下架" },
+        ],
+      };
+      const ASSIST_STATUS_LABEL = {
+        submitted: "已提交",
+        rejected: "不予受理",
+        assigned: "已指派",
+        returned: "已退回",
+        completed: "已办结",
+      };
+
+      function centerOrgDisplayName(session) {
+        const org = getOrg(session && session.orgId);
+        return (org ? org.name : "乡镇") + "综合信息指挥室";
+      }
+
+      function isAssistCenter(session) {
+        if (!session) return false;
+        if (session.role === "center") return true;
+        if (session.deptId) {
+          const d = getAll(KEYS.depts).find(function (x) {
+            return x.id === session.deptId;
+          });
+          return !!(d && d.role === "center");
+        }
+        return false;
+      }
+
+      function isAssistDepartment(session) {
+        return !!(session && session.role === "department");
+      }
+
+      function canCenterHandleAssist(session, row) {
+        if (!isAssistCenter(session) || !row) return false;
+        if (row.centerOrgId) return row.centerOrgId === session.orgId;
+        return isAncestorOrg(session.orgId, row.orgId) || session.orgId === row.orgId;
+      }
+
+      function canDeptHandleAssist(session, row) {
+        if (!isAssistDepartment(session) || !row) return false;
+        if (row.status !== "assigned") return false;
+        return row.deptId === session.deptId;
+      }
+
+      function assistHandleOrg(row) {
+        if (!row) return "-";
+        if (row.handleOrgName) return row.handleOrgName;
+        if (row.status === "assigned" && row.deptName) return row.deptName;
+        if (row.status === "completed" && row.deptName) return row.deptName;
+        if (row.status === "submitted" || row.status === "returned" || row.status === "rejected") {
+          return "综合信息指挥室";
+        }
+        return row.deptName || "-";
+      }
+
+      function appendTimeline(row, step, label, by, remark, at) {
+        const list = (row.timeline || []).slice();
+        list.push({ step: step, label: label, at: at, by: by, remark: remark || "" });
+        return list;
+      }
+
+      function saveAssistApp(next, msg) {
+        saveRecord(KEYS.assistApplications, next);
+        toast(msg || "已更新", "success");
+      }
+
+      /* ---- Step1 数据仓 / 政策 / 基金会 / 帮扶记录 ---- */
+      Pages["vulnerable-warehouse"] = function (container) {
+        mountCrudPage(container, {
+          title: "弱势群体帮扶专题数据仓",
+          storeKey: KEYS.vulnerablePersons,
+          idPrefix: "vul",
+          statusActions: false,
+          filters: [
+            { key: "name", label: "姓名", placeholder: "姓名" },
+            { key: "type", label: "类型", placeholder: "如高龄独居" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "active", label: "有效" },
+                { value: "inactive", label: "停用" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "姓名", key: "name", width: "90px" },
+            { title: "类型", key: "type", width: "110px" },
+            { title: "风险", key: "riskLevel", width: "70px" },
+            { title: "手机", key: "phone", width: "120px" },
+            { title: "地址", key: "address" },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "name", label: "姓名", required: true },
+            { key: "type", label: "类型", required: true, placeholder: "如高龄独居/残疾/低保" },
+            {
+              key: "riskLevel",
+              label: "风险等级",
+              type: "select",
+              options: [
+                { value: "低", label: "低" },
+                { value: "中", label: "中" },
+                { value: "高", label: "高" },
+              ],
+              defaultValue: "中",
+            },
+            { key: "phone", label: "手机" },
+            { key: "idCard", label: "证件号" },
+            { key: "address", label: "住址", full: true },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "active", label: "有效" },
+                { value: "inactive", label: "停用" },
+              ],
+              defaultValue: "active",
+            },
+          ],
+        });
+      };
+
+      Pages["aid-policy"] = function (container) {
+        mountCrudPage(container, {
+          title: "救助政策与社会救助资源",
+          storeKey: KEYS.aidPolicies,
+          idPrefix: "pol",
+          filters: [
+            { key: "title", label: "标题", placeholder: "政策标题" },
+            { key: "category", label: "类别", placeholder: "如临时救助" },
+            pubStatusFilter,
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            { title: "类别", key: "category", width: "110px" },
+            statusCol,
+            {
+              title: "发布时间",
+              key: "publishAt",
+              width: "140px",
+              render: function (r) {
+                return escapeHtml(formatDateTime(r.publishAt));
+              },
+            },
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", required: true, full: true },
+            { key: "category", label: "类别", required: true, placeholder: "如临时救助" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "published", label: "已发布" },
+                { value: "offline", label: "已下架" },
+              ],
+              defaultValue: "draft",
+            },
+            { key: "content", label: "内容", type: "textarea", required: true, full: true, rows: 6 },
+          ],
+        });
+      };
+
+      Pages["foundation"] = function (container) {
+        mountCrudPage(container, {
+          title: "基金会救助信息",
+          storeKey: KEYS.foundations,
+          idPrefix: "fnd",
+          filters: [
+            { key: "name", label: "名称", placeholder: "基金会名称" },
+            { key: "type", label: "类型", placeholder: "如慈善组织" },
+            pubStatusFilter,
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类型", key: "type", width: "100px" },
+            { title: "联系方式", key: "contact", width: "120px" },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "name", label: "名称", required: true },
+            { key: "type", label: "类型", required: true },
+            { key: "contact", label: "联系方式" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "draft", label: "草稿" },
+                { value: "published", label: "已发布" },
+                { value: "offline", label: "已下架" },
+              ],
+              defaultValue: "draft",
+            },
+            { key: "intro", label: "简介", type: "textarea", full: true, rows: 4 },
+          ],
+        });
+      };
+
+      Pages["assist-record"] = function (container) {
+        mountCrudPage(container, {
+          title: "帮扶记录",
+          storeKey: KEYS.assistRecords,
+          idPrefix: "asr",
+          statusActions: false,
+          filters: [
+            { key: "title", label: "标题", placeholder: "记录标题" },
+            { key: "personName", label: "对象", placeholder: "姓名" },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "processing", label: "办理中" },
+                { value: "done", label: "已办结" },
+              ],
+            },
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            { title: "对象", key: "personName", width: "90px" },
+            {
+              title: "帮扶时间",
+              key: "assistAt",
+              width: "140px",
+              render: function (r) {
+                return escapeHtml(formatDateTime(r.assistAt || r.createdAt));
+              },
+            },
+            statusCol,
+            timeCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", required: true, full: true },
+            { key: "personName", label: "帮扶对象", required: true },
+            { key: "personId", label: "对象ID", placeholder: "可选，关联数据仓" },
+            {
+              key: "assistAt",
+              label: "帮扶时间",
+              type: "datetime",
+            },
+            {
+              key: "status",
+              label: "状态",
+              type: "select",
+              options: [
+                { value: "processing", label: "办理中" },
+                { value: "done", label: "已办结" },
+              ],
+              defaultValue: "done",
+            },
+            { key: "content", label: "帮扶内容", type: "textarea", required: true, full: true, rows: 4 },
+          ],
+        });
+      };
+
+      /* ---- Step2 帮扶申请全流程跟踪 ---- */
+      function openAssistViewDrawer(row) {
+        const tl = (row.timeline || [])
+          .map(function (x) {
+            return (
+              '<div style="padding:8px 0;border-bottom:1px solid #f0f0f0">' +
+              "<div><strong>" +
+              escapeHtml(x.label || x.step) +
+              "</strong> · " +
+              escapeHtml(formatDateTime(x.at)) +
+              " · " +
+              escapeHtml(x.by || "") +
+              "</div>" +
+              '<div style="color:rgba(0,0,0,0.65);margin-top:4px">' +
+              escapeHtml(x.remark || "") +
+              "</div></div>"
+            );
+          })
+          .join("");
+        const fields = [
+          { key: "title", label: "标题", full: true },
+          { key: "userName", label: "申请人" },
+          { key: "phone", label: "联系电话" },
+          { key: "type", label: "类型" },
+          { key: "status", label: "状态" },
+          { key: "handleOrgName", label: "当前办理单位" },
+          { key: "progressText", label: "进度说明", full: true },
+          { key: "reason", label: "申请事由", type: "textarea", full: true, rows: 3 },
+          { key: "assignRemark", label: "指派说明", type: "textarea", full: true, rows: 2 },
+          { key: "rejectReason", label: "不予受理原因", type: "textarea", full: true, rows: 2 },
+          { key: "returnReason", label: "退回原因", type: "textarea", full: true, rows: 2 },
+          { key: "reviewNote", label: "审核意见", type: "textarea", full: true, rows: 2 },
+        ];
+        const body =
+          buildFormHtml(fields, row, "view") +
+          '<div class="form-section-title" style="margin-top:16px">办理轨迹</div>' +
+          (tl || '<div class="page-card" style="padding:12px">暂无轨迹</div>');
+        openDrawer({
+          title: "查看帮扶申请 — " + (row.title || ""),
+          mode: "view",
+          bodyHtml: body,
+        });
+      }
+
+      function openAssignAssistDrawer(row, onOk) {
+        const session = getPcSession() || {};
+        const depts = getAll(KEYS.depts).filter(function (d) {
+          return d.orgId === session.orgId && d.role === "department";
+        });
+        if (!depts.length) {
+          toast("当前组织无可用部门", "warning");
+          return;
+        }
+        const fields = [
+          {
+            key: "deptId",
+            label: "指派部门",
+            type: "select",
+            required: true,
+            options: depts.map(function (d) {
+              return { value: d.id, label: d.name };
+            }),
+            defaultValue: depts[0].id,
+          },
+          {
+            key: "assignRemark",
+            label: "指派说明",
+            type: "textarea",
+            required: true,
+            full: true,
+            rows: 4,
+            placeholder: "请填写指派说明",
+          },
+        ];
+        openDrawer({
+          title: "受理并指派 — " + (row.title || ""),
+          mode: "edit",
+          bodyHtml: buildFormHtml(fields, { deptId: depts[0].id, assignRemark: row.assignRemark || "" }, "edit"),
+          onSubmit: function () {
+            const panel = document.getElementById("sws-drawer");
+            if (!panel) return false;
+            const values = readFormValues(panel, fields);
+            const err = validateFormFields(fields, values);
+            if (err) {
+              toast(err, "warning");
+              return false;
+            }
+            if (typeof onOk === "function") onOk(values);
+            return true;
+          },
+        });
+      }
+
+      Pages["assist-track"] = function (container) {
+        const session = getPcSession() || {};
+        let filterState = { title: "", userName: "", status: "" };
+        container.innerHTML =
+          '<div class="page-title">帮扶申请全流程跟踪</div>' +
+          '<div class="filter-card" data-role="filters"></div>' +
+          '<div data-role="table"></div>' +
+          '<div class="table-footer" data-role="footer"></div>';
+        const filterEl = container.querySelector('[data-role="filters"]');
+        const tableEl = container.querySelector('[data-role="table"]');
+        const footerEl = container.querySelector('[data-role="footer"]');
+
+        function renderFilters() {
+          filterEl.innerHTML =
+            '<div class="filter-row">' +
+            '<div class="filter-item"><label>标题</label><input class="form-control" data-filter="title" value="' +
+            escapeHtml(filterState.title) +
+            '" placeholder="申请标题" /></div>' +
+            '<div class="filter-item"><label>申请人</label><input class="form-control" data-filter="userName" value="' +
+            escapeHtml(filterState.userName) +
+            '" placeholder="姓名" /></div>' +
+            '<div class="filter-item"><label>状态</label><select class="form-control" data-filter="status">' +
+            '<option value="">全部</option>' +
+            ["submitted", "assigned", "returned", "completed", "rejected"]
+              .map(function (s) {
+                return (
+                  '<option value="' +
+                  s +
+                  '"' +
+                  (filterState.status === s ? " selected" : "") +
+                  ">" +
+                  escapeHtml(ASSIST_STATUS_LABEL[s] || s) +
+                  "</option>"
+                );
+              })
+              .join("") +
+            "</select></div>" +
+            '<div class="filter-actions">' +
+            '<button type="button" class="btn btn-primary" data-act="query">查询</button>' +
+            '<button type="button" class="btn btn-default" data-act="reset">重置</button>' +
+            "</div></div>";
+          filterEl.querySelector('[data-act="query"]').addEventListener("click", function () {
+            filterState.title = (filterEl.querySelector('[data-filter="title"]').value || "").trim();
+            filterState.userName = (filterEl.querySelector('[data-filter="userName"]').value || "").trim();
+            filterState.status = filterEl.querySelector('[data-filter="status"]').value || "";
+            refresh();
+          });
+          filterEl.querySelector('[data-act="reset"]').addEventListener("click", function () {
+            filterState = { title: "", userName: "", status: "" };
+            renderFilters();
+            refresh();
+          });
+        }
+
+        function rejectApp(row) {
+          openReasonDrawer({
+            title: "不予受理",
+            label: "不予受理原因",
+            required: true,
+            placeholder: "请填写原因",
+            onOk: function (reason) {
+              const now = nowISO();
+              const sess = getPcSession() || {};
+              const next = Object.assign({}, row, {
+                status: "rejected",
+                rejectReason: reason,
+                progressText: "中心不予受理：" + reason,
+                handleOrgName: centerOrgDisplayName(sess),
+                updatedAt: now,
+                timeline: appendTimeline(row, "reject", "不予受理", sess.userName || "中心管理员", reason, now),
+              });
+              saveAssistApp(next, "已不予受理");
+              refresh();
+            },
+          });
+        }
+
+        function assignApp(row) {
+          openAssignAssistDrawer(row, function (values) {
+            const now = nowISO();
+            const sess = getPcSession() || {};
+            const dept = getAll(KEYS.depts).find(function (d) {
+              return d.id === values.deptId;
+            });
+            const deptName = (dept && dept.name) || values.deptId;
+            const org = getOrg(sess.orgId);
+            const orgLabel = org ? org.name : "";
+            let baseForTl = row;
+            if (row.status === "submitted") {
+              baseForTl = Object.assign({}, row, {
+                timeline: appendTimeline(
+                  row,
+                  "accept",
+                  "受理",
+                  sess.userName || "中心管理员",
+                  "综合信息指挥室受理",
+                  now
+                ),
+              });
+            }
+            const next = Object.assign({}, row, {
+              status: "assigned",
+              deptId: values.deptId,
+              deptName: deptName,
+              assignRemark: values.assignRemark,
+              returnReason: null,
+              acceptedAt: row.acceptedAt || now,
+              assignedAt: now,
+              progressText: "已受理并指派" + deptName + "，待部门审核",
+              handleOrgName: orgLabel + deptName,
+              updatedAt: now,
+              timeline: appendTimeline(
+                baseForTl,
+                "assign",
+                "指派",
+                sess.userName || "中心管理员",
+                values.assignRemark || "指派至" + deptName,
+                now
+              ),
+            });
+            saveAssistApp(next, "已受理并指派");
+            refresh();
+          });
+        }
+
+        function completeApp(row) {
+          openReasonDrawer({
+            title: "审核通过",
+            label: "审核意见",
+            required: true,
+            placeholder: "请填写审核意见",
+            onOk: function (note) {
+              const now = nowISO();
+              const sess = getPcSession() || {};
+              const org = getOrg(sess.orgId);
+              const dept = getAll(KEYS.depts).find(function (d) {
+                return d.id === sess.deptId;
+              });
+              const handleName = (org ? org.name : "") + ((dept && dept.name) || row.deptName || "部门");
+              const next = Object.assign({}, row, {
+                status: "completed",
+                reviewNote: note,
+                completedAt: now,
+                progressText: "部门审核通过，办结",
+                handleOrgName: handleName,
+                updatedAt: now,
+                timeline: appendTimeline(row, "audit", "审核", sess.userName || "部门管理员", note, now),
+              });
+              saveAssistApp(next, "已办结");
+              refresh();
+            },
+          });
+        }
+
+        function returnApp(row) {
+          openReasonDrawer({
+            title: "退回中心",
+            label: "退回原因",
+            required: true,
+            placeholder: "请填写退回原因",
+            onOk: function (reason) {
+              const now = nowISO();
+              const sess = getPcSession() || {};
+              const next = Object.assign({}, row, {
+                status: "returned",
+                returnReason: reason,
+                progressText: "部门退回：" + reason,
+                handleOrgName: centerOrgDisplayName(sess),
+                updatedAt: now,
+                timeline: appendTimeline(row, "return", "退回", sess.userName || "部门管理员", reason, now),
+              });
+              saveAssistApp(next, "已退回中心");
+              refresh();
+            },
+          });
+        }
+
+        function rowActions(row) {
+          const acts = [
+            {
+              label: "查看",
+              onClick: function () {
+                openAssistViewDrawer(row);
+              },
+            },
+          ];
+          const sess = getPcSession() || {};
+          if (canCenterHandleAssist(sess, row) && (row.status === "submitted" || row.status === "returned")) {
+            acts.push({
+              label: "不予受理",
+              onClick: function () {
+                rejectApp(row);
+              },
+            });
+            acts.push({
+              label: "受理并指派",
+              onClick: function () {
+                assignApp(row);
+              },
+            });
+          }
+          if (canDeptHandleAssist(sess, row)) {
+            acts.push({
+              label: "审核通过",
+              onClick: function () {
+                completeApp(row);
+              },
+            });
+            acts.push({
+              label: "退回",
+              onClick: function () {
+                returnApp(row);
+              },
+            });
+          }
+          return acts;
+        }
+
+        function refresh() {
+          let rows = listForPc(KEYS.assistApplications);
+          rows = rows.filter(function (r) {
+            if (filterState.title && String(r.title || "").indexOf(filterState.title) < 0) return false;
+            if (filterState.userName && String(r.userName || "").indexOf(filterState.userName) < 0) return false;
+            if (filterState.status && r.status !== filterState.status) return false;
+            return true;
+          });
+          renderTable(tableEl, {
+            columns: [
+              { title: "标题", key: "title" },
+              { title: "申请人", key: "userName", width: "90px" },
+              {
+                title: "状态",
+                key: "status",
+                width: "100px",
+                render: function (r) {
+                  return statusTagHtml(r.status);
+                },
+              },
+              {
+                title: "当前办理单位",
+                key: "handleOrgName",
+                width: "160px",
+                render: function (r) {
+                  return escapeHtml(assistHandleOrg(r));
+                },
+              },
+              {
+                title: "申报时间",
+                key: "createdAt",
+                width: "140px",
+                render: function (r) {
+                  return escapeHtml(formatDateTime(r.createdAt));
+                },
+              },
+            ],
+            rows: rows,
+            rowActions: rowActions,
+          });
+          footerEl.textContent = "共 " + rows.length + " 条";
+        }
+
+        renderFilters();
+        refresh();
+      };
+
+      /* ---- Step3 帮扶统计 ---- */
+      Pages["assist-stats"] = function (container) {
+        const rows = listForPc(KEYS.assistApplications);
+        const total = rows.length;
+        const pending = rows.filter(function (r) {
+          return r.status === "submitted" || r.status === "returned";
+        }).length;
+        const processing = rows.filter(function (r) {
+          return r.status === "assigned";
+        }).length;
+        const done = rows.filter(function (r) {
+          return r.status === "completed";
+        }).length;
+        const rejected = rows.filter(function (r) {
+          return r.status === "rejected";
+        }).length;
+        const rejectRate = total ? Math.round((rejected / total) * 1000) / 10 : 0;
+
+        function countBy(keyFn) {
+          const map = {};
+          rows.forEach(function (r) {
+            const k = keyFn(r) || "未分类";
+            map[k] = (map[k] || 0) + 1;
+          });
+          return map;
+        }
+        function barsHtml(map) {
+          const max = Math.max.apply(
+            null,
+            Object.keys(map)
+              .map(function (k) {
+                return map[k];
+              })
+              .concat([1])
+          );
+          return Object.keys(map)
+            .map(function (k) {
+              const n = map[k];
+              const pct = Math.round((n / max) * 100);
+              return (
+                '<div class="bar-row"><div class="bar-label">' +
+                escapeHtml(k) +
+                '</div><div class="bar-track"><div class="bar-fill" style="width:' +
+                pct +
+                '%"></div></div><div class="bar-val">' +
+                n +
+                "</div></div>"
+              );
+            })
+            .join("");
+        }
+        const byStatus = countBy(function (r) {
+          return ASSIST_STATUS_LABEL[r.status] || r.status || "未知";
+        });
+        const byType = countBy(function (r) {
+          return r.type || "未分类";
+        });
+
+        container.innerHTML =
+          '<div class="page-title">帮扶数据统计</div>' +
+          '<div class="stats-cards">' +
+          '<div class="stats-card"><div class="stats-num">' +
+          total +
+          '</div><div class="stats-label">申请总量</div></div>' +
+          '<div class="stats-card"><div class="stats-num warning">' +
+          pending +
+          '</div><div class="stats-label">待受理</div></div>' +
+          '<div class="stats-card"><div class="stats-num">' +
+          processing +
+          '</div><div class="stats-label">办理中</div></div>' +
+          '<div class="stats-card"><div class="stats-num success">' +
+          done +
+          '</div><div class="stats-label">已办结</div></div>' +
+          '<div class="stats-card"><div class="stats-num danger">' +
+          rejectRate +
+          '%</div><div class="stats-label">驳回率</div></div>' +
+          "</div>" +
+          '<div class="stats-panel"><div class="stats-panel-title">按状态分布</div>' +
+          (total ? barsHtml(byStatus) : '<div style="color:rgba(0,0,0,0.45)">暂无数据</div>') +
+          "</div>" +
+          '<div class="stats-panel"><div class="stats-panel-title">按类型分布</div>' +
+          (total ? barsHtml(byType) : '<div style="color:rgba(0,0,0,0.45)">暂无数据</div>') +
+          "</div>";
+      };
+
+      /* ---- Step4 省级只读 7 页 ---- */
+      function mountReadOnlyPage(container, config) {
+        config = config || {};
+        const title = config.title || "";
+        const storeKey = config.storeKey;
+        const filters = config.filters || [];
+        const columns = config.columns || [];
+        const formFields = config.formFields || [];
+        let filterState = {};
+        filters.forEach(function (f) {
+          filterState[f.key] = "";
+        });
+
+        container.innerHTML =
+          '<div class="page-title-row"><div class="page-title">' +
+          escapeHtml(title) +
+          '</div><button type="button" class="btn btn-primary" data-act="sync"><i class="ri-refresh-line"></i> 同步刷新</button></div>' +
+          '<div class="filter-card" data-role="filters"></div>' +
+          '<div data-role="table"></div>' +
+          '<div class="table-footer" data-role="footer"></div>';
+
+        const filterEl = container.querySelector('[data-role="filters"]');
+        const tableEl = container.querySelector('[data-role="table"]');
+        const footerEl = container.querySelector('[data-role="footer"]');
+
+        function renderFilters() {
+          let html = '<div class="filter-row">';
+          filters.forEach(function (f) {
+            html +=
+              '<div class="filter-item"><label>' +
+              escapeHtml(f.label || f.key) +
+              "</label>";
+            if (f.type === "select") {
+              html +=
+                '<select class="form-control" data-filter="' +
+                escapeHtml(f.key) +
+                '"><option value="">全部</option>';
+              (f.options || []).forEach(function (opt) {
+                const ov = typeof opt === "object" ? opt.value : opt;
+                const ol = typeof opt === "object" ? opt.label : opt;
+                html +=
+                  '<option value="' +
+                  escapeHtml(ov) +
+                  '"' +
+                  (String(filterState[f.key]) === String(ov) ? " selected" : "") +
+                  ">" +
+                  escapeHtml(ol) +
+                  "</option>";
+              });
+              html += "</select>";
+            } else {
+              html +=
+                '<input type="text" class="form-control" data-filter="' +
+                escapeHtml(f.key) +
+                '" value="' +
+                escapeHtml(filterState[f.key] || "") +
+                '" placeholder="' +
+                escapeHtml(f.placeholder || "请输入") +
+                '" />';
+            }
+            html += "</div>";
+          });
+          html +=
+            '<div class="filter-actions">' +
+            '<button type="button" class="btn btn-primary" data-act="query">查询</button>' +
+            '<button type="button" class="btn btn-default" data-act="reset">重置</button>' +
+            "</div></div>";
+          filterEl.innerHTML = html;
+          filterEl.querySelector('[data-act="query"]').addEventListener("click", function () {
+            filters.forEach(function (f) {
+              const el = filterEl.querySelector('[data-filter="' + f.key + '"]');
+              filterState[f.key] = el ? el.value : "";
+            });
+            refresh();
+          });
+          filterEl.querySelector('[data-act="reset"]').addEventListener("click", function () {
+            filters.forEach(function (f) {
+              filterState[f.key] = "";
+            });
+            renderFilters();
+            refresh();
+          });
+        }
+
+        function doSync() {
+          const now = nowISO();
+          const list = getAll(storeKey).map(function (r) {
+            return Object.assign({}, r, { syncedAt: now, updatedAt: now });
+          });
+          storageSet(storeKey, list);
+          toast("已同步刷新省级回流数据", "success");
+          refresh();
+        }
+
+        container.querySelector('[data-act="sync"]').addEventListener("click", doSync);
+
+        function openView(row) {
+          openDrawer({
+            title: "查看 — " + (row.name || row.title || title),
+            mode: "view",
+            bodyHtml: buildFormHtml(formFields, row, "view"),
+          });
+        }
+
+        function refresh() {
+          let rows = listForPc(storeKey);
+          rows = rows.filter(function (row) {
+            for (let i = 0; i < filters.length; i++) {
+              const f = filters[i];
+              const q = filterState[f.key];
+              if (q == null || q === "") continue;
+              if (f.type === "select") {
+                if (String(row[f.key] == null ? "" : row[f.key]) !== String(q)) return false;
+              } else {
+                const hay = String(row[f.key] == null ? "" : row[f.key]);
+                if (hay.indexOf(q) < 0) return false;
+              }
+            }
+            return true;
+          });
+          const cols = columns.slice();
+          cols.push({
+            title: "数据来源",
+            key: "source",
+            width: "120px",
+            render: function (r) {
+              return escapeHtml(r.source || "省级统建回流");
+            },
+          });
+          cols.push({
+            title: "同步时间",
+            key: "syncedAt",
+            width: "140px",
+            render: function (r) {
+              return escapeHtml(formatDateTime(r.syncedAt));
+            },
+          });
+          renderTable(tableEl, {
+            columns: cols,
+            rows: rows,
+            rowActions: function (row) {
+              return [
+                {
+                  label: "查看",
+                  onClick: function () {
+                    openView(row);
+                  },
+                },
+              ];
+            },
+          });
+          footerEl.textContent = "共 " + rows.length + " 条（省级回流只读）";
+        }
+
+        renderFilters();
+        refresh();
+      }
+
+      Pages["emerging-objects"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "新兴领域 · 对象管理",
+          storeKey: KEYS.emergingObjects,
+          filters: [
+            { key: "name", label: "名称", placeholder: "对象名称" },
+            { key: "category", label: "类别", placeholder: "类别" },
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类别", key: "category", width: "110px" },
+            { title: "地址", key: "address" },
+            statusCol,
+          ],
+          formFields: [
+            { key: "name", label: "名称", full: true },
+            { key: "category", label: "类别" },
+            { key: "address", label: "地址", full: true },
+            { key: "orgName", label: "所属组织" },
+            { key: "status", label: "状态" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+
+      Pages["emerging-party"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "新兴领域 · 党建工作",
+          storeKey: KEYS.emergingParty,
+          filters: [
+            { key: "name", label: "名称", placeholder: "党组织名称" },
+            { key: "category", label: "类别", placeholder: "类别" },
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类别", key: "category", width: "110px" },
+            { title: "书记", key: "secretary", width: "90px" },
+            {
+              title: "党员数",
+              key: "memberCount",
+              width: "80px",
+              render: function (r) {
+                return r.memberCount != null ? String(r.memberCount) : "-";
+              },
+            },
+            statusCol,
+          ],
+          formFields: [
+            { key: "name", label: "名称", full: true },
+            { key: "category", label: "类别" },
+            { key: "secretary", label: "书记" },
+            { key: "memberCount", label: "党员数" },
+            { key: "orgName", label: "所属组织" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+
+      Pages["emerging-governance"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "新兴领域 · 服务治理",
+          storeKey: KEYS.emergingGovernance,
+          filters: [
+            { key: "name", label: "名称", placeholder: "组织名称" },
+            { key: "category", label: "类别", placeholder: "类别" },
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类别", key: "category", width: "110px" },
+            { title: "牵头单位", key: "leadUnit", width: "120px" },
+            statusCol,
+          ],
+          formFields: [
+            { key: "name", label: "名称", full: true },
+            { key: "category", label: "类别" },
+            { key: "leadUnit", label: "牵头单位" },
+            { key: "orgName", label: "所属组织" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+
+      Pages["base-village"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "基层治理 · 村社建设",
+          storeKey: KEYS.baseVillage,
+          filters: [
+            { key: "name", label: "名称", placeholder: "村社名称" },
+            { key: "code", label: "编码", placeholder: "行政区划代码" },
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "编码", key: "code", width: "140px" },
+            {
+              title: "人口",
+              key: "population",
+              width: "80px",
+              render: function (r) {
+                return r.population != null ? String(r.population) : "-";
+              },
+            },
+            {
+              title: "户数",
+              key: "households",
+              width: "80px",
+              render: function (r) {
+                return r.households != null ? String(r.households) : "-";
+              },
+            },
+            statusCol,
+          ],
+          formFields: [
+            { key: "name", label: "名称", full: true },
+            { key: "code", label: "编码" },
+            { key: "population", label: "人口" },
+            { key: "households", label: "户数" },
+            { key: "orgName", label: "所属组织" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+
+      Pages["base-consult"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "基层治理 · 协商议事",
+          storeKey: KEYS.baseConsult,
+          filters: [
+            { key: "title", label: "标题", placeholder: "制度/清单标题" },
+            { key: "year", label: "年份", placeholder: "如 2026" },
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            {
+              title: "年份",
+              key: "year",
+              width: "80px",
+              render: function (r) {
+                return r.year != null ? String(r.year) : "-";
+              },
+            },
+            statusCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", full: true },
+            { key: "year", label: "年份" },
+            { key: "orgName", label: "所属组织" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+
+      Pages["base-lists"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "基层治理 · 清单管理",
+          storeKey: KEYS.baseLists,
+          filters: [
+            { key: "title", label: "标题", placeholder: "清单标题" },
+            { key: "listType", label: "类型", placeholder: "如重点关注" },
+          ],
+          columns: [
+            { title: "标题", key: "title" },
+            { title: "类型", key: "listType", width: "110px" },
+            {
+              title: "数量",
+              key: "count",
+              width: "80px",
+              render: function (r) {
+                return r.count != null ? String(r.count) : "-";
+              },
+            },
+            statusCol,
+          ],
+          formFields: [
+            { key: "title", label: "标题", full: true },
+            { key: "listType", label: "类型" },
+            { key: "count", label: "数量" },
+            { key: "orgName", label: "所属组织" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+
+      Pages["base-teams"] = function (container) {
+        mountReadOnlyPage(container, {
+          title: "基层治理 · 队伍建设",
+          storeKey: KEYS.baseTeams,
+          filters: [
+            { key: "name", label: "名称", placeholder: "队伍名称" },
+            { key: "teamType", label: "类型", placeholder: "如网格力量" },
+          ],
+          columns: [
+            { title: "名称", key: "name" },
+            { title: "类型", key: "teamType", width: "110px" },
+            {
+              title: "人数",
+              key: "memberCount",
+              width: "80px",
+              render: function (r) {
+                return r.memberCount != null ? String(r.memberCount) : "-";
+              },
+            },
+            statusCol,
+          ],
+          formFields: [
+            { key: "name", label: "名称", full: true },
+            { key: "teamType", label: "类型" },
+            { key: "memberCount", label: "人数" },
+            { key: "orgName", label: "所属组织" },
+            { key: "source", label: "数据来源" },
+            { key: "syncedAt", label: "同步时间" },
+          ],
+        });
+      };
+    }
+
     /* ========== PC Shell: top menu + sidebar routes ========== */
     const TOP_MENUS = [
       { id: "home", label: "首页", enabled: false },
@@ -3819,6 +5062,7 @@
     const Pages = {};
     registerInfoDisclosurePages();
     registerSuggestDeliberationResourcePages();
+    registerAssistProvincialPages();
     const DEFAULT_ROUTE = "notice-list";
     let _currentRouteId = null;
     const _menuCollapsed = {};
@@ -4012,7 +5256,13 @@
     function renderSidebar(container) {
       if (!container) return;
       container.innerHTML =
-        '<div class="menu-group-title">社会工作服务</div>' + renderSidebarMenuNodes(PC_MENU, 0);
+        '<div class="sidebar-menu">' +
+        '<div class="menu-group-title">社会工作服务</div>' +
+        renderSidebarMenuNodes(PC_MENU, 0) +
+        "</div>" +
+        '<div class="sidebar-footer">' +
+        '<button type="button" class="btn btn-default" id="pc-reset-demo" title="重置演示数据">' +
+        '<i class="ri-refresh-line"></i> 重置演示数据</button></div>';
 
       // restore active
       if (_currentRouteId) {
@@ -4034,6 +5284,20 @@
           navigate(el.getAttribute("data-route"));
         });
       });
+      const resetBtn = container.querySelector("#pc-reset-demo");
+      if (resetBtn) {
+        resetBtn.addEventListener("click", function () {
+          confirmDialog({
+            title: "重置演示数据",
+            content: "将清空并重新写入全部种子数据，当前业务改动会丢失。是否继续？",
+            onOk: function () {
+              resetDemoData();
+              toast("演示数据已重置", "success");
+              navigate(_currentRouteId || DEFAULT_ROUTE);
+            },
+          });
+        });
+      }
     }
 
     function renderShell() {
