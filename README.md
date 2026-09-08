@@ -4,10 +4,11 @@
 
 ## 在线访问
 
-发布后地址见仓库 GitHub Pages。本地入口：
+- 入口：https://xinghd325-jpg.github.io/jiceng-sws-prototype/
+- PC 端：https://xinghd325-jpg.github.io/jiceng-sws-prototype/pc.html
+- 群众端 H5：https://xinghd325-jpg.github.io/jiceng-sws-prototype/h5.html
 
-- [PC 端](pc.html)
-- [群众端 H5](h5.html)
+仓库：https://github.com/xinghd325-jpg/jiceng-sws-prototype
 
 ## 再次发布
 
@@ -22,3 +23,4 @@
 ```bash
 ./publish.sh "fix: 更新开发说明"
 ```
+
