@@ -1,3 +1,9 @@
 .DS_Store
 .~*
 .superpowers/sdd/
+.playwright-mcp/
+*.png
+yqc-bg-b64.txt
+yqc-login.png
+yqc-login2.png
+
