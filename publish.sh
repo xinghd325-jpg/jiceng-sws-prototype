@@ -2,15 +2,15 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-msg="${1:-chore: update prototype}"
+msg="${1:-chore: update preview}"
 
-git add pc.html h5.html index.html publish.sh .gitignore README.md
+git add pc.html h5.html index.html publish.sh .gitignore README.md robots.txt
 if [ -d "需求文档" ]; then
   git add "需求文档"
 fi
 
 if git diff --cached --quiet; then
-  echo "没有需要提交的变更。"
+  echo "No changes to commit."
 else
   git commit -m "$msg"
 fi
@@ -25,7 +25,7 @@ if [ -z "$owner_repo" ]; then
 fi
 pages="https://$(echo "$owner_repo" | cut -d/ -f1).github.io/$(echo "$owner_repo" | cut -d/ -f2)"
 echo ""
-echo "已发布："
-echo "  入口  $pages/"
-echo "  PC    $pages/pc.html"
-echo "  H5    $pages/h5.html"
+echo "Published:"
+echo "  $pages/"
+echo "  $pages/pc.html"
+echo "  $pages/h5.html"
