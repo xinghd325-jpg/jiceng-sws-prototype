@@ -987,6 +987,10 @@
       position: relative;
       min-width: 220px;
     }
+    .form-field .org-filter {
+      width: 100%;
+      min-width: 0;
+    }
     .org-filter-trigger {
       display: inline-flex;
       align-items: center;
@@ -1295,6 +1299,151 @@
       cursor: not-allowed;
     }
     select.form-control { padding-right: 28px; }
+    .search-select {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+    }
+    .search-select .search-select-input {
+      width: 100%;
+      min-width: 0;
+      padding-right: 28px;
+    }
+    .search-select-caret {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(0,0,0,0.35);
+      pointer-events: none;
+      font-size: 16px;
+    }
+    .search-select-panel {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: calc(100% + 4px);
+      z-index: 50;
+      max-height: 260px;
+      overflow: auto;
+      background: #fff;
+      border: 1px solid #E5EAF0;
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(15, 40, 80, 0.14);
+    }
+    .search-select-panel[hidden] { display: none !important; }
+    .search-select-item {
+      padding: 8px 12px;
+      font-size: 13px;
+      line-height: 1.45;
+      cursor: pointer;
+      color: var(--color-text);
+    }
+    .search-select-item:hover,
+    .search-select-item.active {
+      background: #e6f4ff;
+    }
+    .attach-box { width: 100%; min-width: 0; }
+    .attach-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+    .attach-hint {
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+    }
+    .attach-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .attach-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      max-width: 100%;
+      padding: 6px 8px;
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      background: #fafcfe;
+    }
+    .attach-thumb {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 6px;
+      background: #eef2f7;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .attach-file-icon {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+      background: #e6f4ff;
+      color: var(--color-primary);
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+    .attach-meta {
+      min-width: 0;
+      flex: 1;
+    }
+    .attach-name {
+      display: block;
+      font-size: 13px;
+      color: var(--color-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 220px;
+    }
+    .attach-size {
+      font-size: 12px;
+      color: rgba(0,0,0,0.45);
+    }
+    .attach-remove {
+      flex-shrink: 0;
+      color: rgba(0,0,0,0.45);
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+    .attach-remove:hover { color: var(--color-danger); }
+    .attach-empty {
+      font-size: 13px;
+      color: rgba(0,0,0,0.35);
+      padding: 4px 0;
+    }
+    .file-preview-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+      background: rgba(0,0,0,0.65);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      cursor: zoom-out;
+    }
+    .file-preview-mask img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .search-select-empty {
+      padding: 12px;
+      font-size: 13px;
+      color: rgba(0,0,0,0.45);
+    }
     textarea.form-control {
       height: auto;
       min-height: 80px;
@@ -2045,7 +2194,7 @@
   <script>
     /* ========== Seed + Storage ========== */
     // 版本号：年后两位+月日+字母（a/b/c…）；页眉左上角展示，便于核对是否为最新文件
-    const DEMO_BUILD = "260908d";
+    const DEMO_BUILD = "261126f";
     const STORE_PREFIX = "sws_v1_";
     const KEYS = {
       meta: STORE_PREFIX + "meta",
@@ -2356,7 +2505,7 @@
         { id: "act_006",
           title: "金华市社会工作服务开放日",
           content: "6月25日在金华市市民中心举办的市级社会工作服务开放日活动已圆满结束。当日设置了政策咨询、志愿服务项目展示、社工站成果展等板块，接待市民约180人次。相关影像资料已归档，感谢各界支持。",
-          orgId: "org_city", orgLevel: "city", orgName: "金华市", deptId: "dept_city_sw", deptName: "社会工作部", status: "offline", scopeType: "all_children",
+          orgId: "org_city", orgLevel: "city", orgName: "金华市", deptId: "dept_city_sw", deptName: "社会工作部", status: "published", scopeType: "all_children",
           scopeOrgIds: [],
           signupStart: "2026-06-01T00:00:00.000Z", signupEnd: "2026-06-20T23:59:59.000Z",
           startAt: "2026-06-25T09:00:00.000Z", endAt: "2026-06-25T17:00:00.000Z",
@@ -2541,7 +2690,7 @@
         { id: "cmp_003",
           title: "婺城区老旧小区改造意见征集",
           desc: "区住建部门会同各街道开展的老旧小区改造内容征集已结束。共收到意见326条，主要集中在加装电梯、雨污分流、停车位扩容等方面，结果已纳入改造方案论证。感谢居民参与。",
-          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "offline", scopeType: "all_children",
+          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "published", scopeType: "all_children",
           opinionType: "设施维护",
           scopeOrgIds: [],
           startAt: "2026-05-01T00:00:00.000Z", endAt: "2026-06-30T23:59:59.000Z",
@@ -2692,7 +2841,7 @@
           title: "婺城区社工站服务民主评议（已结束）",
           type: "review",
           desc: "对区级社工站阶段性服务开展情况进行民主评议，评议期已结束，结果已归档。",
-          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "offline", scopeType: "all_children",
+          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "published", scopeType: "all_children",
           scopeOrgIds: [],
           questions: [
             { id: "q1", type: "score", label: "服务专业性与态度（1-5分）" },
@@ -2745,7 +2894,7 @@
           title: "幸福社区业委会换届选举议题",
           type: "vote",
           content: "关于业委会按期换届的议题讨论与表决已结束，结果为同意按期换届。相关选举工作已按程序推进。",
-          orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "offline",
+          orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published",
           options: [{ id: "opt_a", label: "按期换届" }, { id: "opt_b", label: "延期换届" }],
           startAt: "2026-05-15T00:00:00.000Z", endAt: "2026-05-25T23:59:59.000Z",
           discussStart: "2026-05-15T00:00:00.000Z", voteStart: "2026-05-15T00:00:00.000Z", voteEnd: "2026-05-25T23:59:59.000Z",
@@ -3565,7 +3714,7 @@
 
     function ensureSeed(forceReset) {
       const meta = storageGet(KEYS.meta);
-      if (forceReset || !meta || meta.version !== 43) {
+      if (forceReset || !meta || meta.version !== 44) {
         const seed = buildSeed();
         // Explicit mapping: seed property → KEYS storage key
         storageSet(KEYS.orgs, seed.orgs);
@@ -3598,7 +3747,7 @@
         storageSet(KEYS.baseConsult, seed.baseConsult);
         storageSet(KEYS.baseLists, seed.baseLists);
         storageSet(KEYS.baseTeams, seed.baseTeams);
-        storageSet(KEYS.meta, { version: 43, seededAt: nowISO() });
+        storageSet(KEYS.meta, { version: 44, seededAt: nowISO() });
         storageSet(KEYS.pcSession, {
           orgId: "org_city",
           userName: "市级管理员",
@@ -4076,6 +4225,13 @@
       if (s.length <= 8) return s.charAt(0) + "****" + s.slice(-1);
       return s.slice(0, 4) + new Array(s.length - 7).join("*") + s.slice(-4);
     }
+    function maskPhone(phone) {
+      const p = String(phone || "").replace(/[\s\-]/g, "");
+      if (!p) return "-";
+      if (/^1\d{10}$/.test(p)) return p.slice(0, 3) + "****" + p.slice(7);
+      if (p.length >= 7) return p.slice(0, 3) + "****" + p.slice(-4);
+      return p;
+    }
 
     function formatOrgPathLabel(input) {
       if (input == null || input === "") return "-";
@@ -4185,7 +4341,7 @@
      * @param {string} selectedId 已选 orgId
      * @param {string} placeholder
      */
-    function orgFilterControlHtml(key, selectedId, placeholder) {
+    function orgFilterControlHtml(key, selectedId, placeholder, extraAttrs) {
       key = key || "orgId";
       const text = orgFilterDisplayText(selectedId);
       const ph = placeholder || "请选择";
@@ -4194,7 +4350,9 @@
         escapeHtml(key) +
         '" data-value="' +
         escapeHtml(selectedId || "") +
-        '">' +
+        '"' +
+        (extraAttrs || "") +
+        ">" +
         '<button type="button" class="org-filter-trigger" data-role="org-trigger">' +
         '<span class="org-filter-text' +
         (text ? "" : " is-placeholder") +
@@ -4268,9 +4426,13 @@
           colParents.push(browsePath[i]);
         }
         const cols = colParents.slice(0, 3);
+        const allowClear = options.allowClear !== false;
         let html =
           '<div class="org-filter-panel-head"><span>本级及下级组织（可选任意一级）</span>' +
-          '<button type="button" class="org-filter-clear" data-act="org-clear">清空</button></div>' +
+          (allowClear
+            ? '<button type="button" class="org-filter-clear" data-act="org-clear">清空</button>'
+            : "") +
+          "</div>" +
           '<div class="org-filter-cols">';
         cols.forEach(function (parentId, colIndex) {
           let children = getOrgChildren(parentId);
@@ -4278,6 +4440,20 @@
             children = children.filter(function (o) {
               return allowedIds.has(o.id);
             });
+          }
+          if (
+            options.includeSessionOrg &&
+            colIndex === 0 &&
+            sess &&
+            sess.orgId
+          ) {
+            const selfOrg = getOrg(sess.orgId);
+            const already = children.some(function (o) {
+              return o.id === sess.orgId;
+            });
+            if (selfOrg && !already && (!allowedIds || allowedIds.has(selfOrg.id))) {
+              children = [selfOrg].concat(children);
+            }
           }
           html += '<div class="org-filter-col" data-col="' + colIndex + '">';
           if (!children.length) {
@@ -4319,6 +4495,12 @@
             const sess2 = getPcSession();
             if (sess2 && sess2.orgId && !isAncestorOrg(sess2.orgId, id)) {
               toast("只能筛选本级及下级组织", "warning");
+              return;
+            }
+            if (id === rootId) {
+              browsePath = [];
+              setValue(id, false);
+              renderPanel();
               return;
             }
             browsePath = browsePath.slice(0, col);
@@ -4438,17 +4620,7 @@
       if (rule === "village") {
         if (moduleKey === KEYS.topics) {
           return all.filter(function (r) {
-            if (r.orgId !== orgId) return false;
-            const s = r.status;
-            return (
-              s === "published" ||
-              s === "open" ||
-              s === "discussing" ||
-              s === "voting" ||
-              s === "closed" ||
-              s === "offline" ||
-              s === "ended"
-            );
+            return r.orgId === orgId && isPublishedStatus(r.status, r);
           });
         }
         return all.filter((r) => r.orgId === orgId && r.status === "published");
@@ -4836,6 +5008,10 @@
       bindFormSchemaEditor(panel);
       bindRichTextEditors(panel);
       bindFormFieldVisibility(panel);
+      bindDrawerOrgFields(panel);
+      bindSearchSelects(panel);
+      bindAttachmentFields(panel);
+      bindAttachPreviewClicks(panel);
 
       document.body.appendChild(mask);
       document.body.appendChild(panel);
@@ -5179,6 +5355,11 @@
       { value: "published", label: "已上架" },
       { value: "offline", label: "已下架" },
     ];
+    const PROGRESS_STATUS_OPTIONS = [
+      { value: "not_started", label: "未开始" },
+      { value: "ongoing", label: "进行中" },
+      { value: "ended", label: "已结束" },
+    ];
     const DEFAULT_SIGNUP_FIELDS = [
       { id: "userName", type: "text", label: "姓名", required: true },
       { id: "phone", type: "phone", label: "手机号", required: true },
@@ -5269,40 +5450,103 @@
         pad(d.getMinutes())
       );
     }
+    function formatDate(iso) {
+      if (!iso) return "-";
+      const raw = String(iso);
+      const m = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+      if (m) return m[1];
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return raw;
+      const pad = function (n) {
+        return n < 10 ? "0" + n : String(n);
+      };
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    }
 
     /**
-     * 内容发布状态归一：
-     * draft/scheduled → unpublished；open → published；
-     * ended/closed → offline；议题旧态 discussing/voting → published。
+     * 上架状态归一：
+     * draft/scheduled → unpublished；open/discussing/voting → published；
+     * 活动/征集/测评旧态 ended/closed → offline；
+     * 议题旧态 closed/ended 视为曾在架，归为 published。
      */
-    function normalizeContentStatus(status) {
+    function isTopicLikeRecord(record) {
+      if (!record) return false;
+      if (record.type === "discuss" || record.type === "vote") return true;
+      if (record.voteEnd || record.discussStart || record.voteStart) return true;
+      return false;
+    }
+    function normalizeContentStatus(status, record) {
       if (status === "draft" || status === "scheduled") return "unpublished";
-      if (status === "open") return "published";
-      if (status === "discussing" || status === "voting") return "published";
-      if (status === "closed" || status === "ended") return "offline";
+      if (status === "open" || status === "discussing" || status === "voting") return "published";
+      if (status === "closed" || status === "ended") {
+        return isTopicLikeRecord(record) ? "published" : "offline";
+      }
       return status || "unpublished";
     }
-    function isUnpublishedStatus(status) {
-      return normalizeContentStatus(status) === "unpublished";
+    function isUnpublishedStatus(status, record) {
+      return normalizeContentStatus(status, record) === "unpublished";
     }
-    function isPublishedStatus(status) {
-      return normalizeContentStatus(status) === "published";
+    function isPublishedStatus(status, record) {
+      return normalizeContentStatus(status, record) === "published";
     }
-    function isOfflineStatus(status) {
-      const s = normalizeContentStatus(status);
-      return s === "offline";
+    function isOfflineStatus(status, record) {
+      return normalizeContentStatus(status, record) === "offline";
+    }
+    function getBusinessStartAt(record) {
+      if (!record) return null;
+      return record.startAt || record.discussStart || record.voteStart || null;
     }
     /** 业务结束时间（活动/征集/问卷/议题等） */
     function getBusinessEndAt(record) {
       if (!record) return null;
       return record.endAt || record.voteEnd || null;
     }
-    /** 已到业务结束时间：不允许再上架 */
-    function isBusinessEnded(record) {
+    /** 进行状态：not_started / ongoing / ended，只由开始/结束时间计算 */
+    function getProgressStatus(record) {
+      if (!record) return "ongoing";
+      const now = Date.now();
       const end = getBusinessEndAt(record);
-      if (!end) return false;
-      const t = Date.parse(end);
-      return !isNaN(t) && t <= Date.now();
+      if (end) {
+        const te = Date.parse(end);
+        if (!isNaN(te) && te <= now) return "ended";
+      }
+      const start = getBusinessStartAt(record);
+      if (start) {
+        const ts = Date.parse(start);
+        if (!isNaN(ts) && now < ts) return "not_started";
+      }
+      return "ongoing";
+    }
+    function isProgressEnded(record) {
+      return getProgressStatus(record) === "ended";
+    }
+    function progressStatusLabel(record, asTopic) {
+      const p = getProgressStatus(record);
+      if (p === "not_started") return "未开始";
+      if (p === "ended") return "已结束";
+      if (asTopic) {
+        const kind =
+          (record && record.type) ||
+          (record && record.status === "voting" ? "vote" : "discuss");
+        return kind === "vote" ? "表决中" : "讨论中";
+      }
+      return "进行中";
+    }
+    function progressStatusTagHtml(record, asTopic) {
+      const p = getProgressStatus(record);
+      const label = progressStatusLabel(record, asTopic);
+      let tag = p === "ended" ? "" : p === "not_started" ? "tag-orange" : "tag-green";
+      if (asTopic && p === "ongoing") {
+        const kind =
+          (record && record.type) ||
+          (record && record.status === "voting" ? "vote" : "discuss");
+        tag = kind === "vote" ? "tag-green" : "tag-blue";
+      }
+      return '<span class="tag ' + tag + '">' + escapeHtml(label) + "</span>";
+    }
+    /** @deprecated 进行状态是否已结束；不再用于拦截上架 */
+    function isBusinessEnded(record) {
+      return isProgressEnded(record);
     }
     /** 已上架后产生的业务数据（报名/答卷）是否可查看：已上架或已下架/已结束 */
     function canViewPublishSideData(status) {
@@ -5347,14 +5591,11 @@
         if (opts.fromSave) {
           const isSchedule = publishMode === "schedule";
           if (!isSchedule) {
-            if (isBusinessEnded(record)) {
-              toast("已到结束时间，不支持再上架", "warning");
-              return false;
-            }
             record.status = "published";
             record.publishAt = nowIso;
             record.actualPublishAt = nowIso;
             delete record.actualOfflineAt;
+            if (isProgressEnded(record)) record._endedPublishWarn = true;
           } else {
             if (!record.publishAt) {
               toast("定时上架请填写计划上架时间", "warning");
@@ -5391,7 +5632,7 @@
       return record;
     }
 
-    /** 定时上架到期 → 已上架；顺带迁移 ended/closed → offline */
+    /** 定时上架到期 → 已上架；到期不改上架状态。议题旧态归为已上架。 */
     function processScheduledPublishes() {
       let changed = false;
       const now = Date.now();
@@ -5403,11 +5644,20 @@
         let dirty = false;
         list.forEach(function (r) {
           if (!r || r.deleted) return;
-          if (r.status === "ended" || r.status === "closed") {
-            if (fullKey === KEYS.topics) return;
+          if (fullKey === KEYS.topics) {
+            if (
+              r.status === "ended" ||
+              r.status === "closed" ||
+              r.status === "discussing" ||
+              r.status === "voting" ||
+              r.status === "open"
+            ) {
+              r.status = "published";
+              dirty = true;
+            }
+          } else if (r.status === "ended" || r.status === "closed") {
             r.status = "offline";
             dirty = true;
-            return;
           }
           if (r.status === "draft" || r.status === "scheduled") {
             r.status = "unpublished";
@@ -5420,27 +5670,10 @@
           if (r.status === "unpublished" && r.publishAt) {
             const t = new Date(r.publishAt).getTime();
             if (!isNaN(t) && t <= now) {
-              if (isBusinessEnded(r)) {
-                r.status = fullKey === KEYS.topics ? "closed" : "offline";
-                if (r.status === "offline") r.actualOfflineAt = nowIso;
-                dirty = true;
-              } else {
-                r.status = "published";
-                r.actualPublishAt = nowIso;
-                dirty = true;
-              }
+              r.status = "published";
+              r.actualPublishAt = nowIso;
+              dirty = true;
             }
-          }
-          if (
-            fullKey === KEYS.topics &&
-            (r.status === "published" ||
-              r.status === "discussing" ||
-              r.status === "voting" ||
-              r.status === "open") &&
-            isBusinessEnded(r)
-          ) {
-            r.status = "closed";
-            dirty = true;
           }
         });
         if (dirty) {
@@ -5486,6 +5719,114 @@
       if (isNaN(d.getTime())) return null;
       return d.toISOString();
     }
+    function isoToDateInput(iso) {
+      if (!iso) return "";
+      const raw = String(iso);
+      const m = raw.match(/^(\d{4}-\d{2}-\d{2})/);
+      if (m) return m[1];
+      const d = new Date(iso);
+      if (isNaN(d.getTime())) return "";
+      const pad = function (n) {
+        return n < 10 ? "0" + n : String(n);
+      };
+      return d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate());
+    }
+    function dateInputToValue(val) {
+      if (!val) return "";
+      const m = String(val).match(/^(\d{4}-\d{2}-\d{2})/);
+      return m ? m[1] : "";
+    }
+    const ATTACH_MAX_COUNT = 5;
+    const ATTACH_MAX_BYTES = 10 * 1024 * 1024;
+    const ATTACH_ACCEPT =
+      "image/*,.pdf,.doc,.docx,.xls,.xlsx,.csv,.ppt,.pptx";
+    function isAllowedAttachFile(file) {
+      if (!file) return false;
+      const name = String(file.name || "").toLowerCase();
+      const type = String(file.type || "").toLowerCase();
+      if (type.indexOf("image/") === 0) return true;
+      if (/\.(png|jpe?g|gif|webp|bmp|svg|pdf|doc|docx|xls|xlsx|csv|ppt|pptx)$/i.test(name)) {
+        return true;
+      }
+      if (
+        type === "application/pdf" ||
+        type.indexOf("msword") >= 0 ||
+        type.indexOf("officedocument") >= 0 ||
+        type.indexOf("ms-excel") >= 0 ||
+        type.indexOf("ms-powerpoint") >= 0 ||
+        type === "text/csv"
+      ) {
+        return true;
+      }
+      return false;
+    }
+    function fileSizeLabel(n) {
+      const num = Number(n) || 0;
+      if (num < 1024) return num + " B";
+      if (num < 1024 * 1024) return Math.round((num / 1024) * 10) / 10 + " KB";
+      return Math.round((num / 1024 / 1024) * 10) / 10 + " MB";
+    }
+    function isAttachImage(item) {
+      if (!item) return false;
+      if (item.isImage) return true;
+      const t = String(item.type || "");
+      if (t.indexOf("image/") === 0) return true;
+      return /\.(png|jpe?g|gif|webp|bmp|svg)$/i.test(String(item.name || ""));
+    }
+    function openAttachPreview(item) {
+      if (!item || !item.dataUrl) return;
+      if (!isAttachImage(item)) {
+        const a = document.createElement("a");
+        a.href = item.dataUrl;
+        a.download = item.name || "附件";
+        document.body.appendChild(a);
+        a.click();
+        if (a.parentNode) a.parentNode.removeChild(a);
+        return;
+      }
+      const mask = document.createElement("div");
+      mask.className = "file-preview-mask";
+      mask.innerHTML = '<img alt="" src="' + item.dataUrl.replace(/"/g, "&quot;") + '" />';
+      mask.addEventListener("click", function () {
+        if (mask.parentNode) mask.parentNode.removeChild(mask);
+      });
+      document.body.appendChild(mask);
+    }
+    function attachmentsViewHtml(list) {
+      const files = Array.isArray(list) ? list : [];
+      if (!files.length) return "";
+      return (
+        '<div class="attach-list">' +
+        files
+          .map(function (f) {
+            const img = isAttachImage(f);
+            const src = String(f.dataUrl || "").replace(/"/g, "&quot;");
+            return (
+              '<div class="attach-item" data-attach-preview="1" data-image="' +
+              (img ? "1" : "0") +
+              '" data-name="' +
+              escapeHtml(f.name || "附件") +
+              '" data-type="' +
+              escapeHtml(f.type || "") +
+              '" data-src="' +
+              src +
+              '">' +
+              (img
+                ? '<img class="attach-thumb" alt="" src="' + src + '" />'
+                : '<span class="attach-file-icon"><i class="ri-attachment-2"></i></span>') +
+              '<span class="attach-meta"><span class="attach-name" title="' +
+              escapeHtml(f.name || "附件") +
+              '">' +
+              escapeHtml(f.name || "附件") +
+              '</span><span class="attach-size">' +
+              escapeHtml(fileSizeLabel(f.size)) +
+              "</span></span></div>"
+            );
+          })
+          .join("") +
+        "</div>"
+      );
+    }
 
     function demoCreatorName(ctx) {
       ctx = ctx || {};
@@ -5526,6 +5867,356 @@
     function currentSessionOrgId() {
       const s = getPcSession();
       return (s && s.orgId) || "";
+    }
+
+    function bindAttachPreviewClicks(panel) {
+      if (!panel || panel._attachPreviewBound) return;
+      panel._attachPreviewBound = true;
+      panel.addEventListener("click", function (e) {
+        const el = e.target.closest("[data-attach-preview]");
+        if (!el) return;
+        openAttachPreview({
+          name: el.getAttribute("data-name") || "附件",
+          type: el.getAttribute("data-type") || "",
+          isImage: el.getAttribute("data-image") === "1",
+          dataUrl: el.getAttribute("data-src") || "",
+        });
+      });
+    }
+
+    function bindAttachmentFields(panel) {
+      if (!panel) return;
+      panel.querySelectorAll("[data-attach]").forEach(function (wrap) {
+        if (wrap._attBound) return;
+        wrap._attBound = true;
+        const mode = wrap.getAttribute("data-attach-mode") || "edit";
+        const listEl = wrap.querySelector("[data-attach-list]");
+        const addBtn = wrap.querySelector("[data-attach-add]");
+        const fileInput = wrap.querySelector("[data-attach-input]");
+        const seedEl = wrap.querySelector("[data-attach-seed]");
+        let files = [];
+        try {
+          files = JSON.parse((seedEl && seedEl.value) || "[]") || [];
+        } catch (e) {
+          files = [];
+        }
+        if (!Array.isArray(files)) files = [];
+        wrap._files = files;
+        function renderList() {
+          if (!listEl) return;
+          if (!files.length) {
+            listEl.innerHTML =
+              mode === "view"
+                ? '<div class="attach-empty">暂无图片/附件</div>'
+                : "";
+            return;
+          }
+          listEl.innerHTML = files
+            .map(function (f, i) {
+              const img = isAttachImage(f);
+              return (
+                '<div class="attach-item">' +
+                (img
+                  ? '<img class="attach-thumb" alt="" data-attach-open="' +
+                    i +
+                    '" src="' +
+                    String(f.dataUrl || "").replace(/"/g, "&quot;") +
+                    '" />'
+                  : '<span class="attach-file-icon" data-attach-open="' +
+                    i +
+                    '"><i class="ri-attachment-2"></i></span>') +
+                '<span class="attach-meta"><span class="attach-name" title="' +
+                escapeHtml(f.name || "附件") +
+                '">' +
+                escapeHtml(f.name || "附件") +
+                '</span><span class="attach-size">' +
+                escapeHtml(fileSizeLabel(f.size)) +
+                "</span></span>" +
+                (mode === "view"
+                  ? ""
+                  : '<button type="button" class="attach-remove" data-attach-del="' +
+                    i +
+                    '" title="移除"><i class="ri-close-line"></i></button>') +
+                "</div>"
+              );
+            })
+            .join("");
+        }
+        wrap.addEventListener("click", function (e) {
+          const openEl = e.target.closest("[data-attach-open]");
+          if (openEl) {
+            const idx = Number(openEl.getAttribute("data-attach-open"));
+            if (!isNaN(idx) && files[idx]) openAttachPreview(files[idx]);
+            return;
+          }
+          const delEl = e.target.closest("[data-attach-del]");
+          if (delEl && mode !== "view") {
+            const idx = Number(delEl.getAttribute("data-attach-del"));
+            if (!isNaN(idx)) {
+              files.splice(idx, 1);
+              wrap._files = files;
+              renderList();
+            }
+          }
+        });
+        if (addBtn && fileInput && mode !== "view") {
+          addBtn.addEventListener("click", function () {
+            fileInput.click();
+          });
+          fileInput.addEventListener("change", function () {
+            const picked = Array.prototype.slice.call(fileInput.files || []);
+            fileInput.value = "";
+            picked.forEach(function (file) {
+              if (files.length >= ATTACH_MAX_COUNT) {
+                toast("最多上传 " + ATTACH_MAX_COUNT + " 个文件", "warning");
+                return;
+              }
+              if (!isAllowedAttachFile(file)) {
+                toast("仅支持图片、PDF、Excel、Word 等文件", "warning");
+                return;
+              }
+              if (file.size > ATTACH_MAX_BYTES) {
+                toast("「" + file.name + "」超过 10MB，请压缩后重试", "warning");
+                return;
+              }
+              const reader = new FileReader();
+              reader.onload = function () {
+                files.push({
+                  id: uid("att"),
+                  name: file.name,
+                  size: file.size,
+                  type: file.type || "",
+                  isImage: isAttachImage({ type: file.type, name: file.name }),
+                  dataUrl: String(reader.result || ""),
+                });
+                wrap._files = files;
+                renderList();
+              };
+              reader.readAsDataURL(file);
+            });
+          });
+        }
+        renderList();
+      });
+    }
+
+    function bindSearchSelects(panel) {
+      if (!panel) return;
+      panel.querySelectorAll("[data-search-select]").forEach(function (wrap) {
+        if (wrap._ssBound) return;
+        wrap._ssBound = true;
+        const hidden = wrap.querySelector("[data-field]");
+        const input = wrap.querySelector(".search-select-input");
+        const listEl = wrap.querySelector(".search-select-panel");
+        if (!hidden || !input || !listEl) return;
+        let opts = [];
+        try {
+          opts = JSON.parse(wrap.getAttribute("data-ss-opts") || "[]") || [];
+        } catch (e) {
+          opts = [];
+        }
+        let activeIndex = -1;
+        function norm(s) {
+          return String(s || "")
+            .toLowerCase()
+            .replace(/[\s\-]/g, "");
+        }
+        function matchOpt(opt, q) {
+          if (!q) return true;
+          const hay = norm(opt.keywords || "") + " " + norm(opt.label || "") + " " + norm(opt.value || "");
+          return hay.indexOf(q) >= 0;
+        }
+        function typeFilterVal() {
+          const root = wrap.closest("#sws-drawer") || wrap.closest(".drawer") || panel;
+          const typeEl = root && root.querySelector('[data-field="personType"]');
+          return typeEl ? String(typeEl.value || "") : "";
+        }
+        function typedOpts() {
+          const typeVal = typeFilterVal();
+          return opts.filter(function (o) {
+            if (!o || o.value === "" || o.value == null) return false;
+            if (typeVal && o.personType && String(o.personType) !== typeVal) return false;
+            return true;
+          });
+        }
+        function currentHits() {
+          const q = norm(input.value);
+          const selected = hidden.value;
+          const pool = typedOpts();
+          if (selected) {
+            const sel = opts.find(function (o) {
+              return String(o.value) === String(selected);
+            });
+            if (sel && String(input.value) === String(sel.label)) return pool;
+          }
+          return pool.filter(function (o) {
+            return matchOpt(o, q);
+          });
+        }
+        function closePanel() {
+          listEl.hidden = true;
+          activeIndex = -1;
+        }
+        function highlight(items) {
+          items.forEach(function (el, i) {
+            if (i === activeIndex) el.classList.add("active");
+            else el.classList.remove("active");
+          });
+          if (activeIndex >= 0 && items[activeIndex]) {
+            const el = items[activeIndex];
+            if (el.scrollIntoView) el.scrollIntoView({ block: "nearest" });
+          }
+        }
+        function pick(opt) {
+          hidden.value = opt ? String(opt.value) : "";
+          input.value = opt ? opt.label : "";
+          if (opt && opt.personType) {
+            const root = wrap.closest("#sws-drawer") || wrap.closest(".drawer") || panel;
+            const typeEl = root && root.querySelector('[data-field="personType"]');
+            if (typeEl && !typeEl.disabled) typeEl.value = opt.personType;
+          }
+          closePanel();
+        }
+        function renderPanel() {
+          const hits = currentHits();
+          if (!hits.length) {
+            listEl.innerHTML = '<div class="search-select-empty">无匹配对象</div>';
+            listEl.hidden = false;
+            activeIndex = -1;
+            return;
+          }
+          listEl.innerHTML = hits
+            .map(function (opt) {
+              return (
+                '<div class="search-select-item" data-value="' +
+                escapeHtml(opt.value) +
+                '">' +
+                escapeHtml(opt.label) +
+                "</div>"
+              );
+            })
+            .join("");
+          listEl.hidden = false;
+          listEl.querySelectorAll(".search-select-item").forEach(function (item) {
+            item.addEventListener("mousedown", function (e) {
+              e.preventDefault();
+              const id = item.getAttribute("data-value");
+              const opt = opts.find(function (o) {
+                return String(o.value) === String(id);
+              });
+              pick(opt);
+            });
+          });
+          activeIndex = 0;
+          highlight(listEl.querySelectorAll(".search-select-item"));
+        }
+        input.addEventListener("focus", function () {
+          if (input.disabled) return;
+          renderPanel();
+        });
+        input.addEventListener("input", function () {
+          hidden.value = "";
+          renderPanel();
+        });
+        input.addEventListener("keydown", function (e) {
+          if (listEl.hidden) {
+            if (e.key === "ArrowDown") {
+              e.preventDefault();
+              renderPanel();
+            }
+            return;
+          }
+          const items = listEl.querySelectorAll(".search-select-item");
+          if (e.key === "ArrowDown") {
+            e.preventDefault();
+            activeIndex = Math.min(items.length - 1, activeIndex + 1);
+            highlight(items);
+          } else if (e.key === "ArrowUp") {
+            e.preventDefault();
+            activeIndex = Math.max(0, activeIndex - 1);
+            highlight(items);
+          } else if (e.key === "Enter") {
+            e.preventDefault();
+            if (activeIndex >= 0 && items[activeIndex]) items[activeIndex].dispatchEvent(new Event("mousedown"));
+          } else if (e.key === "Escape") {
+            closePanel();
+          }
+        });
+        input.addEventListener("blur", function () {
+          setTimeout(function () {
+            closePanel();
+            if (hidden.value) {
+              const sel = opts.find(function (o) {
+                return String(o.value) === String(hidden.value);
+              });
+              if (sel) input.value = sel.label;
+              return;
+            }
+            const q = norm(input.value);
+            if (!q) return;
+            const hits = typedOpts().filter(function (o) {
+              return o && o.value && matchOpt(o, q);
+            });
+            if (hits.length === 1) pick(hits[0]);
+            else input.value = "";
+          }, 120);
+        });
+        const typeEl = (wrap.closest("#sws-drawer") || wrap.closest(".drawer") || panel).querySelector(
+          '[data-field="personType"]'
+        );
+        if (typeEl) {
+          typeEl.addEventListener("change", function () {
+            const t = String(typeEl.value || "");
+            const cur = opts.find(function (o) {
+              return String(o.value) === String(hidden.value);
+            });
+            if (cur && t && cur.personType && String(cur.personType) !== t) {
+              hidden.value = "";
+              input.value = "";
+            }
+            if (!listEl.hidden) renderPanel();
+          });
+        }
+        document.addEventListener("click", function (e) {
+          if (!wrap.contains(e.target)) closePanel();
+        });
+      });
+    }
+
+    function bindDrawerOrgFields(panel) {
+      if (!panel) return;
+      panel.querySelectorAll("[data-org-filter]").forEach(function (wrap) {
+        if (wrap._orgBound) return;
+        wrap._orgBound = true;
+        const required = wrap.getAttribute("data-org-required") === "1";
+        bindOrgFilterControl(wrap, {
+          placeholder: "请选择",
+          allowClear: !required,
+          includeSessionOrg: true,
+        });
+      });
+    }
+
+    /** 表单所选所属组织：本级及下级，最低村社 */
+    function applyBelongOrgFromForm(saved) {
+      const org = getOrg(saved && saved.orgId);
+      if (!org) {
+        toast("请选择所属组织", "warning");
+        return false;
+      }
+      const sessId = currentSessionOrgId();
+      if (org.id !== sessId && !isAncestorOrg(sessId, org.id)) {
+        toast("只能选择本级及下级组织", "warning");
+        return false;
+      }
+      saved.orgId = org.id;
+      saved.orgLevel = org.level;
+      saved.orgName = org.name;
+      if (org.level === "village") {
+        saved.deptId = "";
+        saved.deptName = "";
+      }
+      return saved;
     }
 
     function ensureArrayFields(val, fallback) {
@@ -5971,31 +6662,23 @@
 
     function topicPhaseOf(row) {
       if (!row) return "";
-      const st = String(row.status || "");
-      if (st === "closed" || st === "offline" || st === "ended") return "closed";
-      if (st === "unpublished" || st === "draft" || st === "scheduled") return "unpublished";
-      const end = row.endAt || row.voteEnd;
-      if (end) {
-        const t = Date.parse(end);
-        if (!isNaN(t) && t <= Date.now()) return "closed";
-      }
-      if (st === "discussing") return "discussing";
-      if (st === "voting") return "voting";
-      if (st === "published" || st === "open") {
-        return row.type === "vote" ? "voting" : "discussing";
-      }
-      return st || "";
+      const p = getProgressStatus(row);
+      if (p === "ended") return "closed";
+      const kind =
+        row.type ||
+        (row.status === "voting" ? "vote" : "discuss");
+      return kind === "vote" ? "voting" : "discussing";
     }
 
     function topicStatusMeta(row) {
-      const phase = topicPhaseOf(row);
-      const map = {
-        unpublished: { label: "定时上架", tag: "tag-orange" },
-        discussing: { label: "讨论中", tag: "tag-blue" },
-        voting: { label: "表决中", tag: "tag-green" },
-        closed: { label: "已结束", tag: "" },
-      };
-      return map[phase] || { label: phase || "-", tag: "" };
+      const p = getProgressStatus(row);
+      if (p === "not_started") return { label: "未开始", tag: "tag-orange" };
+      if (p === "ended") return { label: "已结束", tag: "" };
+      const kind =
+        (row && row.type) ||
+        (row && row.status === "voting" ? "vote" : "discuss");
+      if (kind === "vote") return { label: "表决中", tag: "tag-green" };
+      return { label: "讨论中", tag: "tag-blue" };
     }
 
     function looksLikeHtml(s) {
@@ -6146,6 +6829,9 @@
           f.full ||
           f.type === "textarea" ||
           f.type === "richtext" ||
+          f.type === "org" ||
+          f.type === "searchSelect" ||
+          f.type === "attachments" ||
           f.type === "checkbox" ||
           f.type === "formSchema" ||
           f.type === "questionList" ||
@@ -6154,6 +6840,7 @@
         let val = record[f.key];
         if (val == null) val = f.defaultValue != null ? f.defaultValue : "";
         if (f.type === "datetime") val = isoToDatetimeLocal(val);
+        if (f.type === "date") val = isoToDateInput(val);
         if (f.type === "checkbox") {
           /* handled below */
         } else if (f.type === "arrayText" && Array.isArray(val)) {
@@ -6216,6 +6903,36 @@
               "</label>";
           });
           html += "</div>";
+        } else if (f.type === "searchSelect") {
+          const ssOpts =
+            typeof f.options === "function" ? f.options(record) : f.options || [];
+          const selected = ssOpts.find(function (opt) {
+            const ov = typeof opt === "object" ? opt.value : opt;
+            return String(ov) === String(val);
+          });
+          const selectedLabel = selected
+            ? typeof selected === "object"
+              ? selected.label
+              : String(selected)
+            : "";
+          html +=
+            '<div class="search-select" data-search-select="' +
+            escapeHtml(f.key) +
+            '" data-ss-opts="' +
+            escapeHtml(JSON.stringify(ssOpts)) +
+            '">' +
+            '<input type="hidden" data-field="' +
+            escapeHtml(f.key) +
+            '" value="' +
+            escapeHtml(val) +
+            '" />' +
+            '<input type="text" class="form-control search-select-input" value="' +
+            escapeHtml(selectedLabel) +
+            '" placeholder="' +
+            escapeHtml(f.placeholder || "输入关键词筛选") +
+            '" autocomplete="off" />' +
+            '<i class="ri-arrow-down-s-line search-select-caret"></i>' +
+            '<div class="search-select-panel" hidden></div></div>';
         } else if (f.type === "select") {
           html +=
             '<select class="form-control" data-field="' +
@@ -6223,7 +6940,7 @@
             '"' +
             (required ? " required" : "") +
             ">";
-          (f.options || []).forEach(function (opt) {
+          (typeof f.options === "function" ? f.options(record) : f.options || []).forEach(function (opt) {
             const ov = typeof opt === "object" ? opt.value : opt;
             const ol = typeof opt === "object" ? opt.label : opt;
             html +=
@@ -6236,6 +6953,13 @@
               "</option>";
           });
           html += "</select>";
+        } else if (f.type === "org") {
+          html += orgFilterControlHtml(
+            f.key,
+            val,
+            f.placeholder || "请选择",
+            required ? ' data-org-required="1"' : ""
+          );
         } else if (f.type === "richtext") {
           html += buildRichTextEditorHtml(f.key, val, mode, required, f.placeholder);
         } else if (f.type === "textarea") {
@@ -6271,6 +6995,34 @@
             '"' +
             (required ? " required" : "") +
             " />";
+        } else if (f.type === "date") {
+          html +=
+            '<input type="date" class="form-control" data-field="' +
+            escapeHtml(f.key) +
+            '" data-dtype="date" value="' +
+            escapeHtml(val) +
+            '"' +
+            (required ? " required" : "") +
+            " />";
+        } else if (f.type === "attachments") {
+          const files = Array.isArray(val) ? val : [];
+          html +=
+            '<div class="attach-box" data-attach="' +
+            escapeHtml(f.key) +
+            '" data-attach-mode="' +
+            escapeHtml(mode || "edit") +
+            '">' +
+            (mode === "view"
+              ? ""
+              : '<div class="attach-toolbar"><button type="button" class="btn btn-default" data-attach-add><i class="ri-upload-2-line"></i> 上传图片/附件</button>' +
+                '<span class="attach-hint">支持图片、PDF、Excel、doc、docx 等，单文件不超过 10MB，最多 5 个</span>' +
+                '<input type="file" hidden multiple accept="' +
+                ATTACH_ACCEPT +
+                '" data-attach-input /></div>') +
+            '<div class="attach-list" data-attach-list></div>' +
+            '<textarea hidden data-attach-seed>' +
+            escapeHtml(JSON.stringify(files)) +
+            "</textarea></div>";
         } else if (f.type === "number") {
           html +=
             '<input type="number" class="form-control" data-field="' +
@@ -6338,12 +7090,24 @@
               : "";
           return;
         }
+        if (f.type === "org") {
+          const wrap = panel.querySelector('[data-org-filter="' + f.key + '"]');
+          values[f.key] = wrap ? String(wrap.getAttribute("data-value") || "").trim() : "";
+          return;
+        }
+        if (f.type === "attachments") {
+          const wrap = panel.querySelector('[data-attach="' + f.key + '"]');
+          values[f.key] = wrap && Array.isArray(wrap._files) ? wrap._files.slice() : [];
+          return;
+        }
         const el = panel.querySelector('[data-field="' + f.key + '"]');
         if (!el) return;
         if (f.type === "checkbox") {
           values[f.key] = !!el.checked;
         } else if (f.type === "datetime" || el.getAttribute("data-dtype") === "datetime") {
           values[f.key] = datetimeLocalToIso(el.value);
+        } else if (f.type === "date" || el.getAttribute("data-dtype") === "date") {
+          values[f.key] = dateInputToValue(el.value);
         } else if (f.type === "number") {
           const n = el.value === "" ? null : Number(el.value);
           values[f.key] = n;
@@ -6780,6 +7544,14 @@
               if (custom === true) continue;
               if (custom === false) return false;
             }
+            if (f.key === "progress") {
+              if (getProgressStatus(row) !== String(q)) return false;
+              continue;
+            }
+            if (schedulePublish && f.key === "status") {
+              if (normalizeContentStatus(row.status, row) !== String(q)) return false;
+              continue;
+            }
             if (f.type === "org") {
               if (!matchOrgFilter(row, q)) return false;
             } else if (
@@ -6824,7 +7596,7 @@
           schedulePublish &&
           useMode === "edit" &&
           record &&
-          isPublishedStatus(record.status)
+          isPublishedStatus(record.status, record)
         ) {
           toast("已上架内容不可编辑，请先下架", "warning");
           useMode = "view";
@@ -6853,7 +7625,7 @@
         }
         let drawerTitle =
           (isCreate ? "新增" : isView ? "查看" : "编辑") + " — " + title;
-        if (schedulePublish && isView && record && isPublishedStatus(record.status)) {
+        if (schedulePublish && isView && record && isPublishedStatus(record.status, record)) {
           drawerTitle = "查看（只读·已上架）— " + title;
         }
         const useFields = applyTypeSelectToFields(
@@ -6862,7 +7634,11 @@
           false,
           true
         );
-        let bodyHtml = buildFormHtml(useFields, isCreate ? {} : viewRecord, useMode);
+        let bodyHtml = buildFormHtml(
+          useFields,
+          isCreate ? { orgId: currentSessionOrgId() } : viewRecord,
+          useMode
+        );
         if (typeof config.extraDrawerHtml === "function") {
           bodyHtml +=
             config.extraDrawerHtml(isCreate ? null : record, useMode, viewRecord) || "";
@@ -6918,20 +7694,21 @@
             const now = nowISO();
             let saved;
             if (isCreate) {
+              const belong = getOrg(values.orgId) || {};
               saved = Object.assign({}, values, {
                 id: uid(idPrefix),
-                orgId: ctx.orgId,
-                orgLevel: ctx.orgLevel,
-                orgName: ctx.orgName,
-                deptId: ctx.deptId || "",
-                deptName: ctx.deptName || "",
+                orgId: belong.id || ctx.orgId,
+                orgLevel: belong.level || ctx.orgLevel,
+                orgName: belong.name || ctx.orgName,
+                deptId: (belong.level === "village" ? "" : ctx.deptId) || "",
+                deptName: (belong.level === "village" ? "" : ctx.deptName) || "",
                 status: schedulePublish ? "unpublished" : values.status || defaultStatus,
                 createdAt: now,
                 updatedAt: now,
                 createdBy: ctx.creatorName || demoCreatorName(ctx),
               });
             } else {
-              if (record && schedulePublish && isPublishedStatus(record.status)) {
+              if (record && schedulePublish && isPublishedStatus(record.status, record)) {
                 toast("已上架内容不可编辑，请先下架", "warning");
                 return false;
               }
@@ -6954,11 +7731,14 @@
               if (r === false) return false;
               if (r && typeof r === "object") saved = r;
             }
-            saveRecord(storeKey, saved);
             let okMsg = isCreate ? "新增成功" : "保存成功";
-            if (schedulePublish && isUnpublishedStatus(saved.status) && saved.publishAt) {
+            if (schedulePublish && isUnpublishedStatus(saved.status, saved) && saved.publishAt) {
               okMsg = "已保存，将于计划时间自动上架";
+            } else if (schedulePublish && saved._endedPublishWarn) {
+              okMsg = "已上架，当前已过结束时间，群众端仅可查看";
             }
+            if (saved && saved._endedPublishWarn) delete saved._endedPublishWarn;
+            saveRecord(storeKey, saved);
             refresh();
             setTimeout(function () {
               toast(okMsg, "success");
@@ -6980,10 +7760,6 @@
         if (schedulePublish) {
           next.status = normalizeContentStatus(nextStatus);
           if (next.status === "published") {
-            if (isBusinessEnded(row)) {
-              toast("已到结束时间，不支持再上架", "warning");
-              return;
-            }
             // 保留原计划时间到 plannedPublishAt，实际上架时间写入 actualPublishAt / publishAt
             if (row.publishAt && new Date(row.publishAt).getTime() > Date.now()) {
               next.plannedPublishAt = row.publishAt;
@@ -7005,7 +7781,9 @@
         saveRecord(storeKey, next);
         toast(
           next.status === "published"
-            ? "已上架"
+            ? isProgressEnded(next)
+              ? "已上架，当前已过结束时间，群众端仅可查看"
+              : "已上架"
             : next.status === "offline"
               ? "已下架"
               : next.status === "unpublished"
@@ -7036,8 +7814,8 @@
         }
         if (
           schedulePublish &&
-          !isOfflineStatus(row.status) &&
-          !isUnpublishedStatus(row.status)
+          !isOfflineStatus(row.status, row) &&
+          !isUnpublishedStatus(row.status, row)
         ) {
           toast("已上架内容请先下架后再删除", "warning");
           return;
@@ -7064,15 +7842,11 @@
         ];
         if (canManage(row)) {
           const st = schedulePublish
-            ? normalizeContentStatus(row.status)
+            ? normalizeContentStatus(row.status, row)
             : row.status;
           if (schedulePublish) {
-            // 定时上架/已下架：可编辑、上架、删除；已上架：仅下架
-            // noRepublishOffline：已结束(offline)不可再编辑/上架（议题等）
-            // 已到业务结束时间：一律不可再上架
-            const canMutateOffline = !config.noRepublishOffline;
-            const ended = isBusinessEnded(row);
-            if (st === "unpublished" || (st === "offline" && canMutateOffline)) {
+            // 定时上架/已下架：可编辑、上架、删除；已上架：仅下架。与进行状态无关。
+            if (st === "unpublished" || st === "offline") {
               acts.push({
                 label: "编辑",
                 onClick: function () {
@@ -7081,10 +7855,7 @@
               });
             }
             if (statusActions) {
-              if (
-                !ended &&
-                (st === "unpublished" || (st === "offline" && canMutateOffline))
-              ) {
+              if (st === "unpublished" || st === "offline") {
                 acts.push({
                   label: "上架",
                   onClick: function () {
@@ -7288,6 +8059,34 @@
           return statusTagHtml(r.status);
         },
       };
+      const shelfStatusCol = {
+        title: "上架状态",
+        key: "status",
+        width: "90px",
+        render: function (r) {
+          return statusTagHtml(normalizeContentStatus(r.status, r));
+        },
+      };
+      const progressStatusCol = {
+        title: "进行状态",
+        key: "progress",
+        width: "90px",
+        render: function (r) {
+          return progressStatusTagHtml(r, false);
+        },
+      };
+      const shelfStatusFilter = {
+        key: "status",
+        label: "上架状态",
+        type: "select",
+        options: CONTENT_STATUS_OPTIONS,
+      };
+      const progressStatusFilter = {
+        key: "progress",
+        label: "进行状态",
+        type: "select",
+        options: PROGRESS_STATUS_OPTIONS,
+      };
       const publishAtCol = {
         title: "计划/上架时间",
         key: "publishAt",
@@ -7378,12 +8177,8 @@
           schedulePublish: true,
           filters: [
             { key: "title", label: "标题", placeholder: "活动名称" },
-            {
-              key: "status",
-              label: "状态",
-              type: "select",
-              options: CONTENT_STATUS_OPTIONS,
-            },
+            shelfStatusFilter,
+            progressStatusFilter,
             {
               key: "onlineSignup",
               label: "在线报名",
@@ -7420,7 +8215,8 @@
                 return isOnlineSignupEnabled(r) ? "是" : "否";
               },
             },
-            statusCol,
+            shelfStatusCol,
+            progressStatusCol,
             createdByCol,
             publishAtCol,
             offlineAtCol,
@@ -7705,6 +8501,42 @@
         render: function (r) {
           return statusTagHtml(r.status);
         },
+      };
+      const shelfStatusCol = {
+        title: "上架状态",
+        key: "status",
+        width: "90px",
+        render: function (r) {
+          return statusTagHtml(normalizeContentStatus(r.status, r));
+        },
+      };
+      const progressStatusCol = {
+        title: "进行状态",
+        key: "progress",
+        width: "90px",
+        render: function (r) {
+          return progressStatusTagHtml(r, false);
+        },
+      };
+      const topicProgressStatusCol = {
+        title: "进行状态",
+        key: "progress",
+        width: "90px",
+        render: function (r) {
+          return progressStatusTagHtml(r, true);
+        },
+      };
+      const shelfStatusFilter = {
+        key: "status",
+        label: "上架状态",
+        type: "select",
+        options: CONTENT_STATUS_OPTIONS,
+      };
+      const progressStatusFilter = {
+        key: "progress",
+        label: "进行状态",
+        type: "select",
+        options: PROGRESS_STATUS_OPTIONS,
       };
       const createdByCol = {
         title: "创建人",
@@ -8100,12 +8932,8 @@
               type: "select",
               options: INBOX_TYPE_OPTS,
             },
-            {
-              key: "status",
-              label: "状态",
-              type: "select",
-              options: CONTENT_STATUS_OPTIONS,
-            },
+            shelfStatusFilter,
+            progressStatusFilter,
           ],
           columns: [
             { title: "活动名称", key: "title" },
@@ -8118,7 +8946,8 @@
                 return escapeHtml(formatDateTime(r.startAt) + " ~ " + formatDateTime(r.endAt));
               },
             },
-            statusCol,
+            shelfStatusCol,
+            progressStatusCol,
             publishAtCol,
             offlineAtCol,
             timeCol,
@@ -8218,12 +9047,8 @@
                 { value: "satisfaction", label: "满意度测评" },
               ],
             },
-            {
-              key: "status",
-              label: "状态",
-              type: "select",
-              options: CONTENT_STATUS_OPTIONS,
-            },
+            shelfStatusFilter,
+            progressStatusFilter,
           ],
           columns: [
             { title: "标题", key: "title" },
@@ -8251,7 +9076,8 @@
                 return escapeHtml(formatDateTime(r.startAt) + " ~ " + formatDateTime(r.endAt));
               },
             },
-            statusCol,
+            shelfStatusCol,
+            progressStatusCol,
             publishAtCol,
             offlineAtCol,
             {
@@ -8656,7 +9482,6 @@
           storeKey: KEYS.topics,
           idPrefix: "top",
           schedulePublish: true,
-          noRepublishOffline: true,
           filters: [
             { key: "title", label: "标题", placeholder: "议题标题" },
             {
@@ -8668,17 +9493,8 @@
                 { value: "vote", label: "表决" },
               ],
             },
-            {
-              key: "status",
-              label: "状态",
-              type: "select",
-              options: [
-                { value: "unpublished", label: "定时上架" },
-                { value: "discussing", label: "讨论中" },
-                { value: "voting", label: "表决中" },
-                { value: "closed", label: "已结束" },
-              ],
-            },
+            shelfStatusFilter,
+            progressStatusFilter,
           ],
           columns: [
             { title: "议题", key: "title" },
@@ -8703,15 +9519,8 @@
                 return escapeHtml(formatDateTime(start) + " ~ " + formatDateTime(end));
               },
             },
-            {
-              title: "状态",
-              key: "status",
-              width: "90px",
-              render: function (r) {
-                const m = topicStatusMeta(r);
-                return '<span class="tag ' + m.tag + '">' + escapeHtml(m.label) + "</span>";
-              },
-            },
+            shelfStatusCol,
+            topicProgressStatusCol,
             {
               title: "结果公示",
               key: "resultPublic",
@@ -8788,9 +9597,6 @@
             publishAtField,
           ],
           matchFilter: function (row, key, q) {
-            if (key === "status") {
-              return topicPhaseOf(row) === String(q);
-            }
             if (key === "type") {
               const kind =
                 row.type ||
@@ -8877,12 +9683,12 @@
             return saved;
           },
           extraRowActions: function (row) {
-            const phase = topicPhaseOf(row);
+            const p = getProgressStatus(row);
             const kind =
               row.type ||
               (row.status === "voting" ? "vote" : row.status === "discussing" ? "discuss" : "");
             const acts = [];
-            if (phase === "discussing" || phase === "voting" || phase === "closed") {
+            if (canViewPublishSideData(row.status)) {
               acts.push({
                 label: "讨论协商记录",
                 onClick: function () {
@@ -8890,10 +9696,7 @@
                 },
               });
             }
-            if (
-              (kind === "vote" || phase === "voting") &&
-              (phase === "voting" || phase === "closed")
-            ) {
+            if (kind === "vote" && canViewPublishSideData(row.status) && p !== "not_started") {
               acts.push({
                 label: "表决结果",
                 onClick: function () {
@@ -9267,6 +10070,14 @@
             timeCol,
           ],
           formFields: [
+            {
+              key: "orgId",
+              label: "所属组织",
+              type: "org",
+              required: true,
+              full: true,
+              placeholder: "请选择所属组织",
+            },
             { key: "name", label: "设施名称", required: true },
             { key: "type", label: "类型", required: true, placeholder: "如党群服务" },
             { key: "address", label: "地址", required: true, full: true },
@@ -9276,6 +10087,9 @@
             { key: "intro", label: "网点详情", type: "textarea", full: true, rows: 3, placeholder: "功能分区、可办理事项等" },
             publishAtField,
           ],
+          onBeforeSave: function (saved) {
+            return applyBelongOrgFromForm(saved);
+          },
         });
       };
 
@@ -9321,6 +10135,14 @@
             timeCol,
           ],
           formFields: [
+            {
+              key: "orgId",
+              label: "所属组织",
+              type: "org",
+              required: true,
+              full: true,
+              placeholder: "请选择所属组织",
+            },
             { key: "name", label: "队伍名称", required: true },
             { key: "type", label: "类型", required: true, placeholder: "如志愿服务" },
             { key: "leader", label: "负责人", required: true },
@@ -9330,6 +10152,9 @@
             { key: "intro", label: "简介", type: "textarea", full: true, rows: 3 },
             publishAtField,
           ],
+          onBeforeSave: function (saved) {
+            return applyBelongOrgFromForm(saved);
+          },
         });
       };
     }
@@ -9542,18 +10367,38 @@
           "</span>"
         );
       }
+      function assistPersonDisplayLabel(p) {
+        if (!p) return "-";
+        const name = p.name || "-";
+        const idNo = maskIdCard(p.idCard);
+        const phone = maskPhone(p.phone);
+        const st = p.status === "inactive" ? " ·已注销" : "";
+        return name + "（" + idNo + " / " + phone + "）" + st;
+      }
+      function assistPersonKeywords(p) {
+        if (!p) return "";
+        return [
+          p.name || "",
+          p.phone || "",
+          maskPhone(p.phone),
+          p.idCard || "",
+          maskIdCard(p.idCard),
+          p.type || "",
+        ].join(" ");
+      }
       function assistPersonSelectOptions(currentId) {
         const list = listForPc(KEYS.vulnerablePersons).filter(function (p) {
           return p && !p.deleted;
         });
-        const opts = [{ value: "", label: "请选择帮扶对象" }];
+        const opts = [];
         const seen = {};
         list.forEach(function (p) {
           seen[p.id] = true;
-          const st = p.status === "inactive" ? "·已注销" : "";
           opts.push({
             value: p.id,
-            label: (p.name || "-") + "（" + (p.type || "未分类") + st + "）",
+            label: assistPersonDisplayLabel(p),
+            keywords: assistPersonKeywords(p),
+            personType: p.type || "",
           });
         });
         if (currentId && !seen[currentId]) {
@@ -9564,7 +10409,9 @@
           if (extra) {
             opts.push({
               value: extra.id,
-              label: (extra.name || "-") + "（" + (extra.type || "未分类") + "）",
+              label: assistPersonDisplayLabel(extra),
+              keywords: assistPersonKeywords(extra),
+              personType: extra.type || "",
             });
           }
         }
@@ -9597,6 +10444,9 @@
                 (x.remark
                   ? '<div class="tr-remark">' + escapeHtml(x.remark) + "</div>"
                   : "") +
+                (x.attachments && x.attachments.length
+                  ? '<div style="margin-top:8px">' + attachmentsViewHtml(x.attachments) + "</div>"
+                  : "") +
                 "</div>"
               );
             })
@@ -9604,7 +10454,11 @@
           "</div>"
         );
       }
+      function isAssistEffectPending(row) {
+        return !row || !row.effect || row.effect === "pending";
+      }
       function openAssistFollowDrawer(row, onSaved) {
+        const pending = isAssistEffectPending(row);
         const fields = [
           {
             key: "remark",
@@ -9616,13 +10470,22 @@
             placeholder: "请填写本次跟进情况、措施落实或对象反馈",
           },
           {
+            key: "attachments",
+            label: "图片/附件",
+            type: "attachments",
+            full: true,
+          },
+        ];
+        if (pending) {
+          fields.push({
             key: "effect",
             label: "效果评估",
             type: "select",
-            options: ASSIST_EFFECT_OPTS,
+            required: true,
+            options: [{ value: "", label: "请选择" }].concat(ASSIST_EFFECT_OPTS),
             defaultValue: row.effect || "pending",
-          },
-        ];
+          });
+        }
         const history = assistFollowEntries(row);
         const historyHtml = history.length
           ? '<div class="form-section-title">历史跟进（' +
@@ -9633,14 +10496,17 @@
                 return Object.assign({}, x, { label: "跟进", step: "follow" });
               }),
             })
-          : '<div class="form-section-title">历史跟进</div><div class="page-card" style="padding:12px">暂无跟进，本次为第一条。</div>';
+          : "";
+        const init = pending ? { effect: row.effect || "pending" } : {};
         openDrawer({
-          title: "跟进情况 — " + (row.personName || row.title || ""),
+          title: "新增跟进 — " + (row.personName || row.title || ""),
           mode: "edit",
           bodyHtml:
             historyHtml +
-            '<div class="form-section-title" style="margin-top:16px">新增跟进</div>' +
-            buildFormHtml(fields, { effect: row.effect || "pending" }, "edit").replace(
+            '<div class="form-section-title"' +
+            (historyHtml ? ' style="margin-top:16px"' : "") +
+            ">新增跟进</div>" +
+            buildFormHtml(fields, init, "edit").replace(
               '<div class="form-section-title">基本信息</div>',
               ""
             ),
@@ -9656,7 +10522,6 @@
             const now = nowISO();
             const sess = getPcSession() || {};
             const next = Object.assign({}, row, {
-              effect: values.effect || row.effect || "pending",
               followStatus: values.remark,
               updatedAt: now,
               timeline: (row.timeline || []).concat([
@@ -9666,9 +10531,11 @@
                   at: now,
                   by: sess.userName || "工作人员",
                   remark: values.remark,
+                  attachments: values.attachments || [],
                 },
               ]),
             });
+            if (pending) next.effect = values.effect || "pending";
             saveRecord(KEYS.assistRecords, next);
             toast("已保存跟进", "success");
             if (typeof onSaved === "function") onSaved();
@@ -9893,17 +10760,17 @@
               type: "select",
               options: assistSourceFilterOpts(),
             },
-            { key: "assistAt", label: "帮扶时间", type: "daterange" },
+            { key: "assistAt", label: "帮扶日期", type: "daterange" },
           ],
           columns: [
-            { title: "帮扶对象", key: "personName", width: "90px" },
             { title: "对象类型", key: "personType", width: "120px" },
+            { title: "帮扶对象", key: "personName", width: "90px" },
             {
-              title: "帮扶时间",
+              title: "帮扶日期",
               key: "assistAt",
-              width: "136px",
+              width: "120px",
               render: function (r) {
-                return escapeHtml(formatDateTime(r.assistAt || r.createdAt));
+                return escapeHtml(formatDate(r.assistAt || r.createdAt));
               },
             },
             {
@@ -9946,6 +10813,14 @@
                 return clipCellHtml(prefix + latest);
               },
             },
+            {
+              title: "效果评估",
+              key: "effect",
+              width: "100px",
+              render: function (r) {
+                return assistEffectTagHtml(r.effect);
+              },
+            },
             orgPathColumn("帮扶部门", "200px"),
             {
               title: "录入时间",
@@ -9958,17 +10833,27 @@
           ],
           formFields: [
             {
-              key: "personId",
-              label: "帮扶对象",
+              key: "personType",
+              label: "对象类型",
               type: "select",
               required: true,
-              options: assistPersonSelectOptions(),
+              options: [{ value: "", label: "请选择" }].concat(typeOpts),
             },
-            { key: "title", label: "帮扶主题", required: true },
+            {
+              key: "personId",
+              label: "帮扶对象",
+              type: "searchSelect",
+              required: true,
+              full: true,
+              placeholder: "输入姓名 / 身份证 / 手机号筛选",
+              options: function (record) {
+                return assistPersonSelectOptions(record && record.personId);
+              },
+            },
             {
               key: "assistAt",
-              label: "帮扶时间",
-              type: "datetime",
+              label: "帮扶日期",
+              type: "date",
               required: true,
             },
             {
@@ -9988,6 +10873,19 @@
               full: true,
               rows: 2,
               placeholder: "如物资发放、政策对接、辅具适配、结对关爱等",
+            },
+            {
+              key: "attachments",
+              label: "图片/附件",
+              type: "attachments",
+              full: true,
+            },
+            {
+              key: "effect",
+              label: "效果评估",
+              type: "select",
+              required: true,
+              options: [{ value: "", label: "请选择" }].concat(ASSIST_EFFECT_OPTS),
             },
           ],
           extraDrawerHtml: function (record, mode) {
@@ -10015,6 +10913,15 @@
                 escapeHtml(person.address || "-") +
                 "</div>";
             }
+            if (record.effect || record.personType) {
+              html +=
+                '<div class="form-section-title" style="margin-top:16px">记录信息</div>' +
+                '<div class="person-brief">对象类型 <b>' +
+                escapeHtml(record.personType || (person && person.type) || "-") +
+                "</b>　效果评估 " +
+                assistEffectTagHtml(record.effect) +
+                "</div>";
+            }
             html +=
               '<div class="form-section-title"' +
               (person ? "" : ' style="margin-top:16px"') +
@@ -10035,12 +10942,16 @@
               return false;
             }
             saved.personName = person.name || "";
-            saved.personType = person.type || "";
+            if (!saved.personType) saved.personType = person.type || "";
+            if (!saved.effect) {
+              toast("请选择效果评估", "warning");
+              return false;
+            }
+            saved.title = saved.personType || person.type || saved.title || "";
             if (!ctx || ctx.mode === "create") {
               saved.source = "manual";
               saved.sourceSystem = "";
               saved.followStatus = "";
-              saved.effect = "pending";
             }
             saved.status = "active";
             const sess = getPcSession() || {};
@@ -10083,7 +10994,7 @@
             if (!canManage(row)) return [];
             return [
               {
-                label: "跟进情况",
+                label: "新增跟进",
                 onClick: function () {
                   openAssistFollowDrawer(row, function () {
                     if (api && typeof api.refresh === "function") api.refresh();

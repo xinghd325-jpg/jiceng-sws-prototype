@@ -2461,7 +2461,7 @@
         { id: "act_006",
           title: "金华市社会工作服务开放日",
           content: "6月25日在金华市市民中心举办的市级社会工作服务开放日活动已圆满结束。当日设置了政策咨询、志愿服务项目展示、社工站成果展等板块，接待市民约180人次。相关影像资料已归档，感谢各界支持。",
-          orgId: "org_city", orgLevel: "city", orgName: "金华市", deptId: "dept_city_sw", deptName: "社会工作部", status: "offline", scopeType: "all_children",
+          orgId: "org_city", orgLevel: "city", orgName: "金华市", deptId: "dept_city_sw", deptName: "社会工作部", status: "published", scopeType: "all_children",
           scopeOrgIds: [],
           signupStart: "2026-06-01T00:00:00.000Z", signupEnd: "2026-06-20T23:59:59.000Z",
           startAt: "2026-06-25T09:00:00.000Z", endAt: "2026-06-25T17:00:00.000Z",
@@ -2646,7 +2646,7 @@
         { id: "cmp_003",
           title: "婺城区老旧小区改造意见征集",
           desc: "区住建部门会同各街道开展的老旧小区改造内容征集已结束。共收到意见326条，主要集中在加装电梯、雨污分流、停车位扩容等方面，结果已纳入改造方案论证。感谢居民参与。",
-          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "offline", scopeType: "all_children",
+          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "published", scopeType: "all_children",
           opinionType: "设施维护",
           scopeOrgIds: [],
           startAt: "2026-05-01T00:00:00.000Z", endAt: "2026-06-30T23:59:59.000Z",
@@ -2797,7 +2797,7 @@
           title: "婺城区社工站服务民主评议（已结束）",
           type: "review",
           desc: "对区级社工站阶段性服务开展情况进行民主评议，评议期已结束，结果已归档。",
-          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "offline", scopeType: "all_children",
+          orgId: "org_wc", orgLevel: "district", orgName: "婺城区", deptId: "dept_wc_sw", deptName: "社会工作服务中心", status: "published", scopeType: "all_children",
           scopeOrgIds: [],
           questions: [
             { id: "q1", type: "score", label: "服务专业性与态度（1-5分）" },
@@ -2850,7 +2850,7 @@
           title: "幸福社区业委会换届选举议题",
           type: "vote",
           content: "关于业委会按期换届的议题讨论与表决已结束，结果为同意按期换届。相关选举工作已按程序推进。",
-          orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "offline",
+          orgId: "org_xf", orgLevel: "village", orgName: "幸福社区", status: "published",
           options: [{ id: "opt_a", label: "按期换届" }, { id: "opt_b", label: "延期换届" }],
           startAt: "2026-05-15T00:00:00.000Z", endAt: "2026-05-25T23:59:59.000Z",
           discussStart: "2026-05-15T00:00:00.000Z", voteStart: "2026-05-15T00:00:00.000Z", voteEnd: "2026-05-25T23:59:59.000Z",
@@ -3502,7 +3502,7 @@
 
     function ensureSeed(forceReset) {
       const meta = storageGet(KEYS.meta);
-      if (forceReset || !meta || meta.version !== 43) {
+      if (forceReset || !meta || meta.version !== 44) {
         const seed = buildSeed();
         // Explicit mapping: seed property → KEYS storage key
         storageSet(KEYS.orgs, seed.orgs);
@@ -3535,7 +3535,7 @@
         storageSet(KEYS.baseConsult, seed.baseConsult);
         storageSet(KEYS.baseLists, seed.baseLists);
         storageSet(KEYS.baseTeams, seed.baseTeams);
-        storageSet(KEYS.meta, { version: 43, seededAt: nowISO() });
+        storageSet(KEYS.meta, { version: 44, seededAt: nowISO() });
         // 默认群众端：幸福社区（与演示居民陈浩然一致，才能看到城西/幸福填报）
         storageSet(KEYS.h5Session, {
           userId: "res_001",
@@ -3651,44 +3651,61 @@
       return !!(org && org.level === "city");
     }
 
-    /** 群众端是否展示该内容（不展示草稿/定时上架/已下架） */
+    function isTopicLikeRecord(record) {
+      if (!record) return false;
+      if (record.type === "discuss" || record.type === "vote") return true;
+      if (record.voteEnd || record.discussStart || record.voteStart) return true;
+      return false;
+    }
+    function normalizeContentStatus(status, record) {
+      if (status === "draft" || status === "scheduled") return "unpublished";
+      if (status === "open" || status === "discussing" || status === "voting") return "published";
+      if (status === "closed" || status === "ended") {
+        return isTopicLikeRecord(record) ? "published" : "offline";
+      }
+      return status || "unpublished";
+    }
+    function isPublishedStatus(status, record) {
+      return normalizeContentStatus(status, record) === "published";
+    }
+    function getBusinessStartAt(record) {
+      if (!record) return null;
+      return record.startAt || record.discussStart || record.voteStart || null;
+    }
+    function getBusinessEndAt(record) {
+      if (!record) return null;
+      return record.endAt || record.voteEnd || null;
+    }
+    function getProgressStatus(record) {
+      if (!record) return "ongoing";
+      const now = Date.now();
+      const end = getBusinessEndAt(record);
+      if (end) {
+        const te = Date.parse(end);
+        if (!isNaN(te) && te <= now) return "ended";
+      }
+      const start = getBusinessStartAt(record);
+      if (start) {
+        const ts = Date.parse(start);
+        if (!isNaN(ts) && now < ts) return "not_started";
+      }
+      return "ongoing";
+    }
+    function progressStatusLabel(record, asTopic) {
+      const p = getProgressStatus(record);
+      if (p === "not_started") return "未开始";
+      if (p === "ended") return "已结束";
+      if (asTopic) {
+        const kind =
+          (record && record.type) ||
+          (record && record.status === "voting" ? "vote" : "discuss");
+        return kind === "vote" ? "表决中" : "讨论中";
+      }
+      return "进行中";
+    }
+    /** 群众端是否展示：只看上架状态=已上架 */
     function isH5PublicContentStatus(status, moduleKey, record) {
-      const s = status || "";
-      // 议题：已结束仍可见（结果公示/讨论记录）；未上架或未到期就下架的不展示
-      if (moduleKey === KEYS.topics) {
-        if (s === "draft" || s === "unpublished" || s === "scheduled") return false;
-        if (
-          s === "published" ||
-          s === "open" ||
-          s === "discussing" ||
-          s === "voting" ||
-          s === "closed" ||
-          s === "ended"
-        ) {
-          return true;
-        }
-        if (s === "offline") {
-          const end = record && (record.endAt || record.voteEnd);
-          if (end) {
-            const t = Date.parse(end);
-            if (!isNaN(t) && t <= Date.now()) return true;
-          }
-          return false;
-        }
-        return false;
-      }
-      if (
-        s === "draft" ||
-        s === "unpublished" ||
-        s === "scheduled" ||
-        s === "offline"
-      ) {
-        return false;
-      }
-      if (moduleKey === KEYS.activities) {
-        return s === "published" || s === "ended" || s === "open";
-      }
-      return s === "published" || s === "open";
+      return isPublishedStatus(status, record);
     }
 
     let _h5LastPromoteAt = 0;
@@ -3716,11 +3733,20 @@
         let dirty = false;
         list.forEach(function (r) {
           if (!r || r.deleted) return;
-          if (r.status === "ended" || r.status === "closed") {
-            if (fullKey === KEYS.topics) return;
+          if (fullKey === KEYS.topics) {
+            if (
+              r.status === "ended" ||
+              r.status === "closed" ||
+              r.status === "discussing" ||
+              r.status === "voting" ||
+              r.status === "open"
+            ) {
+              r.status = "published";
+              dirty = true;
+            }
+          } else if (r.status === "ended" || r.status === "closed") {
             r.status = "offline";
             dirty = true;
-            return;
           }
           if (r.status === "draft" || r.status === "scheduled") {
             r.status = "unpublished";
@@ -3730,32 +3756,13 @@
             r.status = "published";
             dirty = true;
           }
-          const endRaw = r.endAt || r.voteEnd;
-          const ended =
-            !!endRaw && !isNaN(Date.parse(endRaw)) && Date.parse(endRaw) <= now;
           if (r.status === "unpublished" && r.publishAt) {
             const t = new Date(r.publishAt).getTime();
             if (!isNaN(t) && t <= now) {
-              if (ended) {
-                r.status = fullKey === KEYS.topics ? "closed" : "offline";
-                if (r.status === "offline") r.actualOfflineAt = nowIso;
-              } else {
-                r.status = "published";
-                if (!r.actualPublishAt) r.actualPublishAt = nowIso;
-              }
+              r.status = "published";
+              if (!r.actualPublishAt) r.actualPublishAt = nowIso;
               dirty = true;
             }
-          }
-          if (
-            fullKey === KEYS.topics &&
-            (r.status === "published" ||
-              r.status === "discussing" ||
-              r.status === "voting" ||
-              r.status === "open") &&
-            ended
-          ) {
-            r.status = "closed";
-            dirty = true;
           }
         });
         if (dirty) storageSet(fullKey, list);
@@ -4241,24 +4248,14 @@
       return uniqueFieldValues(list, field);
     }
 
-    /** 征集 / 问卷是否已结束（状态或截止时间） */
+    /** 征集 / 问卷是否已结束（只看开始/结束时间） */
     function isPeriodEnded(item) {
-      if (!item) return true;
-      if (item.status === "closed" || item.status === "ended" || item.status === "offline") return true;
-      if (item.endAt) {
-        var t = Date.parse(item.endAt);
-        if (!isNaN(t) && t < Date.now()) return true;
-      }
-      return false;
+      return !item || getProgressStatus(item) === "ended";
     }
-    /** 征集 / 问卷当前是否可填报（已开始且未结束） */
+    /** 征集 / 问卷当前是否可填报（已上架且进行中） */
     function isPeriodOpen(item) {
-      if (!item || isPeriodEnded(item)) return false;
-      if (item.startAt) {
-        var s = Date.parse(item.startAt);
-        if (!isNaN(s) && Date.now() < s) return false;
-      }
-      return true;
+      if (!item || getProgressStatus(item) !== "ongoing") return false;
+      return isPublishedStatus(item.status, item);
     }
 
     function isSuggestFinished(s) {
@@ -4316,20 +4313,12 @@
 
     function topicPhaseOf(topic) {
       if (!topic) return "";
-      const st = String(topic.status || "");
-      if (st === "closed" || st === "offline" || st === "ended") return "closed";
-      if (st === "unpublished" || st === "draft" || st === "scheduled") return "";
-      const end = topic.endAt || topic.voteEnd;
-      if (end) {
-        const t = Date.parse(end);
-        if (!isNaN(t) && t <= Date.now()) return "closed";
-      }
-      if (st === "discussing") return "discussing";
-      if (st === "voting") return "voting";
-      if (st === "published" || st === "open") {
-        return topic.type === "vote" ? "voting" : "discussing";
-      }
-      return "";
+      const p = getProgressStatus(topic);
+      if (p === "ended") return "closed";
+      const kind =
+        topic.type ||
+        (topic.status === "voting" ? "vote" : "discuss");
+      return kind === "vote" ? "voting" : "discussing";
     }
 
     /** 勾选「仅本村社居民」时，当前登录居民须属于议题发布村社 */
@@ -4341,8 +4330,16 @@
     }
 
     function TOPIC_STATUS(sOrTopic) {
-      const phase =
-        sOrTopic && typeof sOrTopic === "object" ? topicPhaseOf(sOrTopic) : String(sOrTopic || "");
+      if (sOrTopic && typeof sOrTopic === "object") {
+        const p = getProgressStatus(sOrTopic);
+        if (p === "not_started") return ["未开始", "warning"];
+        if (p === "ended") return ["已结束", ""];
+        const kind =
+          sOrTopic.type ||
+          (sOrTopic.status === "voting" ? "vote" : "discuss");
+        return kind === "vote" ? ["表决中", "warning"] : ["讨论中", "primary"];
+      }
+      const phase = String(sOrTopic || "");
       const map = {
         discussing: ["讨论中", "primary"],
         voting: ["表决中", "warning"],
@@ -5224,13 +5221,7 @@
     }
 
     function isActivityEnded(a) {
-      if (!a) return true;
-      if (a.status === "ended" || a.status === "offline") return true;
-      if (a.endAt) {
-        var t = Date.parse(a.endAt);
-        if (!isNaN(t) && t < Date.now()) return true;
-      }
-      return false;
+      return !a || getProgressStatus(a) === "ended";
     }
 
     function isOnlineSignupEnabled(a) {
@@ -5250,7 +5241,7 @@
       return activitySignupCount(a.id) >= cap;
     }
     function isActivitySignupOpen(a) {
-      if (!a || isActivityEnded(a) || a.status !== "published") return false;
+      if (!a || isActivityEnded(a) || !isPublishedStatus(a.status, a)) return false;
       if (!isOnlineSignupEnabled(a)) return false;
       if (isActivitySignupFull(a)) return false;
       var now = Date.now();
@@ -5288,6 +5279,12 @@
           footer = '<button type="button" class="btn-primary" disabled>已报名</button>';
         } else if (ended) {
           footer = '<button type="button" class="btn-primary" disabled>活动已结束</button>';
+        } else if (
+          item.signupStart &&
+          !isNaN(Date.parse(item.signupStart)) &&
+          Date.now() < Date.parse(item.signupStart)
+        ) {
+          footer = '<button type="button" class="btn-primary" disabled>报名未开始</button>';
         } else if (!onlineSignup) {
           extra =
             '<div class="h5-section"><div class="h5-section-title">报名信息</div>本活动不支持在线报名，请按活动说明到现场参加。</div>' +
@@ -5392,14 +5389,17 @@
         let statusLabel = "进行中";
         let footHtml = '查看详情 <i class="ri-arrow-right-s-line"></i>';
         let footDone = false;
+        const progress = getProgressStatus(a);
         if (ended) {
           statusLabel = "已结束";
+        } else if (progress === "not_started" && !signupOpen && !signed) {
+          statusLabel = "未开始";
         } else if (signed) {
           statusLabel = "已报名";
           footHtml = '<i class="ri-checkbox-circle-line"></i> 已报名';
           footDone = true;
         } else if (!isOnlineSignupEnabled(a)) {
-          statusLabel = "进行中";
+          statusLabel = progress === "not_started" ? "未开始" : "进行中";
         } else if (signupOpen) {
           statusLabel = "报名中";
           footHtml = '立即报名 <i class="ri-arrow-right-s-line"></i>';
@@ -5884,13 +5884,15 @@
       if (!list.length) html += emptyList(tab === "ended" ? "暂无已结束征集" : "暂无进行中的征集");
       list.forEach(function (c) {
         const ended = isPeriodEnded(c);
+        const p = getProgressStatus(c);
+        const plabel = p === "ended" ? "已结束" : p === "not_started" ? "未开始" : "征集中";
         html += listCard({
           title: c.title,
           desc: c.desc,
           path: "home/campaigns",
           id: c.id,
           metaHtml:
-            statusTag(ended ? "已结束" : "征集中", ended ? "" : "success") +
+            statusTag(plabel, ended ? "" : p === "not_started" ? "warning" : "success") +
             (c.opinionType ? statusTag(c.opinionType, "primary") : "") +
             "<span>" +
             escapeHtml(formatDate(c.endAt)) +
@@ -6041,6 +6043,7 @@
       list.forEach(function (s) {
         const answered = hasAnsweredSurvey(s.id);
         const ended = isPeriodEnded(s);
+        const p = getProgressStatus(s);
         let label = "进行中";
         let tone = "primary";
         if (answered) {
@@ -6049,6 +6052,9 @@
         } else if (ended) {
           label = "已结束";
           tone = "";
+        } else if (p === "not_started") {
+          label = "未开始";
+          tone = "warning";
         }
         html += listCard({
           title: s.title,
@@ -6122,12 +6128,20 @@
         });
         const myVote = votes.find(function (v) { return v.userId === session.userId; });
         const phase = topicPhaseOf(topic);
+        const progress = getProgressStatus(topic);
+        const canParticipate = progress === "ongoing";
         const st = TOPIC_STATUS(topic);
         const allowJoin = canJoinTopic(topic, session);
         let extra = "";
         if (topic.villageOnly && !allowJoin) {
           extra +=
             '<div class="h5-section"><div style="font-size:13px;color:rgba(0,0,0,0.55);line-height:1.6">本议题仅限发布村社居民参与讨论与表决。</div></div>';
+        }
+        if (progress === "not_started") {
+          extra +=
+            '<div class="h5-section"><div style="font-size:13px;color:rgba(0,0,0,0.55);line-height:1.6">议题尚未开始，开始后可参与讨论' +
+            (topic.type === "vote" ? "与表决" : "") +
+            "。</div></div>";
         }
 
         // 上方：表决 + 发表评论
@@ -6136,12 +6150,12 @@
         // 结果公示=是：本人投票后、或议题结束后展示各选项票数
         const showCounts =
           !!topic.resultPublic && (!!myVote || phase === "closed");
-        if (showVote && options.length) {
+        if (showVote && options.length && progress !== "not_started") {
           extra += '<div class="h5-section"><div class="h5-section-title">表决</div>';
           options.forEach(function (opt) {
             const count = votes.filter(function (v) { return v.optionId === opt.id; }).length;
             const selected = myVote && myVote.optionId === opt.id;
-            const canVote = phase === "voting" && !myVote && allowJoin;
+            const canVote = canParticipate && phase === "voting" && !myVote && allowJoin;
             extra +=
               '<div class="vote-opt' +
               (selected ? " selected" : "") +
@@ -6170,7 +6184,7 @@
           }
           extra += "</div>";
         }
-        if (phase === "discussing" || phase === "voting") {
+        if (canParticipate && (phase === "discussing" || phase === "voting")) {
           if (allowJoin) {
             extra +=
               '<div class="h5-section"><div class="h5-section-title">发表评论</div>' +
@@ -6642,9 +6656,12 @@
               '<div><span class="k">发布单位：</span>' +
               escapeHtml(displayOrgLabel(act)) +
               "</div></div>" +
-              '<button type="button" class="btn-block" style="margin-top:12px" data-nav="home/activities" data-id="' +
-              escapeHtml(act.id) +
-              '">查看活动详情</button></div>'
+              (isH5PublicContentStatus(act.status, KEYS.activities, act)
+                ? '<button type="button" class="btn-block" style="margin-top:12px" data-nav="home/activities" data-id="' +
+                  escapeHtml(act.id) +
+                  '">查看活动详情</button>'
+                : '<div class="record-meta" style="margin-top:8px">该活动已下架，仅可查看本人报名记录</div>') +
+              "</div>"
             : "");
         return detailShell(title, meta, body, extra, "");
       }
@@ -6728,12 +6745,14 @@
           (survey ? "<br/>" + escapeHtml(displayOrgLabel(survey)) : "");
         const extra =
           renderMySurveyAnswerBlock(survey || { questions: [] }, answer) +
-          (survey
+          (survey && isH5PublicContentStatus(survey.status, KEYS.surveys, survey)
             ? '<div style="padding:0 12px 12px">' +
               '<button type="button" class="btn-block" data-nav="home/surveys" data-id="' +
               escapeHtml(survey.id) +
               '">查看问卷详情</button></div>'
-            : "");
+            : survey
+              ? '<div style="padding:0 12px 12px"><div class="record-meta">该问卷已下架，仅可查看本人答卷</div></div>'
+              : "");
         return detailShell(title, meta, (survey && survey.desc) || "", extra, "");
       }
       const answers = sortByTimeDesc(currentUserSurveyAnswers(), ["createdAt"]);
@@ -6804,7 +6823,7 @@
       if (h5Params.id) {
         // 复用议题详情
         const keepRoute = h5Route;
-        const topic = getPublicContentById(KEYS.topics, h5Params.id);
+        const topic = getById(KEYS.topics, h5Params.id);
         if (!topic) return emptyList("议题不存在");
         // 直接渲染 topics 详情结构
         const prev = Object.assign({}, h5Params);
@@ -6849,9 +6868,12 @@
         }
         extra +=
           '</div><div style="padding:0 12px 12px">' +
-          '<button type="button" class="btn-block" data-nav="home/topics" data-id="' +
-          escapeHtml(topic.id) +
-          '">进入议题详情</button></div>';
+          (isH5PublicContentStatus(topic.status, KEYS.topics, topic)
+            ? '<button type="button" class="btn-block" data-nav="home/topics" data-id="' +
+              escapeHtml(topic.id) +
+              '">进入议题详情</button>'
+            : '<div class="record-meta">该议题已下架，仅可查看本人参与记录</div>') +
+          "</div>";
         h5Params = prev;
         return detailShell(
           topic.title,
@@ -8666,8 +8688,8 @@
           }
           const session = getH5Session() || {};
           const phase = topicPhaseOf(topic);
-          if (phase !== "discussing" && phase !== "voting") {
-            toast("议题已结束，无法评论");
+          if (getProgressStatus(topic) !== "ongoing" || (phase !== "discussing" && phase !== "voting")) {
+            toast(getProgressStatus(topic) === "not_started" ? "议题尚未开始" : "议题已结束，无法评论");
             return;
           }
           if (!canJoinTopic(topic, session)) {
@@ -8703,8 +8725,8 @@
             const optionId = el.getAttribute("data-vote-opt");
             const session = getH5Session() || {};
             const topic = getById(KEYS.topics, topicId);
-            if (topicPhaseOf(topic) !== "voting") {
-              toast("当前不在表决期");
+            if (getProgressStatus(topic) !== "ongoing" || topicPhaseOf(topic) !== "voting") {
+              toast(getProgressStatus(topic) === "not_started" ? "议题尚未开始" : "当前不在表决期");
               return;
             }
             if (!canJoinTopic(topic, session)) {
