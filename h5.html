@@ -30,6 +30,78 @@
       line-height: 1.5;
     }
     #app { min-height: 100vh; padding: 8px 0 24px; }
+    .h5-stage {
+      position: relative;
+      width: var(--phone-width);
+      margin: 0 auto;
+    }
+    .h5-outer-bar {
+      position: absolute;
+      left: calc(100% + 12px);
+      top: 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 8px;
+      width: max-content;
+    }
+    .h5-outer-btn {
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid #dce3ec;
+      background: #fff;
+      color: rgba(0,0,0,0.75);
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 8px rgba(15, 40, 80, 0.06);
+    }
+    .h5-outer-btn:active { background: #f5f7fb; }
+    .h5-outer-btn i { font-size: 15px; color: var(--color-primary); }
+    .h5-perm-mask {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(15, 40, 80, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+    .h5-perm-dialog {
+      width: min(720px, 100%);
+      max-height: min(86vh, 820px);
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 16px 48px rgba(15, 40, 80, 0.2);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .h5-perm-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--color-border);
+      flex-shrink: 0;
+    }
+    .h5-perm-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .h5-perm-title i { color: var(--color-primary); }
+    .h5-perm-body {
+      overflow: auto;
+      padding: 4px 4px 16px;
+      background: #F5F7FB;
+    }
+    .h5-perm-body .about-block { margin: 12px; }
     a { color: var(--color-primary); text-decoration: none; }
     button { font-family: inherit; cursor: pointer; border: none; background: none; }
 
@@ -37,7 +109,7 @@
     .phone {
       width: var(--phone-width);
       height: var(--phone-height);
-      margin: 16px auto;
+      margin: 16px 0;
       background: var(--color-bg);
       border: 1px solid #dce3ec;
       border-radius: 18px;
@@ -1957,6 +2029,44 @@
       color: rgba(0,0,0,0.88);
       font-weight: 700;
     }
+    .about-block h4 {
+      font-size: 14px;
+      margin: 16px 0 8px;
+      color: rgba(0,0,0,0.88);
+      font-weight: 700;
+    }
+    .about-block p { margin: 0 0 8px; }
+    .about-block .perm-table-wrap {
+      overflow-x: auto;
+      margin: 8px 0 12px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .about-block table {
+      width: 100%;
+      min-width: 420px;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+    .about-block th,
+    .about-block td {
+      border: 1px solid #E8EEF5;
+      padding: 8px 10px;
+      text-align: left;
+      vertical-align: top;
+      line-height: 1.55;
+    }
+    .about-block th {
+      background: #F5F8FC;
+      color: rgba(0,0,0,0.65);
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .about-block ul {
+      margin: 0 0 8px;
+      padding-left: 18px;
+    }
+    .about-block li { margin: 0 0 4px; }
+    .mine-row .row-icon.t-gray { color: #595959; }
     /* 我的记录 / 作答详情 */
     .record-meta {
       font-size: 12px;
@@ -4002,6 +4112,7 @@
       "mine/assist": "我的帮扶申请",
       "mine/topics": "议事参与",
       "mine/about": "关于",
+      "mine/permission": "数据权限",
     };
 
     function isTabRoot(path) {
@@ -6930,6 +7041,42 @@
       );
     }
 
+    function pagePermission() {
+      return (
+        '<div class="about-block">' +
+        "<h3>移动端数据权限</h3>" +
+        "<p>群众按所在组织查看内容，不按管理端「本级及下级」口径。居民登录后绑定一个组织（一般为村社）。内容是否可见与是否可参与分别判定。</p>" +
+        "<h4>1. 上架状态</h4>" +
+        "<p>公开列表及详情仅展示已上架内容。定时上架、未上架、已下架不展示，详情地址同样不可打开。</p>" +
+        "<p>进行状态（未开始 / 进行中 / 已结束）不影响可见性。已上架且已结束的内容仍可查看，不可再报名、提交、填报、讨论或表决。</p>" +
+        "<h4>2. 可见范围</h4>" +
+        "<p>组织层级：市 → 区县 → 乡镇（街道）→ 村社。同名街道与社区视为不同组织。</p>" +
+        '<div class="perm-table-wrap"><table>' +
+        "<thead><tr><th>规则</th><th>适用模块</th><th>口径</th></tr></thead>" +
+        "<tbody>" +
+        "<tr><td>向上</td><td>通知公告、服务项目、设施资源、力量资源、救助政策、基金会</td><td>本级及上级已上架内容</td></tr>" +
+        "<tr><td>村社</td><td>三务公开、议题</td><td>本村社已上架内容</td></tr>" +
+        "<tr><td>范围</td><td>活动、线索建议征集、民主评议与满意度测评</td><td>发布组织为本级或上级（发布范围覆盖当前组织）</td></tr>" +
+        "<tr><td>本人</td><td>建议线索、帮扶申请</td><td>仅本人提交记录，含办理中、已结束</td></tr>" +
+        "</tbody></table></div>" +
+        "<p>三务公开例外：区县、街道可查看下级村社已上架内容；村社仍仅查看本村社。</p>" +
+        "<p>市级演示账号可查看全市已上架内容（仅用于演示）。</p>" +
+        "<h4>3. 参与条件</h4>" +
+        "<p>须同时满足「已上架」且「当前组织可见」，再按模块判定：</p>" +
+        "<ul>" +
+        "<li>活动报名：已开启在线报名、活动未结束、处于报名起止时间内、未达人数上限、本人未报名。同一活动限报一次。</li>" +
+        "<li>征集提交：进行中可提交。无标题。提交须双写：本人建议记录、归集箱记录。</li>" +
+        "<li>评议 / 测评：进行中可作答，同一问卷限答一次。已作答或已结束不可再答。</li>" +
+        "<li>议题讨论 / 表决：进行中可参与。勾选「仅本村社居民」时，登录组织须与发布村社一致，否则仅可查看、不可评论或表决。表决限一次。</li>" +
+        "<li>帮扶申请：须选择区县、街道、村社，且三级组织上下级匹配。提交后归属所选村社，由该街道综合信息指挥室受理。仅查看本人申请。</li>" +
+        "</ul>" +
+        "<h4>4. 个人记录</h4>" +
+        "<p>活动报名、建议、答卷、议事、帮扶申请仅展示本人数据。对应内容下架后，公开列表不再展示；「我的」中本人记录仍可只读查看。</p>" +
+        "<p>与 PC 端差异：管理端按「本级及下级」管理数据；群众端按「本级及上级已上架内容」查看。</p>" +
+        "</div>"
+      );
+    }
+
     PagesH5["home/notices"] = pageNotices;
     PagesH5["home/activities"] = pageActivities;
     PagesH5["home/affairs"] = pageAffairs;
@@ -6953,6 +7100,7 @@
     PagesH5["mine/assist"] = pageMineAssist;
     PagesH5["mine/topics"] = pageMineTopics;
     PagesH5["mine/about"] = pageAbout;
+    PagesH5["mine/permission"] = pagePermission;
 
     /* ---------- Home (layouts A/B/C, visual = 清新悬浮) ---------- */
     var HOME_LAYOUT_KEY = "sws_v1_h5_home_layout";
@@ -7992,6 +8140,46 @@
       return html;
     }
 
+    function h5OuterChromeHtml() {
+      return (
+        '<div class="h5-outer-bar">' +
+        '<button type="button" class="h5-outer-btn" id="btn-h5-permission">' +
+        '<i class="ri-shield-keyhole-line"></i> 数据权限</button></div>'
+      );
+    }
+    function closeH5PermissionModal() {
+      const el = document.getElementById("h5-perm-mask");
+      if (el && el._onKey) document.removeEventListener("keydown", el._onKey);
+      if (el && el.parentNode) el.parentNode.removeChild(el);
+    }
+    function openH5PermissionModal() {
+      closeH5PermissionModal();
+      const mask = document.createElement("div");
+      mask.className = "h5-perm-mask";
+      mask.id = "h5-perm-mask";
+      mask.innerHTML =
+        '<div class="h5-perm-dialog" role="dialog" aria-modal="true">' +
+        '<div class="h5-perm-head">' +
+        '<div class="h5-perm-title"><i class="ri-shield-keyhole-line"></i> 数据权限</div>' +
+        '<button type="button" class="h5-outer-btn" data-act="close">关闭</button>' +
+        "</div>" +
+        '<div class="h5-perm-body">' +
+        pagePermission() +
+        "</div></div>";
+      function close() {
+        closeH5PermissionModal();
+      }
+      mask.addEventListener("click", function (e) {
+        if (e.target === mask) close();
+      });
+      mask.querySelector('[data-act="close"]').addEventListener("click", close);
+      mask._onKey = function (e) {
+        if (e.key === "Escape") close();
+      };
+      document.addEventListener("keydown", mask._onKey);
+      document.body.appendChild(mask);
+    }
+
     /* ========== Shell ========== */
     function renderH5Shell() {
       promoteDuePublishes();
@@ -8001,10 +8189,12 @@
       // 未登录：展示登录页
       if (!isH5LoggedIn()) {
         app.innerHTML =
+          '<div class="h5-stage">' +
+          h5OuterChromeHtml() +
           '<div class="phone">' +
           '<div class="phone-body" id="phone-body">' +
           renderLoginPage() +
-          "</div></div>";
+          "</div></div></div>";
         bindShellEvents();
         flushPendingToast();
         return;
@@ -8047,18 +8237,27 @@
       tabHtml += "</div>";
 
       app.innerHTML =
+        '<div class="h5-stage">' +
+        h5OuterChromeHtml() +
         '<div class="phone">' +
         '<div class="phone-body" id="phone-body">' + bodyHtml + "</div>" +
         tabHtml +
         (h5ShowPicker ? renderResidentPicker() : "") +
         (h5ShowOrgPicker ? renderOrgPicker() : "") +
-        "</div>";
+        "</div></div>";
 
       bindShellEvents();
       flushPendingToast();
     }
 
     function bindShellEvents() {
+      const permBtn = document.getElementById("btn-h5-permission");
+      if (permBtn) {
+        permBtn.addEventListener("click", function (e) {
+          e.preventDefault();
+          openH5PermissionModal();
+        });
+      }
       const body = document.getElementById("phone-body");
       if (body) {
         body.querySelectorAll("[data-nav]").forEach(function (el) {
